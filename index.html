@@ -8,25 +8,82 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <script>
-        // CONFIGURATION: CHANGE THIS DATE PER CLIENT
-        const EXPIRATION_DATE = new Date("2026-03-01"); 
-        
-        const LOCK_MESSAGE = "This cohort license has expired. Please contact your administrator.";
-        const RENEW_LINK = "https://calendly.com/alexioda"; // Your booking link
+        // 1. YOUR MASTER LIST OF CLIENTS
+        // Format: "CODE": "YYYY-MM-DD" (Expiration Date)
+        const CLIENT_DATABASE = {
+            "DEMO": "2030-01-01",       // Use this for your own testing
+            "MASTER": "2099-12-31",     // Your forever key
+            "EY_SPRING": "2026-03-15",  // Example Client
+        };
+
+        const RENEW_LINK = "https://calendly.com/alexioda";
 
         document.addEventListener("DOMContentLoaded", function() {
-            const now = new Date();
-            if (now > EXPIRATION_DATE) {
+            // 2. GET LICENSE CODE FROM URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const licenseCode = urlParams.get('license');
+
+            // 3. VALIDATION LOGIC
+            let isLocked = true;
+            let message = "No valid license detected. Please use the link provided by your facilitator.";
+
+            // Check URL Code
+            if (licenseCode && CLIENT_DATABASE[licenseCode]) {
+                const expirationDate = new Date(CLIENT_DATABASE[licenseCode]);
+                const now = new Date();
+                
+                if (now < expirationDate) {
+                    isLocked = false; 
+                    localStorage.setItem('kinetic_license', licenseCode); // Save for next visit
+                } else {
+                    message = `The license for '${licenseCode}' expired on ${expirationDate.toDateString()}.`;
+                }
+            } 
+            // Check Saved Code (if URL param missing)
+            else if (localStorage.getItem('kinetic_license')) {
+                const savedCode = localStorage.getItem('kinetic_license');
+                if (CLIENT_DATABASE[savedCode] && new Date() < new Date(CLIENT_DATABASE[savedCode])) {
+                    isLocked = false;
+                }
+            }
+
+            // 4. LOCK SCREEN UI
+            if (isLocked) {
                 document.body.innerHTML = `
                     <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-center; background:#1c1917; color:white; font-family:sans-serif; text-align:center; padding:20px;">
                         <div style="font-size:40px; margin-bottom:20px;">🔒</div>
                         <h1 style="font-size:24px; font-weight:bold; margin-bottom:10px;">System Locked</h1>
-                        <p style="color:#a8a29e; margin-bottom:30px;">${LOCK_MESSAGE}</p>
-                        <a href="${RENEW_LINK}" style="background:#d97706; color:white; text-decoration:none; padding:15px 30px; border-radius:30px; font-weight:bold; font-size:12px; letter-spacing:1px; text-transform:uppercase;">Renew License</a>
+                        <p style="color:#a8a29e; margin-bottom:30px; max-width:400px; line-height:1.5;">${message}</p>
+                        
+                        <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:12px; margin-bottom:30px; width:100%; max-width:300px; border:1px solid rgba(255,255,255,0.1);">
+                            <p style="font-size:10px; text-transform:uppercase; margin-bottom:8px; color:#d6d3d1; letter-spacing:1px;">Manual Override</p>
+                            <input type="text" id="manualCode" placeholder="ENTER CLIENT CODE" style="width:100%; padding:12px; border-radius:6px; border:none; background:rgba(0,0,0,0.3); color:white; font-weight:bold; text-align:center; text-transform:uppercase; margin-bottom:10px; outline:none; border:1px solid #444;">
+                            <button onclick="checkManual()" style="display:block; width:100%; padding:12px; background:#d97706; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; text-transform:uppercase; letter-spacing:1px; font-size:12px;">Unlock System</button>
+                        </div>
+
+                        <a href="${RENEW_LINK}" style="color:#d97706; text-decoration:none; font-size:12px; border-bottom:1px solid #d97706;">Contact Administrator</a>
                     </div>
                 `;
             }
         });
+
+        // Backup function for manual entry
+        window.checkManual = function() {
+            const input = document.getElementById('manualCode').value.trim().toUpperCase(); // Force Uppercase
+            if (CLIENT_DATABASE[input]) {
+                const now = new Date();
+                const exp = new Date(CLIENT_DATABASE[input]);
+                if (now < exp) {
+                    // Reload page with the code in URL to trigger unlock
+                    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?license=" + input;
+                    window.location.href = newUrl;
+                } else {
+                    alert("That code is expired.");
+                }
+            } else {
+                alert("Invalid code.");
+            }
+        }
     </script>
 
     <script>
