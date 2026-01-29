@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Kinetic Leader | System Protocol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+        // CONFIGURATION: CHANGE THIS DATE PER CLIENT
+        const EXPIRATION_DATE = new Date("2026-03-01"); 
+        
+        const LOCK_MESSAGE = "This cohort license has expired. Please contact your administrator.";
+        const RENEW_LINK = "https://calendly.com/alexioda"; // Your booking link
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const now = new Date();
+            if (now > EXPIRATION_DATE) {
+                document.body.innerHTML = `
+                    <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-center; background:#1c1917; color:white; font-family:sans-serif; text-align:center; padding:20px;">
+                        <div style="font-size:40px; margin-bottom:20px;">🔒</div>
+                        <h1 style="font-size:24px; font-weight:bold; margin-bottom:10px;">System Locked</h1>
+                        <p style="color:#a8a29e; margin-bottom:30px;">${LOCK_MESSAGE}</p>
+                        <a href="${RENEW_LINK}" style="background:#d97706; color:white; text-decoration:none; padding:15px 30px; border-radius:30px; font-weight:bold; font-size:12px; letter-spacing:1px; text-transform:uppercase;">Renew License</a>
+                    </div>
+                `;
+            }
+        });
+    </script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { serif: ['"Cormorant Garamond"', 'serif'], sans: ['"Inter"', 'sans-serif'] },
+                    colors: {
+                        stone: { 50: '#fafaf9', 100: '#f5f5f4', 800: '#292524', 900: '#1c1917' },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' },
+                        catabolic: '#ef4444',
+                        anabolic: '#22c55e'
+                    },
+                    animation: { 'fade-in': 'fadeIn 0.5s ease-out' },
+                    keyframes: { fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .page { display: none; opacity: 0; transition: opacity 0.5s ease-in-out; }
+        .page.active { display: block; opacity: 1; }
+        .trap-card { border: 1px solid #e5e7eb; transition: all 0.3s; cursor: pointer; }
+        .trap-card.selected { border-color: #f59e0b; background-color: #fffbeb; transform: scale(1.02); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .body-zone { transition: all 0.3s; cursor: pointer; }
+        .body-zone:hover { fill: #f59e0b; opacity: 0.5; }
+        .chip { transition: all 0.2s; cursor: pointer; }
+        .chip:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #292524; cursor: pointer; margin-top: -8px; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #d6d3d1; border-radius: 2px; }
+        .quote-box { border-left: 4px solid #f59e0b; padding-left: 1rem; margin: 1.5rem 0; font-family: 'Cormorant Garamond', serif; font-style: italic; color: #57534e; background: rgba(245, 158, 11, 0.05); padding: 1.5rem; border-radius: 0 8px 8px 0; }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-900 font-sans antialiased h-screen flex flex-col md:flex-row overflow-hidden">
+
+    <div class="md:hidden bg-stone-900 text-stone-50 p-4 flex justify-between items-center z-50 shadow-md flex-shrink-0">
+        <span class="font-serif text-xl italic">The Kinetic Leader</span>
+        <div class="text-[10px] uppercase tracking-widest text-gold-500">System Protocol</div>
+    </div>
+
+    <aside class="hidden md:flex flex-col w-72 bg-stone-900 text-stone-300 h-full border-r border-stone-800 p-8 flex-shrink-0">
+        <div class="mb-12">
+            <h1 class="font-serif text-3xl text-stone-50 italic leading-none mb-2">The<br>Kinetic<br>Leader</h1>
+            <div class="h-1 w-12 bg-gold-500 mb-4"></div>
+            <p class="text-[10px] uppercase tracking-[0.2em] text-stone-500">System Protocol</p>
+        </div>
+        <div class="space-y-6 text-sm font-serif italic text-stone-500">
+            <div class="flex items-center gap-3"><span class="flex items-center justify-center w-6 h-6 rounded-full border border-stone-700 text-xs">1</span><p>Belief Calibration</p></div>
+            <div class="flex items-center gap-3"><span class="flex items-center justify-center w-6 h-6 rounded-full border border-stone-700 text-xs">2</span><p>Hardware Reboot</p></div>
+            <div class="flex items-center gap-3"><span class="flex items-center justify-center w-6 h-6 rounded-full border border-stone-700 text-xs">3</span><p>Energy Shift</p></div>
+            <div class="flex items-center gap-3"><span class="flex items-center justify-center w-6 h-6 rounded-full border border-stone-700 text-xs">4</span><p>Execution</p></div>
+        </div>
+        <div class="mt-auto pt-8 border-t border-stone-800 text-xs text-stone-500"><p>Powered by Adaptiv</p><p class="opacity-50 mt-1">&copy; Conscious Growth Coaching</p></div>
+    </aside>
+
+    <main class="flex-1 h-full overflow-y-auto relative p-6 md:p-12 scroll-smooth" id="main-content">
+        <div class="max-w-2xl mx-auto min-h-full flex flex-col pb-20">
+            
+            <div id="p0" class="page active">
+                <div class="text-center mt-10 md:mt-20 animate-fade-in">
+                    <span class="px-3 py-1 border border-stone-300 rounded-full text-xs uppercase tracking-widest text-stone-500">Workshop Interface</span>
+                    <h1 class="text-5xl md:text-7xl font-serif italic text-stone-900 mt-6 mb-4">The Kinetic<br>Leader.</h1>
+                    
+                    <div class="max-w-md mx-auto my-8 quote-box text-left">
+                        "We are all leaders, whether by choice or by default. The only question is: How consciously are you leading your own energy?"
+                        <span class="block text-xs font-sans not-italic text-stone-400 mt-2 uppercase tracking-wide">— Bruce D Schneider</span>
+                    </div>
+
+                    <div class="mt-12 p-6 bg-white border border-stone-200 rounded-xl shadow-sm text-left">
+                        <label class="text-xs font-bold uppercase tracking-widest text-stone-400">Pilot Name</label>
+                        <input type="text" placeholder="Enter name to begin" class="w-full text-2xl font-serif border-b border-stone-300 focus:border-gold-500 outline-none py-2 bg-transparent text-stone-800 placeholder:text-stone-300">
+                    </div>
+                    <button onclick="nextPage()" class="mt-12 bg-stone-900 text-white px-8 py-4 rounded-full hover:bg-gold-500 hover:text-black transition-all uppercase text-xs font-bold tracking-widest shadow-lg hover:shadow-xl transform hover:-translate-y-1">Initialize System</button>
+                </div>
+            </div>
+
+            <div id="p1" class="page">
+                <h2 class="text-4xl font-serif italic text-stone-900 mb-2">Step 1: Calibration</h2>
+                <div class="bg-stone-900 text-stone-300 p-6 rounded-xl mb-8 shadow-lg animate-fade-in">
+                    <div class="flex justify-between items-start"><h3 class="text-gold-500 font-bold uppercase tracking-widest text-xs mb-2">Science: Kelly McGonigal, Ph.D.</h3></div>
+                    <p class="font-serif text-lg leading-relaxed italic mb-4">"Stress is only harmful to your health if you believe it is."</p>
+                    <label class="text-xs font-bold uppercase tracking-widest text-stone-400 block mb-4 mt-6">Calibrate Your Belief Setting:</label>
+                    <input type="range" min="0" max="100" value="50" class="mb-2" oninput="updateBelief(this.value)">
+                    <div class="flex justify-between text-[10px] font-bold uppercase tracking-widest"><span class="text-red-400">Threat (Draining)</span><span class="text-green-400">Challenge (Fueling)</span></div>
+                    <div id="belief-feedback" class="text-center bg-white/10 rounded py-2 mt-4 font-mono text-xs text-white">ADJUST SLIDER TO CALIBRATE</div>
+                </div>
+                <p class="text-stone-500 mb-4 font-medium">Identify the "Error Code". Which trap is triggering you?</p>
+                <div class="space-y-4">
+                    <div class="trap-card p-6 rounded-xl bg-white group" onclick="selectTrap(this)">
+                        <div class="flex justify-between items-center mb-2"><h3 class="font-bold uppercase tracking-widest text-sm text-stone-800">The Perfectionist</h3><span class="text-xl group-hover:scale-110 transition-transform">🎯</span></div>
+                        <p class="text-sm text-stone-600">"I must give 100% effort on 100% of tasks." (Fear of Judgment)</p>
+                    </div>
+                    <div class="trap-card p-6 rounded-xl bg-white group" onclick="selectTrap(this)">
+                        <div class="flex justify-between items-center mb-2"><h3 class="font-bold uppercase tracking-widest text-sm text-stone-800">Scope Creep</h3><span class="text-xl group-hover:scale-110 transition-transform">🌊</span></div>
+                        <p class="text-sm text-stone-600">"I can't say no to new work." (Fear of Rejection)</p>
+                    </div>
+                    <div class="trap-card p-6 rounded-xl bg-white group" onclick="selectTrap(this)">
+                        <div class="flex justify-between items-center mb-2"><h3 class="font-bold uppercase tracking-widest text-sm text-stone-800">The Always-On</h3><span class="text-xl group-hover:scale-110 transition-transform">🔌</span></div>
+                        <p class="text-sm text-stone-600">"If I disconnect, I lose value." (Fear of Irrelevance)</p>
+                    </div>
+                </div>
+                <div id="trap-continue" class="hidden mt-8 text-center animate-pulse">
+                    <button onclick="nextPage()" class="text-stone-900 font-bold border-b-2 border-gold-500 hover:text-gold-600 pb-1 transition-colors">Error Code Locked. Locate Signal &rarr;</button>
+                </div>
+            </div>
+
+            <div id="p2" class="page">
+                <h2 class="text-4xl font-serif italic text-stone-900 mb-2">Step 2: The Reboot</h2>
+                <div class="quote-box text-lg animate-fade-in">
+                    "Between stimulus and response there is a space. In that space is our power to choose our response." 
+                    <span class="block text-xs font-sans not-italic text-stone-400 mt-2 uppercase tracking-wide">— Viktor Frankl</span>
+                </div>
+                <p class="text-stone-600 mb-6 bg-stone-100 p-4 rounded-lg text-sm border-l-4 border-stone-900">
+                    <strong>System Logic:</strong> You cannot fix a cognitive problem while your nervous system is in "Threat Mode." We must mechanically widen the space.
+                </p>
+                <div class="flex flex-col items-center mb-8">
+                    <p class="text-xs font-bold uppercase tracking-widest text-stone-400 mb-4">A. Locate the Signal</p>
+                    <svg width="150" height="200" viewBox="0 0 100 200" class="drop-shadow-xl">
+                        <path d="M50 10 C 60 10, 65 15, 65 25 C 65 30, 60 35, 50 35 C 40 35, 35 30, 35 25 C 35 15, 40 10, 50 10 M50 35 L 50 80 M50 80 L 20 120 M50 80 L 80 120 M20 45 L 80 45" stroke="#333" fill="none" stroke-width="2" />
+                        <circle cx="50" cy="25" r="12" fill="transparent" class="body-zone" onclick="revealRegulators('Head')"/><rect x="35" y="40" width="30" height="25" fill="transparent" class="body-zone" onclick="revealRegulators('Chest')"/><rect x="35" y="65" width="30" height="15" fill="transparent" class="body-zone" onclick="revealRegulators('Gut')"/>
+                    </svg>
+                    <p id="sensation-text" class="text-gold-600 font-serif italic mt-4 h-6 text-center">Tap where the stress lives...</p>
+                </div>
+                <div id="regulator-menu" class="hidden space-y-6 animate-fade-in">
+                    <p class="text-center text-xs font-bold uppercase tracking-widest text-stone-400">B. Select Acute Protocol</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="runProtocol('squeeze')" class="p-4 border border-stone-200 rounded-xl hover:border-catabolic hover:bg-red-50 transition-all text-left group bg-white shadow-sm">
+                            <span class="text-2xl block mb-2 group-hover:scale-110 transition-transform">✊</span><span class="font-bold text-stone-800 block mb-1">The Squeeze</span><span class="text-[10px] text-stone-500 uppercase tracking-wide">For Anger / High Tension</span>
+                        </button>
+                        <button onclick="runProtocol('anchor')" class="p-4 border border-stone-200 rounded-xl hover:border-catabolic hover:bg-red-50 transition-all text-left group bg-white shadow-sm">
+                            <span class="text-2xl block mb-2 group-hover:scale-110 transition-transform">⚓</span><span class="font-bold text-stone-800 block mb-1">The Anchor</span><span class="text-[10px] text-stone-500 uppercase tracking-wide">For Fog / Overwhelm</span>
+                        </button>
+                    </div>
+                    <div id="protocol-display" class="hidden bg-stone-900 text-stone-300 p-6 rounded-xl shadow-lg text-center animate-fade-in">
+                        <h3 id="proto-title" class="text-gold-500 font-bold uppercase tracking-widest mb-4"></h3><p id="proto-text" class="font-serif text-lg leading-relaxed mb-6"></p>
+                        <button onclick="nextPage()" class="bg-white text-stone-900 px-6 py-3 rounded-full text-xs font-bold uppercase hover:bg-gold-500 hover:text-white transition-colors tracking-widest">System Cooled. Shift Mind &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="p3" class="page">
+                <h2 class="text-4xl font-serif italic text-stone-900 mb-2">Step 3: The Energy Shift</h2>
+                <div class="flex items-center gap-4 mb-6 bg-stone-100 p-4 rounded-lg border-l-4 border-gold-500 shadow-sm">
+                    <div class="text-2xl">⚡</div>
+                    <p class="text-sm text-stone-600"><strong>The Algorithm:</strong> Stress makes you think "I have to" (Level 1). Resilience is shifting to "I choose to" (Level 5).</p>
+                </div>
+                <div class="mb-8">
+                    <label class="font-sans text-xs font-bold uppercase tracking-widest text-catabolic block mb-2">Current "Level 1" Thought (The Drain)</label>
+                    <div class="flex flex-wrap gap-2">
+                        <span onclick="setCatabolic(this, 'I have to do this')" class="chip px-4 py-2 rounded-full bg-red-50 border border-red-200 text-xs text-red-800 font-medium">"I have to do this..."</span>
+                        <span onclick="setCatabolic(this, 'Why is this happening?')" class="chip px-4 py-2 rounded-full bg-red-50 border border-red-200 text-xs text-red-800 font-medium">"Why me?"</span>
+                        <span onclick="setCatabolic(this, 'I can\'t mess up')" class="chip px-4 py-2 rounded-full bg-red-50 border border-red-200 text-xs text-red-800 font-medium">"I can't mess up."</span>
+                    </div>
+                    <input id="catabolic-input" type="text" placeholder="Or type your own..." class="mt-3 w-full border-b border-red-200 py-2 outline-none text-stone-500 italic bg-transparent">
+                </div>
+                <div class="text-center mb-8"><button onclick="revealAnabolic()" class="bg-gradient-to-r from-stone-800 to-stone-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:from-gold-500 hover:to-gold-600 hover:shadow-lg transition-all transform active:scale-95 border border-transparent">♻️ Transmute Energy</button></div>
+                <div id="anabolic-section" class="hidden opacity-0 transition-opacity duration-700">
+                    <label class="font-sans text-xs font-bold uppercase tracking-widest text-anabolic block mb-2">The "Level 5" Reframe (The Fuel)</label>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span onclick="setAnabolic('I choose to...')" class="chip px-4 py-2 rounded-full bg-green-50 border border-green-200 text-xs text-green-800 font-medium">"I choose to..."</span>
+                        <span onclick="setAnabolic('The opportunity here is...')" class="chip px-4 py-2 rounded-full bg-green-50 border border-green-200 text-xs text-green-800 font-medium">"The opportunity is..."</span>
+                    </div>
+                    <div class="bg-green-50 p-6 rounded-xl border border-green-200 shadow-inner"><textarea id="anabolic-input" class="w-full bg-transparent outline-none text-green-900 font-serif text-2xl italic h-24 resize-none placeholder:text-green-900/30 leading-relaxed" placeholder="Complete the thought..."></textarea></div>
+                    <button onclick="nextPage()" class="w-full mt-6 bg-stone-900 text-white py-4 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-stone-800 transition-all shadow-md">Mindset Shifted. Execute Tactic &rarr;</button>
+                </div>
+            </div>
+
+            <div id="p4" class="page">
+                <h2 class="text-4xl font-serif italic text-stone-900 mb-2">Step 4: Execution</h2>
+                <p class="text-stone-600 mb-6">Now that you are regulated (Body) and shifted (Mind), execute the "Adaptive Pushback."</p>
+                <div class="bg-white p-8 rounded-xl border border-stone-200 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500"></div>
+                    <p class="font-mono text-xs text-stone-400 mb-4 uppercase tracking-widest">DRAFT: Reply to Manager</p>
+                    <div class="font-serif text-xl leading-relaxed text-stone-800">
+                        "Happy to take this on! <br><br>
+                        To ensure I hit the deadline for <span class="relative inline-block mx-1"><input type="text" placeholder="[Current Project]" class="border-b-2 border-gold-500 outline-none w-48 text-center text-stone-900 font-bold bg-transparent placeholder:text-stone-300"></span>, 
+                        should I pause that to work on this new task, or is this a priority for later in the week?"
+                    </div>
+                </div>
+                <div class="mt-12 text-center">
+                    <button onclick="nextPage()" class="text-stone-400 hover:text-stone-900 uppercase text-xs tracking-widest border-b border-transparent hover:border-stone-900 transition-all pb-1">Lock in Protocol</button>
+                </div>
+            </div>
+
+            <div id="p5" class="page">
+                <div class="text-center mt-10 animate-fade-in">
+                    <h2 class="text-4xl font-serif italic text-stone-900">System Sealed.</h2>
+                    <div class="max-w-md mx-auto my-8 quote-box text-left">
+                        "You do not rise to the level of your goals. You fall to the level of your systems."
+                        <span class="block text-xs font-sans not-italic text-stone-400 mt-2 uppercase tracking-wide">— James Clear</span>
+                    </div>
+                    <p class="text-lg text-stone-600 mt-4 mb-8">You have the tool. Secure the support.</p>
+                    <div class="grid gap-4 text-left max-w-md mx-auto">
+                        <a href="https://app.consciousgrowth.live" target="_blank" class="block bg-stone-900 p-6 rounded-xl shadow-lg hover:transform hover:-translate-y-1 transition-all group relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">📱</div>
+                            <div class="flex justify-between items-center relative z-10">
+                                <div><h3 class="text-gold-500 font-bold uppercase tracking-widest text-sm">The Pocket Coach</h3><p class="text-stone-300 text-sm mt-1">Activate 30-Day App Access</p></div>
+                                <span class="text-2xl group-hover:translate-x-2 transition-transform text-white">→</span>
+                            </div>
+                        </a>
+                        <a href="https://calendly.com/alexioda" target="_blank" class="block bg-white border border-stone-200 p-6 rounded-xl hover:border-gold-500 transition-all group relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-4 opacity-5 text-6xl">⚡</div>
+                            <div class="flex justify-between items-center relative z-10">
+                                <div><h3 class="text-stone-900 font-bold uppercase tracking-widest text-sm">The Deep Dive</h3><p class="text-stone-500 text-sm mt-1">Book Leadership Assessment (ELI)</p></div>
+                                <span class="text-2xl text-stone-300 group-hover:text-gold-500 transition-colors">→</span>
+                            </div>
+                        </a>
+                    </div>
+                    <button onclick="location.reload()" class="mt-16 text-stone-400 hover:text-stone-900 underline text-xs">Reset Protocol for Next User</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        let currentPage = 0;
+        const totalPages = 6;
+        function showPage(index) { document.querySelectorAll('.page').forEach((p, i) => { p.classList.remove('active'); if(i === index) setTimeout(() => p.classList.add('active'), 50); }); currentPage = index; document.getElementById('main-content').scrollTop = 0; }
+        function nextPage() { if(currentPage < totalPages - 1) showPage(currentPage + 1); }
+        function updateBelief(val) { const text = document.getElementById('belief-feedback'); const container = text.parentElement; if (val < 40) { text.innerHTML = "STATUS: <span class='text-red-400 font-bold'>THREAT MODE (Draining)</span>"; container.style.borderColor = "#f87171"; } else if (val > 60) { text.innerHTML = "STATUS: <span class='text-green-400 font-bold'>CHALLENGE MODE (Fueling)</span>"; container.style.borderColor = "#4ade80"; } else { text.innerHTML = "STATUS: NEUTRAL"; container.style.borderColor = "#292524"; } }
+        function selectTrap(card) { document.querySelectorAll('.trap-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected'); document.getElementById('trap-continue').classList.remove('hidden'); }
+        function revealRegulators(zone) { document.getElementById('sensation-text').innerText = zone + " Signal Locked."; document.getElementById('regulator-menu').classList.remove('hidden'); setTimeout(() => { document.getElementById('regulator-menu').scrollIntoView({ behavior: 'smooth' }); }, 100); }
+        function runProtocol(type) { const display = document.getElementById('protocol-display'); const title = document.getElementById('proto-title'); const text = document.getElementById('proto-text'); display.classList.remove('hidden'); if (type === 'squeeze') { title.innerText = "Protocol: Progressive Discharge"; text.innerHTML = "Inhale deeply. <br>CLENCH fists/shoulders. <br>Hold: 5... 4... 3... 2... 1... <br><strong>EXPLOSIVE RELEASE.</strong>"; } else { title.innerText = "Protocol: Neutral Anchor"; text.innerHTML = "Shift focus to your <strong>Left Foot</strong>.<br>Feel the floor. It is solid.<br>Drop your shoulders.<br>Breathe into the foot."; } display.scrollIntoView({ behavior: 'smooth' }); }
+        function setCatabolic(chip, text) { document.querySelectorAll('#p3 .chip').forEach(c => c.classList.remove('bg-red-200')); chip.classList.add('bg-red-200'); document.getElementById('catabolic-input').value = text; }
+        function revealAnabolic() { const section = document.getElementById('anabolic-section'); section.classList.remove('hidden'); setTimeout(() => { section.classList.remove('opacity-0'); section.scrollIntoView({ behavior: 'smooth' }); }, 50); }
+        function setAnabolic(text) { const input = document.getElementById('anabolic-input'); input.value = text + " "; input.focus(); }
+    </script>
+</body>
+</html>
