@@ -9,11 +9,11 @@
 
     <script>
         // 1. YOUR MASTER LIST OF CLIENTS
-        // Format: "CODE": "YYYY-MM-DD" (Expiration Date)
         const CLIENT_DATABASE = {
-            "DEMO": "2030-01-01",       // Use this for your own testing
-            "MASTER": "2099-12-31",     // Your forever key
-            "EY_SPRING": "2026-03-15",  // Example Client
+            "DEMO": "2030-01-01",         // Testing
+            "MASTER": "2099-12-31",       // Your Admin Key
+            "GUMROAD_2026": "2027-01-01", // Gumroad Buyers (Valid thru 2026)
+            "EY_SPRING": "2026-03-15",    // Example Corporate Client
         };
 
         const RENEW_LINK = "https://calendly.com/alexioda";
@@ -69,12 +69,11 @@
 
         // Backup function for manual entry
         window.checkManual = function() {
-            const input = document.getElementById('manualCode').value.trim().toUpperCase(); // Force Uppercase
+            const input = document.getElementById('manualCode').value.trim().toUpperCase();
             if (CLIENT_DATABASE[input]) {
                 const now = new Date();
                 const exp = new Date(CLIENT_DATABASE[input]);
                 if (now < exp) {
-                    // Reload page with the code in URL to trigger unlock
                     const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?license=" + input;
                     window.location.href = newUrl;
                 } else {
