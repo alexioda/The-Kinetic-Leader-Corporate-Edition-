@@ -23,21 +23,25 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .pulse-circle { width: 140px; height: 140px; border: 4px solid #f59e0b; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto; background: #1c1917; color: white; box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); }
-        .scenario-btn { border: 1px solid #e7e5e4; color: #78716c; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em; padding: 0.75rem 0.25rem; transition: all 0.2s; border-radius: 8px; width: 100%; text-align: center; }
+        
+        /* Updated Responsive Button Grid */
+        .scenario-btn { border: 1px solid #e7e5e4; color: #78716c; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em; padding: 0.75rem 0.25rem; transition: all 0.2s; border-radius: 8px; width: 100%; text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; }
         .scenario-btn.active { background-color: #1c1917; color: white; border-color: #1c1917; }
-        @media print { .no-print { display: none !important; } .tab-content { display: block !important; opacity: 1 !important; page-break-after: always; } body { background: white; color: black; } textarea { border: 1px dashed #ccc !important; min-height: 100px !important; } }
+        
+        @media print { .no-print { display: none !important; } .tab-content { display: block !important; opacity: 1 !important; page-break-after: always; } body { background: white; color: black; } textarea { border: 1px dashed #ccc !important; min-height: 120px !important; } }
         .executive-border { border-left: 4px solid #f59e0b; background: #fffbeb; }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-900 font-sans antialiased min-h-screen">
 
+    <!-- HEADER -->
     <header class="bg-stone-900 text-white py-6 px-6 sticky top-0 z-50 shadow-2xl no-print">
         <div class="max-w-5xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-gold-500 text-stone-900 flex items-center justify-center font-serif italic font-bold">L</div>
                 <div>
                     <h1 class="text-sm font-bold tracking-[0.3em] uppercase">The Kinetic Leader</h1>
-                    <p class="text-[9px] text-stone-400 font-mono tracking-tighter uppercase">Foundation Masterclass</p>
+                    <p class="text-[9px] text-stone-400 font-mono tracking-tighter uppercase">Integrated Blueprint</p>
                 </div>
             </div>
             <div class="flex items-center gap-6">
@@ -49,9 +53,20 @@
         </div>
     </header>
 
+    <!-- NAVIGATION TABS -->
+    <nav class="bg-white border-b border-stone-200 no-print">
+        <div class="max-w-5xl mx-auto flex">
+            <button id="btn1" onclick="showTab(1)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-stone-900 text-stone-900 transition-all">S1: Foundation</button>
+            <button id="btn2" onclick="showTab(2)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-400 transition-all opacity-50">S2: Agility</button>
+            <button id="btn3" onclick="showTab(3)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-400 transition-all opacity-50">S3: Sovereignty</button>
+            <button id="btn4" onclick="showTab(4)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-400 transition-all opacity-50">S4: Identity</button>
+        </div>
+    </nav>
+
     <main class="max-w-5xl mx-auto px-8 py-12 pb-40">
+        
+        <!-- SESSION 1: FOUNDATION WORKSHOP -->
         <div id="tab1" class="tab-content active animate-fade-in">
-            
             <div class="flex flex-col md:flex-row justify-between items-center gap-12 mb-16">
                 <div class="flex-1 text-center md:text-left">
                     <span class="text-gold-600 font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">Workshop: Internal Operating System</span>
@@ -68,11 +83,12 @@
                 </div>
             </div>
 
+            <!-- THE ARCHITECT: CREDIBILITY & THE PERFORMANCE BALANCE -->
             <div class="grid md:grid-cols-2 gap-12 mb-16">
                 <div class="executive-border p-8 rounded-r-2xl h-fit">
                     <span class="text-[10px] font-bold uppercase tracking-widest text-gold-600 mb-2 block">The Architect: Alex Ioda</span>
                     <p class="text-sm text-stone-700 leading-relaxed mb-4">
-                        Current <strong>Treatment Team Leader</strong>. Previously 4 years as a <strong>Psychologist in a Max Security Prison</strong> and 10 years as a <strong>Crisis Counselor</strong>.
+                        Current <strong>Treatment Team Leader</strong>. Previously 4 years as a <strong>Psychologist in a Max Security Prison</strong> and 10 years as a frontline <strong>Crisis Counselor</strong>.
                     </p>
                     <p class="text-xs text-stone-500 leading-relaxed italic">
                         "I spent 14 years on the frontlines where stress is a survival metric. I help high-performers apply that same 'pressure-tested' logic to the professional world."
@@ -90,35 +106,40 @@
             </div>
 
             <div class="space-y-16">
-                <!-- LAB 01: EXTENDED BEHAVIOR CHECK -->
+                <!-- LAB 01 -->
                 <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm grid md:grid-cols-2 gap-12">
                     <div>
                         <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-4">Lab 01: Energy Leak Detection</h3>
-                        <label class="block text-xs font-bold text-stone-900 mb-2 uppercase">Identify Your "Drain"</label>
-                        <p class="text-[10px] text-stone-500 mb-4 italic">What creates the most mental "static" for you right now?</p>
-                        <textarea id="s1_leak" class="w-full bg-stone-50 border-none p-4 rounded-xl focus:ring-1 focus:ring-gold-500 outline-none h-44 text-sm" placeholder="e.g. Worrying about first impressions or technical gaps..." oninput="saveAndScore()"></textarea>
+                        <label class="block text-xs font-bold text-stone-900 mb-2 uppercase">The Primary Leak</label>
+                        <textarea id="s1_leak" class="w-full bg-stone-50 border-none p-4 rounded-xl focus:ring-1 focus:ring-gold-500 outline-none h-32 text-sm mb-6" placeholder="Identify your specific mental 'static'..." oninput="saveAndScore()"></textarea>
+                        
+                        <!-- ROI ANALYSIS -->
+                        <label class="block text-xs font-bold text-stone-900 mb-2 uppercase">The Metabolic Cost</label>
+                        <p class="text-[10px] text-stone-500 mb-4 italic">How many hours per week do you lose to this "Static"?</p>
+                        <input type="number" id="leak_hours" class="w-full bg-stone-50 border-none p-4 rounded-xl focus:ring-1 focus:ring-gold-500 outline-none text-sm mb-2" placeholder="Hours per week..." oninput="saveData()">
+                        <p class="text-[9px] text-gold-600 font-bold uppercase tracking-wider">Estimated Resource Loss: <span id="roi_display">0</span>%</p>
                     </div>
-                    <div class="space-y-3">
+                    <div class="space-y-2">
                         <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Performance Behavior Check:</p>
                         <label class="flex items-center gap-3 p-3 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition-all border border-transparent">
                             <input type="checkbox" id="check_1" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900">
-                            <span class="text-[11px] font-medium text-stone-600 leading-tight">I delay starting tasks because I'm afraid they won't be perfect.</span>
+                            <span class="text-[10px] font-medium text-stone-600 leading-tight">I delay starting tasks because I'm afraid they won't be perfect.</span>
                         </label>
                         <label class="flex items-center gap-3 p-3 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition-all border border-transparent">
                             <input type="checkbox" id="check_2" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900">
-                            <span class="text-[11px] font-medium text-stone-600 leading-tight">I feel correction or feedback as a personal failure.</span>
+                            <span class="text-[10px] font-medium text-stone-600 leading-tight">I feel feedback or correction as a personal failure.</span>
                         </label>
                         <label class="flex items-center gap-3 p-3 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition-all border border-transparent">
                             <input type="checkbox" id="check_3" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900">
-                            <span class="text-[11px] font-medium text-stone-600 leading-tight">I spend energy comparing my progress to my peers.</span>
+                            <span class="text-[10px] font-medium text-stone-600 leading-tight">I spend energy comparing my progress to my peers.</span>
                         </label>
-                        <label class="flex items-center gap-3 p-3 bg-stone-50 rounded-lg cursor-pointer hover:border-gold-500 transition-all border border-transparent">
+                        <label class="flex items-center gap-3 p-3 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition-all border border-transparent">
                             <input type="checkbox" id="check_4" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900">
-                            <span class="text-[11px] font-medium text-stone-600 leading-tight">I spend hours over-thinking simple emails or messages.</span>
+                            <span class="text-[10px] font-medium text-stone-600 leading-tight">I spend hours over-thinking simple messages.</span>
                         </label>
-                        <label class="flex items-center gap-3 p-3 bg-stone-50 rounded-lg cursor-pointer hover:border-gold-500 transition-all border border-transparent">
+                        <label class="flex items-center gap-3 p-3 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition-all border border-transparent">
                             <input type="checkbox" id="check_5" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900">
-                            <span class="text-[11px] font-medium text-stone-600 leading-tight">I reply to messages immediately even when I feel rushed or anxious.</span>
+                            <span class="text-[10px] font-medium text-stone-600 leading-tight">I reply to messages immediately even when anxious.</span>
                         </label>
                     </div>
                 </div>
@@ -128,23 +149,23 @@
                     <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-6">Lab 02: Control Fortress</h3>
                     <div class="grid md:grid-cols-2 gap-10">
                         <div>
-                            <label class="block text-[10px] font-bold text-gold-600 mb-4 uppercase tracking-widest">The Fortress (My Control)</label>
-                            <textarea id="s1_control" class="w-full bg-stone-50 border-none p-4 rounded-xl text-sm focus:ring-1 focus:ring-gold-500 outline-none h-32" oninput="saveData()"></textarea>
+                            <label class="block text-[10px] font-bold text-gold-600 mb-4 uppercase tracking-widest">The Fortress (My Actions)</label>
+                            <textarea id="s1_control" class="w-full bg-stone-50 border-none p-4 rounded-xl text-sm focus:ring-1 focus:ring-gold-500 outline-none h-40" placeholder="My preparation, my schedule, my focus..." oninput="saveData()"></textarea>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-stone-400 mb-4 uppercase tracking-widest">The Noise (No Control)</label>
-                            <textarea id="s1_noise" class="w-full bg-stone-50 border-none p-4 rounded-xl text-sm focus:ring-1 focus:ring-stone-300 outline-none h-32" oninput="saveData()"></textarea>
+                            <label class="block text-[10px] font-bold text-stone-400 mb-4 uppercase tracking-widest">The Noise (External Factors)</label>
+                            <textarea id="s1_noise" class="w-full bg-stone-50 border-none p-4 rounded-xl text-sm focus:ring-1 focus:ring-stone-300 outline-none h-40" placeholder="Client decisions, peer opinions, final results..." oninput="saveData()"></textarea>
                         </div>
                     </div>
                 </div>
 
-                <!-- LAB 03 -->
+                <!-- LAB 03 (FIXED GRID) -->
                 <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-stone-100 p-4 border-b border-stone-200 grid grid-cols-2 md:grid-cols-4 gap-3 no-print">
-                        <button onclick="setScenario('help', this)" class="scenario-btn active">Ask Help</button>
-                        <button onclick="setScenario('no', this)" class="scenario-btn">Setting 'No'</button>
-                        <button onclick="setScenario('networking', this)" class="scenario-btn">Networking</button>
-                        <button onclick="setScenario('self', this)" class="scenario-btn">Self-Talk</button>
+                    <div class="bg-stone-100 p-4 border-b border-stone-200 grid grid-cols-2 md:grid-cols-4 gap-4 no-print">
+                        <div class="h-12"><button onclick="setScenario('help', this)" class="scenario-btn active">Ask Help</button></div>
+                        <div class="h-12"><button onclick="setScenario('no', this)" class="scenario-btn">Setting 'No'</button></div>
+                        <div class="h-12"><button onclick="setScenario('networking', this)" class="scenario-btn">Networking</button></div>
+                        <div class="h-12"><button onclick="setScenario('self', this)" class="scenario-btn">Self-Talk</button></div>
                     </div>
                     <div class="p-8">
                         <div class="grid md:grid-cols-2 gap-12 items-start">
@@ -162,62 +183,119 @@
                 </div>
 
                 <!-- FINAL VISION -->
-                <div class="pt-20 pb-10 border-t border-stone-200">
-                    <div class="max-w-2xl mx-auto text-center">
-                        <div class="inline-block p-2 bg-gold-500 text-stone-900 rounded-full mb-6 no-print"><i data-lucide="compass" class="w-6 h-6"></i></div>
+                <div class="pt-20 pb-10 border-t border-stone-200 text-center">
+                    <div class="max-w-2xl mx-auto">
                         <h3 class="font-serif text-4xl italic text-stone-900 mb-6">The Sovereign Choice</h3>
                         <div class="bg-white p-10 rounded-3xl border border-stone-200 shadow-2xl relative overflow-hidden">
                             <div class="absolute top-0 right-0 p-32 bg-gold-500/5 rounded-full blur-3xl"></div>
                             <p class="text-stone-500 text-sm font-light leading-relaxed mb-8 italic">
                                 "The walls in a maximum security prison are made of concrete. The walls in your career are made of thoughts. Both require the same physics to break through."
                             </p>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-4 text-center">Your Commitment to Excellence</label>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-4">Your Commitment to Excellence</label>
                             <textarea id="final_intent" class="w-full bg-transparent border-b border-stone-200 text-2xl font-serif italic text-center focus:outline-none focus:border-gold-500 h-32 resize-none" placeholder="I will operate with curiosity, not judgment..." oninput="saveData()"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- SESSION PREVIEWS -->
+        <div id="tab2" class="tab-content py-24 text-center">
+            <div class="max-w-md mx-auto">
+                <i data-lucide="lock" class="w-12 h-12 mx-auto mb-6 text-stone-300"></i>
+                <h2 class="font-serif text-4xl italic text-stone-900 mb-4">Phase 02: Agility</h2>
+                <p class="text-stone-500 mb-10 leading-relaxed font-light font-sans">Deep dive into reframing archetypes and shadow work to remove hidden energy leaks.</p>
+                <a href="mailto:alexioda@gmail.com" class="inline-block px-8 py-3 bg-stone-900 text-white text-[10px] font-bold uppercase tracking-widest rounded-full">Cohort Restricted</a>
+            </div>
+        </div>
+        <div id="tab3" class="tab-content py-24 text-center">
+            <div class="max-w-md mx-auto">
+                <i data-lucide="shield" class="w-12 h-12 mx-auto mb-6 text-stone-300"></i>
+                <h2 class="font-serif text-4xl italic text-stone-900 mb-4">Phase 03: Sovereignty</h2>
+                <p class="text-stone-500 mb-10 leading-relaxed font-light font-sans">Strategic influence mapping and professional boundary architecture for high-stakes leadership.</p>
+                <a href="mailto:alexioda@gmail.com" class="inline-block px-8 py-3 bg-stone-900 text-white text-[10px] font-bold uppercase tracking-widest rounded-full">Cohort Restricted</a>
+            </div>
+        </div>
+        <div id="tab4" class="tab-content py-24 text-center">
+            <div class="max-w-md mx-auto">
+                <i data-lucide="zap" class="w-12 h-12 mx-auto mb-6 text-gold-500"></i>
+                <h2 class="font-serif text-4xl italic text-stone-900 mb-4">Phase 04: The Identity</h2>
+                <p class="text-stone-500 mb-10 leading-relaxed font-light font-sans">Final Blueprint. Constructing your Sovereign Identity Oath and 90-Day Vision.</p>
+                <a href="mailto:alexioda@gmail.com" class="inline-block px-8 py-3 bg-stone-900 text-white text-[10px] font-bold uppercase tracking-widest rounded-full">Cohort Restricted</a>
+            </div>
+        </div>
+
     </main>
 
+    <footer class="fixed bottom-0 w-full bg-white/90 backdrop-blur-md border-t border-stone-200 py-5 px-8 no-print z-40">
+        <div class="max-w-5xl mx-auto flex justify-between items-center text-[10px] text-stone-400 font-bold uppercase tracking-widest">
+            <p>&copy; 2026 LiveAdaptiv | Alex Ioda</p>
+            <div class="flex gap-6">
+                <a href="https://www.linkedin.com/in/alex-ioda-5428b76" target="_blank" class="hover:text-gold-600 transition-colors">LinkedIn</a>
+                <a href="mailto:alexioda@gmail.com" class="hover:text-gold-600 transition-colors">Contact</a>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        let currentScenario = 'help';
-        function showTab(n) {}
+        function showTab(n) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab' + n).classList.add('active');
+            
+            document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+                if (idx === n - 1) {
+                    btn.classList.add('border-stone-900', 'text-stone-900');
+                    btn.classList.remove('border-transparent', 'text-stone-400');
+                } else {
+                    btn.classList.remove('border-stone-900', 'text-stone-900');
+                    btn.classList.add('border-transparent', 'text-stone-400');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         function saveAndScore() { saveData(); calculatePulse(); }
+        
         function saveData() {
             const data = {};
             document.querySelectorAll('textarea, input').forEach(el => { if (el.id) data[el.id] = el.type === 'checkbox' ? el.checked : el.value; });
-            localStorage.setItem('intern_master_v6', JSON.stringify(data));
+            localStorage.setItem('intern_master_final_v1', JSON.stringify(data));
             const indicator = document.getElementById('saveIndicator'); indicator.style.opacity = '1'; setTimeout(() => indicator.style.opacity = '0', 1500);
+            
+            const hrs = parseFloat(document.getElementById('leak_hours').value) || 0;
+            document.getElementById('roi_display').innerText = Math.min(100, Math.round((hrs / 40) * 100));
         }
+
         function calculatePulse() {
             let score = 100;
             const boxes = ['check_1', 'check_2', 'check_3', 'check_4', 'check_5'];
-            boxes.forEach(id => {
-                if (document.getElementById(id).checked) score -= 12; // Deduct 12% per leak
-            });
+            boxes.forEach(id => { if (document.getElementById(id).checked) score -= 12; });
             document.getElementById('scoreDisplay').innerText = score + "%";
         }
+
         const scenarios = {
-            'help': { labels: ["Mentor Name", "Technical Gap", "Goal"], placeholders: ["Alex", "Complex modeling", "Finish the deck"], template: (a, b, c) => `"Hi ${a}, I'm working through the <strong>${b}</strong> and want to ensure I'm aligned with EY standards. I've reached a hurdle and want to resolve it quickly so I can <strong>${c}</strong>. Do you have 5 minutes?"`},
-            'no': { labels: ["Requester", "Task", "Priority"], placeholders: ["Peer", "Social plan", "Audit report"], template: (a, b, c) => `"Hi ${a}, thanks for the invite. To ensure I deliver the best quality for <strong>${c}</strong>, I won't be able to take on <strong>${b}</strong> right now. I'm focusing my energy on the core deliverable."`},
-            'networking': { labels: ["Contact", "Interest", "Call to Action"], placeholders: ["Sarah", "Digital Strategy", "Virtual coffee"], template: (a, b, c) => `"Hi ${a}, I was fascinated by your work on <strong>${b}</strong>. As I build my career at EY, I'd love to learn about your perspective. Would you be open to a <strong>${c}</strong> next week?"`},
-            'self': { labels: ["My Name", "Foggy Thought", "Fact"], placeholders: ["Alex", "I'm not smart enough", "I was selected out of 5,000"], template: (a, b, c) => `"Note to self: I hear the thought that <strong>${b}</strong>. The fact is: <strong>${c}</strong>. I am clearing the noise and proceeding with curiosity."`}
+            'help': { labels: ["Mentor Name", "Technical Gap", "Goal"], placeholders: ["Alex", "Complex modeling", "Meeting the deadline"], template: (a, b, c) => `"Hi ${a}, I'm working through the <strong>${b}</strong> and want to ensure I'm aligned with EY standards.<br><br>I've reached a hurdle and want to resolve it quickly so I can <strong>${c}</strong>. Do you have 5 minutes for a tactical check?"`},
+            'no': { labels: ["Requester", "Low-Priority Task", "Primary Commitment"], placeholders: ["Peer", "Voluntary research", "The client presentation"], template: (a, b, c) => `"Hi ${a}, thanks for thinking of me. To ensure I deliver the best quality for <strong>${c}</strong>, I won't be able to take on <strong>${b}</strong> right now. I'm focusing my energy on the core deliverable."`},
+            'networking': { labels: ["Director Name", "Shared Interest", "Next Step"], placeholders: ["Sarah", "Digital Strategy", "A brief intro call"], template: (a, b, c) => `"Hi ${a}, I was fascinated by your recent work on <strong>${b}</strong>.<br><br>As I build my career architecture at EY, I'd love to learn about your perspective. Would you be open to <strong>${c}</strong> next week?"`},
+            'self': { labels: ["My Name", "The 'Foggy' Thought", "The Evidence"], placeholders: ["Alex", "I'm not smart enough", "I was selected out of 5,000 applicants"], template: (a, b, c) => `"Note to self: I hear the thought that <strong>${b}</strong>.<br><br>The fact is: <strong>${c}</strong>. I am clearing the noise and proceeding with curiosity."`}
         };
+
         function setScenario(type, btn) {
-            currentScenario = type; document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
-            const data = scenarios[type];
+            document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+            const data = scenarios[type]; currentScenario = type;
             document.getElementById('label-1').innerText = data.labels[0]; document.getElementById('label-2').innerText = data.labels[1]; document.getElementById('label-3').innerText = data.labels[2];
             document.getElementById('inp-1').placeholder = data.placeholders[0]; document.getElementById('inp-2').placeholder = data.placeholders[1]; document.getElementById('inp-3').placeholder = data.placeholders[2];
             document.getElementById('inp-1').value = ""; document.getElementById('inp-2').value = ""; document.getElementById('inp-3').value = "";
             generateScript();
         }
+
         function generateScript() {
             const i1 = document.getElementById('inp-1').value || "[...]"; const i2 = document.getElementById('inp-2').value || "[...]"; const i3 = document.getElementById('inp-3').value || "[...]";
             document.getElementById('final-script').innerHTML = scenarios[currentScenario].template(i1, i2, i3);
         }
+
         window.onload = () => {
-            const saved = localStorage.getItem('intern_master_v6');
+            const saved = localStorage.getItem('intern_master_final_v1');
             if (saved) { const data = JSON.parse(saved); Object.keys(data).forEach(key => { const el = document.getElementById(key); if (el) { if (el.type === 'checkbox') el.checked = data[key]; else el.value = data[key]; } }); }
             calculatePulse(); lucide.createIcons(); setScenario('help', document.querySelector('.scenario-btn'));
         };
