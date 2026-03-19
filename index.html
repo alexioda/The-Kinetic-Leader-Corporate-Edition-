@@ -8,41 +8,41 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #b2945e; --dark: #0f172a; --slate: #1e293b; }
+        :root { --gold: #b2945e; --stone: #fafaf9; --charcoal: #1c1917; --stone-border: #e7e5e4; }
         body { 
-            background-color: var(--dark); 
-            color: #f8fafc; 
+            background-color: var(--stone); 
+            color: var(--charcoal); 
             font-family: 'Inter', sans-serif; 
             -webkit-font-smoothing: antialiased;
-            background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
-            background-size: 30px 30px;
         }
         .font-serif { font-family: 'Cormorant Garamond', serif; }
+        .blueprint-dot { background-image: radial-gradient(circle at 1px 1px, var(--stone-border) 1px, transparent 0); background-size: 30px 30px; }
         
-        .fade-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.6s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); }
+        .glass-light { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); border: 1px solid rgba(178, 148, 94, 0.1); }
+        .shadow-glow { box-shadow: 0 10px 40px rgba(178, 148, 94, 0.08); }
         
-        textarea, input[type="text"] { -webkit-appearance: none; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.1); color: white; }
-        textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--gold); background: rgba(15, 23, 42, 0.9); }
+        /* Form Overrides */
+        textarea, input[type="text"] { -webkit-appearance: none; outline: none; transition: all 0.3s ease; }
+        textarea:focus, input[type="text"]:focus { border-color: var(--gold); }
         
-        /* Hide tabs by default */
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-content.active { display: block; animation: fadeIn 0.6s ease forwards; }
     </style>
 </head>
-<body class="min-h-screen pb-24 flex flex-col items-center">
+<body class="min-h-screen blueprint-dot pb-24">
 
-    <nav class="w-full p-6 flex flex-col justify-center sticky top-0 z-50 glass-panel border-b border-white/5">
-        <div class="flex justify-between items-center w-full max-w-3xl mx-auto mb-4">
+    <nav class="p-5 flex flex-col justify-center sticky top-0 z-50 glass-light border-b border-stone-200">
+        <div class="flex justify-between items-center w-full max-w-3xl mx-auto mb-6">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 border border-[#b2945e]/50 rounded-full flex items-center justify-center">
+                <div class="w-8 h-8 border border-[#b2945e]/40 rounded-full flex items-center justify-center">
                     <span class="font-serif italic text-lg text-[#b2945e] pb-0.5">K</span>
                 </div>
                 <div>
-                    <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400 block">Conscious Growth</span>
-                    <span class="text-sm font-serif italic text-white">Kinetic Leader Ecosystem</span>
+                    <span class="text-[9px] font-bold uppercase tracking-[0.4em] text-stone-400 block">Conscious Growth</span>
+                    <span class="text-sm font-serif italic text-stone-900 font-bold">Kinetic Leader Ecosystem</span>
                 </div>
             </div>
             <div class="text-[9px] font-bold uppercase tracking-widest text-[#b2945e] flex items-center gap-2">
@@ -50,155 +50,201 @@
             </div>
         </div>
 
-        <div class="w-full max-w-3xl mx-auto grid grid-cols-4 gap-2">
-            <button onclick="switchTab('tab1')" id="btn-tab1" class="tab-btn py-3 border-b-2 border-[#b2945e] text-[#b2945e] text-[10px] uppercase tracking-widest font-bold transition-all">S1: Energy</button>
-            <button onclick="switchTab('tab2')" id="btn-tab2" class="tab-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-300 text-[10px] uppercase tracking-widest font-bold transition-all">S2: Agility</button>
-            <button onclick="switchTab('tab3')" id="btn-tab3" class="tab-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-300 text-[10px] uppercase tracking-widest font-bold transition-all">S3: Sovereign</button>
-            <button onclick="switchTab('tab4')" id="btn-tab4" class="tab-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-300 text-[10px] uppercase tracking-widest font-bold transition-all">S4: Blueprint</button>
+        <div class="w-full max-w-3xl mx-auto grid grid-cols-4 gap-2 border-b border-stone-200">
+            <button onclick="switchTab('tab1')" id="btn-tab1" class="tab-btn pb-3 border-b-2 border-[#b2945e] text-[#b2945e] text-[10px] uppercase tracking-widest font-bold transition-all">S1: Energy</button>
+            <button onclick="switchTab('tab2')" id="btn-tab2" class="tab-btn pb-3 border-b-2 border-transparent text-stone-400 hover:text-stone-600 text-[10px] uppercase tracking-widest font-bold transition-all">S2: Agility</button>
+            <button onclick="switchTab('tab3')" id="btn-tab3" class="tab-btn pb-3 border-b-2 border-transparent text-stone-400 hover:text-stone-600 text-[10px] uppercase tracking-widest font-bold transition-all">S3: Sovereign</button>
+            <button onclick="switchTab('tab4')" id="btn-tab4" class="tab-btn pb-3 border-b-2 border-transparent text-stone-400 hover:text-stone-600 text-[10px] uppercase tracking-widest font-bold transition-all">S4: Blueprint</button>
         </div>
     </nav>
 
-    <main class="p-6 w-full max-w-3xl mx-auto mt-4">
+    <main class="p-6 w-full max-w-3xl mx-auto mt-4 space-y-8">
 
-        <div id="tab1" class="tab-content active fade-in">
-            <div class="text-center mb-10">
-                <h2 class="text-4xl font-serif italic text-white mb-3">The Baseline</h2>
-                <p class="text-sm text-slate-400 font-light">Map your current friction points to begin the transformation protocol.</p>
-            </div>
+        <div id="tab1" class="tab-content active">
+            <section class="text-center py-6">
+                <span class="text-[#b2945e] font-bold text-[9px] uppercase tracking-[0.3em] mb-4 block">Workshop 01</span>
+                <h1 class="text-5xl font-serif italic text-stone-900 mb-4 leading-tight">The Kinetic Baseline</h1>
+                <p class="text-sm text-stone-500 max-w-lg mx-auto leading-relaxed font-light">
+                    Transformation cannot occur without a diagnosis. In this session, we map the exact coordinates of your professional friction to locate the energy leaks.
+                </p>
+            </section>
 
-            <div class="glass-panel p-8 rounded-[2rem] mb-6">
-                <div class="flex items-center gap-3 mb-6">
-                    <i data-lucide="battery-warning" class="text-[#b2945e]"></i>
-                    <h3 class="text-2xl font-serif italic text-white">Current Load</h3>
+            <div class="bg-white p-8 rounded-[2rem] border border-stone-100 shadow-glow mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-serif italic text-stone-900">1. Friction Diagnostics</h2>
+                    <i data-lucide="battery-warning" class="w-5 h-5 text-[#b2945e]"></i>
                 </div>
-                <div class="space-y-6">
+                
+                <div class="bg-stone-50 border-l-2 border-[#b2945e] p-4 rounded-r-xl mb-8">
+                    <p class="text-[8px] uppercase tracking-widest text-[#b2945e] font-bold mb-1">Clinical Primer</p>
+                    <p class="text-xs text-stone-500 italic leading-relaxed">"Burnout is not caused by working too hard. It is caused by working out of alignment. We must isolate the specific variable that is draining your cognitive bandwidth."</p>
+                </div>
+
+                <div class="space-y-8">
                     <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-widest text-[#b2945e] mb-3">What is the heaviest drain on your energy right now?</label>
-                        <textarea class="w-full p-5 rounded-2xl text-sm h-28 font-serif italic" placeholder="The board presentation next week feels completely chaotic..."></textarea>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-3">What is the heaviest drain on your bandwidth right now?</label>
+                        <textarea class="w-full bg-stone-50 border border-stone-200 p-5 rounded-2xl text-sm h-32 font-serif italic text-stone-700 placeholder-stone-400" placeholder="e.g., The constant need to micromanage the team because I don't trust the output..."></textarea>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-widest text-[#b2945e] mb-3">What is the physical sensation of this stress?</label>
-                        <input type="text" class="w-full p-4 rounded-xl text-sm font-sans" placeholder="Tight chest, brain fog, looping thoughts...">
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-3">What is the Somatic (Physical) cost of this stress?</label>
+                        <input type="text" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm font-sans text-stone-700 placeholder-stone-400" placeholder="e.g., Tight chest, brain fog, disrupted sleep...">
                     </div>
                 </div>
-                <div class="mt-8 flex justify-end">
-                    <button onclick="switchTab('tab2')" class="px-8 py-3 bg-white text-slate-900 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-[#b2945e] hover:text-white transition-all">Move to S2: Agility &rarr;</button>
+
+                <div class="mt-10 flex justify-end pt-6 border-t border-stone-100">
+                    <button onclick="switchTab('tab2')" class="px-8 py-3 bg-[#1c1917] text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-[#b2945e] transition-all flex items-center gap-2">
+                        Unlock Session 2 <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div id="tab2" class="tab-content fade-in">
-            <div class="text-center mb-10">
-                <h2 class="text-4xl font-serif italic text-white mb-3">Kinetic Agility</h2>
-                <p class="text-sm text-slate-400 font-light">Identify your default response pattern and interrogate its hidden benefits.</p>
-            </div>
+        <div id="tab2" class="tab-content">
+            <section class="text-center py-6">
+                <span class="text-[#b2945e] font-bold text-[9px] uppercase tracking-[0.3em] mb-4 block">Workshop 02</span>
+                <h1 class="text-5xl font-serif italic text-stone-900 mb-4 leading-tight">Kinetic Agility</h1>
+                <p class="text-sm text-stone-500 max-w-lg mx-auto leading-relaxed font-light">
+                    Identify your default response pattern under pressure, and interrogate the hidden "Golden Shadow" that keeps you locked in the loop.
+                </p>
+            </section>
 
-            <div class="glass-panel p-8 rounded-[2rem] mb-6">
-                <div class="flex items-center gap-3 mb-6">
-                    <i data-lucide="compass" class="text-[#b2945e]"></i>
-                    <h3 class="text-2xl font-serif italic text-white">Your Kinetic Archetype</h3>
+            <div class="bg-white p-8 rounded-[2rem] border border-stone-100 shadow-glow mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-serif italic text-stone-900">1. The Default Architecture</h2>
+                    <i data-lucide="compass" class="w-5 h-5 text-[#b2945e]"></i>
                 </div>
-                <p class="text-xs text-slate-400 mb-6">When the system breaks down, how do you instinctively react? Select your primary default.</p>
                 
-                <div class="grid grid-cols-1 gap-4 mb-8">
-                    <button onclick="selectArchetype(this)" class="archetype-btn p-5 rounded-2xl border border-white/10 bg-white/5 text-left hover:border-[#b2945e] transition-all group">
-                        <h4 class="font-bold text-white uppercase tracking-widest text-xs mb-1 group-hover:text-[#b2945e]">The Rusher</h4>
-                        <p class="text-sm text-slate-400">I treat time as the enemy. I sprint, force action, and try to outrun the overwhelm.</p>
+                <div class="bg-stone-50 border-l-2 border-[#b2945e] p-4 rounded-r-xl mb-8">
+                    <p class="text-[8px] uppercase tracking-widest text-[#b2945e] font-bold mb-1">Clinical Primer</p>
+                    <p class="text-xs text-stone-500 italic leading-relaxed">"Under extreme pressure, logic fails. You do not rise to the level of your intellect; you fall to the level of your default kinetic archetype. You must name it to dismantle it."</p>
+                </div>
+                
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-4">When the system breaks down, how do you instinctively react?</label>
+                
+                <div class="grid grid-cols-1 gap-4">
+                    <button onclick="selectArchetype(this)" class="archetype-btn p-5 rounded-2xl border border-stone-200 bg-stone-50 text-left hover:border-[#b2945e] transition-all group">
+                        <h4 class="font-bold text-stone-800 uppercase tracking-widest text-[10px] mb-2 group-hover:text-[#b2945e]">The Rusher</h4>
+                        <p class="text-sm text-stone-600">I treat time as the enemy. My nervous system locks into a sprint, forcing action to outrun the overwhelm.</p>
                     </button>
-                    <button onclick="selectArchetype(this)" class="archetype-btn p-5 rounded-2xl border border-white/10 bg-white/5 text-left hover:border-[#b2945e] transition-all group">
-                        <h4 class="font-bold text-white uppercase tracking-widest text-xs mb-1 group-hover:text-[#b2945e]">The Fixer</h4>
-                        <p class="text-sm text-slate-400">I absorb the system's anxiety. I take over tasks to ensure they are done right and keep everyone safe.</p>
+                    <button onclick="selectArchetype(this)" class="archetype-btn p-5 rounded-2xl border border-stone-200 bg-stone-50 text-left hover:border-[#b2945e] transition-all group">
+                        <h4 class="font-bold text-stone-800 uppercase tracking-widest text-[10px] mb-2 group-hover:text-[#b2945e]">The Fixer</h4>
+                        <p class="text-sm text-stone-600">I absorb the system's anxiety. I over-function and take over tasks to ensure they are done right and keep everyone safe.</p>
                     </button>
-                    <button onclick="selectArchetype(this)" class="archetype-btn p-5 rounded-2xl border border-white/10 bg-white/5 text-left hover:border-[#b2945e] transition-all group">
-                        <h4 class="font-bold text-white uppercase tracking-widest text-xs mb-1 group-hover:text-[#b2945e]">The Freezer</h4>
-                        <p class="text-sm text-slate-400">I shut down. When the load gets too heavy, my nervous system pulls the emergency brake and I detach.</p>
+                    <button onclick="selectArchetype(this)" class="archetype-btn p-5 rounded-2xl border border-stone-200 bg-stone-50 text-left hover:border-[#b2945e] transition-all group">
+                        <h4 class="font-bold text-stone-800 uppercase tracking-widest text-[10px] mb-2 group-hover:text-[#b2945e]">The Freezer</h4>
+                        <p class="text-sm text-stone-600">I detach. When the load gets too heavy, my nervous system pulls the emergency brake, leading to paralysis and brain fog.</p>
                     </button>
                 </div>
             </div>
 
-            <div class="glass-panel p-8 rounded-[2rem] mb-6 border-l-4 border-[#b2945e]">
-                <div class="flex items-center gap-3 mb-6">
-                    <i data-lucide="moon" class="text-[#b2945e]"></i>
-                    <h3 class="text-2xl font-serif italic text-white">The Golden Shadow</h3>
+            <div class="bg-white p-8 rounded-[2rem] border border-stone-100 shadow-glow mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-serif italic text-stone-900">2. The Golden Shadow</h2>
+                    <i data-lucide="moon" class="w-5 h-5 text-[#b2945e]"></i>
                 </div>
-                <p class="text-xs text-slate-400 mb-6 italic">"We only repeat behaviors that serve us. Your burnout is protecting something."</p>
+                
+                <div class="bg-stone-50 border-l-2 border-[#b2945e] p-4 rounded-r-xl mb-8">
+                    <p class="text-[8px] uppercase tracking-widest text-[#b2945e] font-bold mb-1">The Deep Inquiry</p>
+                    <p class="text-xs text-stone-500 italic leading-relaxed">"Humans only repeat behaviors that serve them. Your burnout is not an accident; it is a defense mechanism protecting something vulnerable."</p>
+                </div>
                 
                 <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-[#b2945e] mb-3">If you stopped operating this way, what are you secretly afraid would happen?</label>
-                    <textarea class="w-full p-5 rounded-2xl text-sm h-24 font-serif italic" placeholder="If I stop fixing everything, people will realize I'm not actually essential..."></textarea>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-3">If you stopped operating in your default archetype, what are you secretly afraid would happen?</label>
+                    <textarea class="w-full bg-stone-50 border border-stone-200 p-5 rounded-2xl text-sm h-28 font-serif italic text-stone-700 placeholder-stone-400" placeholder="e.g., If I stop fixing everything, people will realize I'm not actually essential to the company..."></textarea>
                 </div>
-                <div class="mt-8 flex justify-end">
-                    <button onclick="switchTab('tab3')" class="px-8 py-3 bg-white text-slate-900 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-[#b2945e] hover:text-white transition-all">Move to S3: Sovereign &rarr;</button>
+
+                <div class="mt-10 flex justify-end pt-6 border-t border-stone-100">
+                    <button onclick="switchTab('tab3')" class="px-8 py-3 bg-[#1c1917] text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-[#b2945e] transition-all flex items-center gap-2">
+                        Unlock Session 3 <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div id="tab3" class="tab-content fade-in">
-            <div class="text-center mb-10">
-                <h2 class="text-4xl font-serif italic text-white mb-3">The Stoic Fortress</h2>
-                <p class="text-sm text-slate-400 font-light">Draw the boundary. Differentiate between what is yours to carry and what belongs to the world.</p>
-            </div>
+        <div id="tab3" class="tab-content">
+            <section class="text-center py-6">
+                <span class="text-[#b2945e] font-bold text-[9px] uppercase tracking-[0.3em] mb-4 block">Workshop 03</span>
+                <h1 class="text-5xl font-serif italic text-stone-900 mb-4 leading-tight">Sovereign Architecture</h1>
+                <p class="text-sm text-stone-500 max-w-lg mx-auto leading-relaxed font-light">
+                    A leader's bandwidth is destroyed by carrying what does not belong to them. It is time to draw the boundary and build the fortress.
+                </p>
+            </section>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glass-panel p-6 rounded-[2rem] border-t-4 border-rose-500/50">
-                    <div class="flex items-center gap-2 mb-4">
-                        <i data-lucide="wind" class="text-rose-400 w-4 h-4"></i>
-                        <h3 class="font-bold text-white uppercase tracking-widest text-[10px]">Outside The Wall (Release)</h3>
-                    </div>
-                    <p class="text-xs text-slate-400 mb-4">Other people's opinions, systemic chaos, macro-economics, the past.</p>
-                    <textarea class="w-full p-4 rounded-xl text-sm h-40 font-sans" placeholder="1. The client's unreasonable mood today.&#10;2. The timeline set by the board.&#10;3. My manager's anxiety."></textarea>
+            <div class="bg-white p-8 rounded-[2rem] border border-stone-100 shadow-glow mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-serif italic text-stone-900">The Dichotomy of Control</h2>
+                    <i data-lucide="shield" class="w-5 h-5 text-[#b2945e]"></i>
+                </div>
+                
+                <div class="bg-stone-50 border-l-2 border-[#b2945e] p-4 rounded-r-xl mb-8">
+                    <p class="text-[8px] uppercase tracking-widest text-[#b2945e] font-bold mb-1">Clinical Primer</p>
+                    <p class="text-xs text-stone-500 italic leading-relaxed">"You cannot control the storm outside the fortress. You can only control the architecture within. Separate the noise from the signal."</p>
                 </div>
 
-                <div class="glass-panel p-6 rounded-[2rem] border-t-4 border-teal-500/50">
-                    <div class="flex items-center gap-2 mb-4">
-                        <i data-lucide="shield" class="text-teal-400 w-4 h-4"></i>
-                        <h3 class="font-bold text-white uppercase tracking-widest text-[10px]">Inside The Wall (Control)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-stone-50 p-6 rounded-[1.5rem] border border-stone-200 border-t-4 border-t-rose-400">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="wind" class="text-rose-500 w-4 h-4"></i>
+                            <h3 class="font-bold text-stone-800 uppercase tracking-widest text-[10px]">Outside The Wall (Release)</h3>
+                        </div>
+                        <p class="text-xs text-stone-500 mb-4 italic">Other people's opinions, systemic chaos, macro-economics, the past.</p>
+                        <textarea class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-48 font-sans text-stone-700 placeholder-stone-400" placeholder="1. The client's unreasonable mood today.&#10;2. The timeline set by the board.&#10;3. My manager's generalized anxiety."></textarea>
                     </div>
-                    <p class="text-xs text-slate-400 mb-4">My preparation, my boundaries, my cognitive response, my next action.</p>
-                    <textarea class="w-full p-4 rounded-xl text-sm h-40 font-sans" placeholder="1. My deep breathing before the call.&#10;2. The clarity of the email I send.&#10;3. Logging off at 6 PM."></textarea>
-                </div>
-            </div>
 
-            <div class="glass-panel p-8 rounded-[2rem] mt-6 text-center">
-                <h3 class="text-lg font-serif italic text-white mb-2">The Sovereign Decree</h3>
-                <p class="text-sm text-slate-400 mb-6">I cannot control the storm outside the fortress. I can only control the architecture within.</p>
-                <button onclick="switchTab('tab4')" class="px-8 py-3 bg-white text-slate-900 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-[#b2945e] hover:text-white transition-all">Move to S4: Blueprint &rarr;</button>
+                    <div class="bg-stone-50 p-6 rounded-[1.5rem] border border-stone-200 border-t-4 border-t-teal-500">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="anchor" class="text-teal-600 w-4 h-4"></i>
+                            <h3 class="font-bold text-stone-800 uppercase tracking-widest text-[10px]">Inside The Wall (Control)</h3>
+                        </div>
+                        <p class="text-xs text-stone-500 mb-4 italic">My preparation, my boundaries, my cognitive response, my next action.</p>
+                        <textarea class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-48 font-sans text-stone-700 placeholder-stone-400" placeholder="1. My deep breathing before the call.&#10;2. The clarity of the email I send.&#10;3. Logging off at 6:00 PM."></textarea>
+                    </div>
+                </div>
+
+                <div class="mt-10 flex justify-end pt-6 border-t border-stone-100">
+                    <button onclick="switchTab('tab4')" class="px-8 py-3 bg-[#1c1917] text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-[#b2945e] transition-all flex items-center gap-2">
+                        Unlock Session 4 <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div id="tab4" class="tab-content fade-in">
-            <div class="text-center mb-10">
-                <h2 class="text-4xl font-serif italic text-white mb-3">The Blueprint</h2>
-                <p class="text-sm text-slate-400 font-light">Anchor the new reality. Lock in the identity shift.</p>
-            </div>
+        <div id="tab4" class="tab-content">
+            <section class="text-center py-6">
+                <span class="text-[#b2945e] font-bold text-[9px] uppercase tracking-[0.3em] mb-4 block">Workshop 04</span>
+                <h1 class="text-5xl font-serif italic text-stone-900 mb-4 leading-tight">The Final Blueprint</h1>
+                <p class="text-sm text-stone-500 max-w-lg mx-auto leading-relaxed font-light">
+                    Transformation without documentation is a hallucination. Anchor the new reality and lock in the identity shift.
+                </p>
+            </section>
 
-            <div class="glass-panel p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden text-center mb-8 border-t-8 border-[#b2945e]">
+            <div class="bg-[#1c1917] p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden text-center mb-8 mt-4">
                 <div class="absolute top-0 right-0 p-32 bg-[#b2945e]/10 rounded-full blur-3xl pointer-events-none"></div>
 
                 <i data-lucide="key" class="w-10 h-10 text-[#b2945e] mx-auto mb-6 relative z-10"></i>
                 <h3 class="text-3xl font-serif italic text-white mb-6 relative z-10">The Sovereign Identity Oath</h3>
                 
-                <p class="text-sm text-slate-400 mb-6 relative z-10 max-w-md mx-auto">
+                <p class="text-sm text-stone-400 mb-8 relative z-10 max-w-md mx-auto leading-relaxed">
                     You have mapped the friction, interrogated the shadow, and built the fortress. Write your final declaration of how you will operate moving forward.
                 </p>
 
-                <div class="relative z-10 text-left bg-black/30 p-6 rounded-2xl border border-white/10 mb-8">
-                    <p class="text-[#b2945e] font-bold text-[9px] uppercase tracking-widest mb-3">I Commit To:</p>
-                    <textarea class="w-full bg-transparent border-none p-0 text-lg font-serif italic text-white focus:ring-0 resize-none h-20" placeholder="e.g., Executing the strategy without absorbing the team's anxiety..."></textarea>
+                <div class="relative z-10 text-left bg-stone-900/50 p-8 rounded-2xl border border-stone-700 mb-8 max-w-lg mx-auto">
+                    <p class="text-[#b2945e] font-bold text-[10px] uppercase tracking-widest mb-4">I Commit To:</p>
+                    <textarea class="w-full bg-transparent border-none p-0 text-xl font-serif italic text-white focus:ring-0 resize-none h-24 placeholder-stone-600" placeholder="e.g., Executing the strategy without absorbing the team's anxiety..."></textarea>
                 </div>
 
-                <div class="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
+                <div class="flex flex-col sm:flex-row gap-4 justify-center relative z-10 mt-10">
                     <button class="px-8 py-4 bg-[#b2945e] text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-[#d97706] transition-all shadow-[0_0_20px_rgba(178,148,94,0.3)] flex items-center justify-center gap-2">
                         <i data-lucide="lock" class="w-4 h-4"></i> Lock Architecture
                     </button>
-                    <button onclick="window.print()" class="px-8 py-4 bg-white/10 text-white border border-white/20 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-white/20 transition-all flex items-center justify-center gap-2">
-                        <i data-lucide="download" class="w-4 h-4"></i> Save PDF
+                    <button onclick="window.print()" class="px-8 py-4 bg-transparent border border-stone-600 text-stone-300 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-stone-800 transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="printer" class="w-4 h-4"></i> Export PDF
                     </button>
                 </div>
             </div>
             
-            <div class="text-center">
-                 <a href="https://liveadaptiv.com" class="text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-[#b2945e] transition-colors">Return to Dashboard</a>
+            <div class="text-center mt-8">
+                 <a href="https://liveadaptiv.com" class="text-[10px] font-bold uppercase tracking-widest text-stone-500 hover:text-[#b2945e] transition-colors">Return to Dashboard</a>
             </div>
         </div>
 
@@ -219,11 +265,11 @@
             // Reset all tab buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('border-[#b2945e]', 'text-[#b2945e]');
-                btn.classList.add('border-transparent', 'text-slate-500');
+                btn.classList.add('border-transparent', 'text-stone-400');
             });
             // Highlight active tab button
             const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.classList.remove('border-transparent', 'text-slate-500');
+            activeBtn.classList.remove('border-transparent', 'text-stone-400');
             activeBtn.classList.add('border-[#b2945e]', 'text-[#b2945e]');
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -234,12 +280,20 @@
             // Clear siblings
             const siblings = btn.parentElement.querySelectorAll('.archetype-btn');
             siblings.forEach(s => {
-                s.classList.remove('border-[#b2945e]', 'bg-[#b2945e]/10');
-                s.classList.add('border-white/10', 'bg-white/5');
+                s.classList.remove('border-[#1c1917]', 'bg-[#1c1917]');
+                // Reset text colors inside siblings
+                s.querySelector('h4').classList.remove('text-white');
+                s.querySelector('h4').classList.add('text-stone-800');
+                s.querySelector('p').classList.remove('text-stone-300');
+                s.querySelector('p').classList.add('text-stone-600');
             });
-            // Highlight selected
-            btn.classList.remove('border-white/10', 'bg-white/5');
-            btn.classList.add('border-[#b2945e]', 'bg-[#b2945e]/10');
+            
+            // Highlight selected (Dark contrast for the Light Theme)
+            btn.classList.add('border-[#1c1917]', 'bg-[#1c1917]');
+            btn.querySelector('h4').classList.remove('text-stone-800', 'group-hover:text-[#b2945e]');
+            btn.querySelector('h4').classList.add('text-white');
+            btn.querySelector('p').classList.remove('text-stone-600');
+            btn.querySelector('p').classList.add('text-stone-300');
         }
     </script>
 </body>
