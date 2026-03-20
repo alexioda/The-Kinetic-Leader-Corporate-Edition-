@@ -200,8 +200,8 @@
                 </div>
             </div>
             
-            <div class="mt-16 flex justify-end no-print">
-                <button onclick="showTab(2)" class="px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all flex items-center gap-2">
+            <div class="mt-16 pt-8 border-t border-stone-200 text-right no-print">
+                <button onclick="showTab(2)" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all">
                     Proceed to S2: Agility <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -283,11 +283,11 @@
                 </div>
             </div>
             
-            <div class="mt-16 flex justify-between no-print">
-                <button onclick="showTab(1)" class="px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all">
+            <div class="mt-16 pt-8 border-t border-stone-200 flex justify-between no-print">
+                <button onclick="showTab(1)" class="inline-flex items-center justify-center gap-2 px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all">
                     &larr; Back to S1
                 </button>
-                <button onclick="showTab(3)" class="px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all flex items-center gap-2">
+                <button onclick="showTab(3)" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all">
                     Proceed to S3: Sovereignty <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -299,7 +299,7 @@
                     <span class="text-gold-600 font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">Workshop: Boundary Architecture</span>
                     <h2 class="text-5xl font-serif italic text-stone-900 mb-4 leading-tight">The Stoic Professional.</h2>
                     <p class="text-lg text-stone-500 font-light max-w-xl">
-                        A leader's bandwidth is destroyed by carrying what does not belong to them. It is time to draw the boundary and build the internal fortress.
+                        A leader's bandwidth is destroyed by carrying what does not belong to them. It is time to audit your energy investments and build the internal fortress.
                     </p>
                 </div>
             </div>
@@ -322,18 +322,45 @@
                     </div>
                 </div>
 
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400">Lab 08: The Energy Portfolio</h3>
+                        <i data-lucide="calendar" class="w-5 h-5 text-stone-300"></i>
+                    </div>
+                    
+                    <p class="text-sm text-stone-600 mb-8 leading-relaxed">Your calendar is a ledger of your energetic investments. Review your last two weeks. Identify the recurring meetings, tasks, or interactions that are operating at a severe deficit.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">The Liability</label>
+                            <p class="text-[10px] text-stone-500 mb-3 italic">Name the specific task or meeting that drains your cognitive bandwidth.</p>
+                            <textarea id="s3_portfolio_drain" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 focus:border-gold-500 outline-none transition-all" placeholder="e.g., The weekly sync where I have to justify my team's metrics to other departments..." oninput="saveData()"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-gold-600 mb-2">The Restructuring</label>
+                            <p class="text-[10px] text-stone-500 mb-3 italic">How will you Diminish, Delegate, or Delete this liability next week?</p>
+                            <textarea id="s3_portfolio_fix" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 focus:border-gold-500 outline-none transition-all" placeholder="e.g., I will send a pre-read memo on Tuesday and cut the meeting down to 15 minutes for Q&A only." oninput="saveData()"></textarea>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="bg-stone-100 p-10 rounded-3xl border border-stone-200 shadow-inner">
-                    <div class="text-center max-w-2xl mx-auto">
-                        <h3 class="font-serif text-3xl italic text-stone-900 mb-6">The Mirror Inquiry</h3>
-                        <p class="text-sm text-stone-500 mb-10 leading-relaxed">When we are exhausted, we blame the system. True sovereignty requires radical accountability.</p>
+                    <div class="text-center max-w-3xl mx-auto">
+                        <h3 class="font-serif text-3xl italic text-stone-900 mb-6">Lab 09: The Radical Mirror</h3>
+                        <p class="text-sm text-stone-500 mb-10 leading-relaxed">When we are exhausted, we blame the system. True sovereignty requires radical accountability. We must examine why we allow our own boundaries to be crossed.</p>
                         
-                        <div class="text-left space-y-6">
+                        <div class="text-left space-y-8">
                             <div>
                                 <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">1. Where am I complicit in creating the conditions I say I don't want?</label>
-                                <textarea id="s3_mirror1" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-24 focus:border-gold-500 outline-none transition-all" oninput="saveData()"></textarea>
+                                <textarea id="s3_mirror1" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-24 focus:border-gold-500 outline-none transition-all" placeholder="e.g., I complain about working late, but I always reply to emails at 9:00 PM, training my team to expect it..." oninput="saveData()"></textarea>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">2. What boundary am I refusing to set because I want to be liked?</label>
+                                <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">2. What is the hidden payoff I get for keeping this problem alive?</label>
+                                <p class="text-[10px] text-stone-500 mb-2 italic">(e.g., Feeling important, avoiding deeper strategic work, proving I work the hardest).</p>
+                                <textarea id="s3_mirror_payoff" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-24 focus:border-gold-500 outline-none transition-all" oninput="saveData()"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">3. What boundary am I refusing to set because I want to be liked?</label>
                                 <textarea id="s3_mirror2" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-24 focus:border-gold-500 outline-none transition-all" oninput="saveData()"></textarea>
                             </div>
                         </div>
@@ -341,11 +368,11 @@
                 </div>
             </div>
             
-            <div class="mt-16 flex justify-between no-print">
-                <button onclick="showTab(2)" class="px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all">
+            <div class="mt-16 pt-8 border-t border-stone-200 flex justify-between no-print">
+                <button onclick="showTab(2)" class="inline-flex items-center justify-center gap-2 px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all">
                     &larr; Back to S2
                 </button>
-                <button onclick="showTab(4)" class="px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all flex items-center gap-2">
+                <button onclick="showTab(4)" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all">
                     Proceed to S4: Blueprint <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -357,20 +384,46 @@
                     <span class="text-gold-600 font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">Workshop: Integration</span>
                     <h2 class="text-5xl font-serif italic text-stone-900 mb-4 leading-tight">The Final Blueprint.</h2>
                     <p class="text-lg text-stone-500 font-light max-w-xl">
-                        Transformation without documentation is a hallucination. Anchor the new reality and lock in the 72-hour integration protocol.
+                        Transformation without documentation is a hallucination. Anticipate your failure, define your metrics, and lock in the 72-hour integration protocol.
                     </p>
                 </div>
             </div>
 
-            <div class="space-y-10">
+            <div class="space-y-12">
+                
                 <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
-                    <h2 class="text-xl font-serif italic text-stone-900 mb-4">The 72-Hour Integration</h2>
-                    <p class="text-xs text-stone-500 mb-6">Insight decays rapidly. What is the single, frictionless action you will take within the next 72 hours to prove to your nervous system that this shift is real?</p>
-                    
-                    <input type="text" id="s4_action" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm font-sans text-stone-900 focus:border-gold-500 outline-none" placeholder="e.g., I will decline the Thursday meeting and block 1 hour for deep work." oninput="saveData()">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400">Lab 10: The Leadership Ripple</h3>
+                        <i data-lucide="users" class="w-5 h-5 text-stone-300"></i>
+                    </div>
+                    <p class="text-sm text-stone-600 mb-6 leading-relaxed">A leader's unmanaged stress becomes the team's culture. Based on your Archetype (Rusher/Fixer/Freezer), how is your default reaction accidentally damaging the autonomy and morale of your direct reports?</p>
+                    <textarea id="s4_ripple" class="w-full bg-stone-50 border border-stone-200 p-5 rounded-xl text-sm h-28 font-sans text-stone-900 focus:border-gold-500 outline-none" placeholder="e.g., Because I am a 'Fixer', I step in too early when my team struggles. This teaches them they don't have to problem-solve, crippling their growth." oninput="saveData()"></textarea>
                 </div>
 
-                <div class="bg-stone-900 p-12 rounded-3xl border border-stone-800 shadow-2xl relative overflow-hidden text-center text-white">
+                <div class="bg-stone-100 p-8 rounded-2xl border border-stone-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400">Lab 11: The Pre-Mortem</h3>
+                        <i data-lucide="alert-triangle" class="w-5 h-5 text-stone-400"></i>
+                    </div>
+                    <p class="text-sm text-stone-600 mb-6 leading-relaxed">Assume it is 30 days from now and you have completely failed to implement these boundaries. You are right back where you started. <strong>What exact excuse did you use to justify giving up?</strong> Name it now to disarm it.</p>
+                    <textarea id="s4_premorteum" class="w-full bg-white border border-stone-200 p-5 rounded-xl text-sm h-28 font-serif italic text-stone-700 focus:border-gold-500 outline-none" placeholder="e.g., I will tell myself that 'this specific project is just too important' and that I will set boundaries next month..." oninput="saveData()"></textarea>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
+                        <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-6">Lab 12: The 90-Day Vision</h3>
+                        <p class="text-xs text-stone-500 mb-6">If you successfully integrate this architecture, what are the tangible metrics of success 90 days from now?</p>
+                        <textarea id="s4_vision" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 font-sans text-stone-900 focus:border-gold-500 outline-none" placeholder="1. I leave the office by 5:30 PM.&#10;2. My team handles Tier-1 issues without me.&#10;3. I am sleeping 7 hours a night." oninput="saveData()"></textarea>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
+                        <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-6">Lab 13: 72-Hour Integration</h3>
+                        <p class="text-xs text-stone-500 mb-6">Insight decays rapidly. What is the single, frictionless action you will take within the next 72 hours to prove to your nervous system that this shift is real?</p>
+                        <textarea id="s4_action" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 font-sans text-stone-900 focus:border-gold-500 outline-none" placeholder="e.g., I will cancel the Thursday 'status update' meeting and let them email me the metrics." oninput="saveData()"></textarea>
+                    </div>
+                </div>
+
+                <div class="bg-stone-900 p-12 rounded-3xl border border-stone-800 shadow-2xl relative overflow-hidden text-center text-white mt-8">
                     <div class="absolute top-0 right-0 p-40 bg-gold-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
                     <i data-lucide="shield-check" class="w-12 h-12 text-gold-500 mx-auto mb-6 relative z-10"></i>
@@ -393,8 +446,8 @@
                 </div>
             </div>
             
-            <div class="mt-16 flex justify-start no-print">
-                <button onclick="showTab(3)" class="px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all">
+            <div class="mt-16 pt-8 border-t border-stone-200 flex justify-start no-print">
+                <button onclick="showTab(3)" class="inline-flex items-center justify-center gap-2 px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all">
                     &larr; Back to S3
                 </button>
             </div>
@@ -434,7 +487,7 @@
         function saveData() {
             const data = {};
             document.querySelectorAll('textarea, input').forEach(el => { if (el.id) data[el.id] = el.type === 'checkbox' ? el.checked : el.value; });
-            localStorage.setItem('kinetic_leader_master_v2', JSON.stringify(data));
+            localStorage.setItem('kinetic_leader_master_v3', JSON.stringify(data));
             const indicator = document.getElementById('saveIndicator'); 
             indicator.style.opacity = '1'; 
             setTimeout(() => indicator.style.opacity = '0', 1500);
@@ -504,7 +557,7 @@
 
         // --- INIT ---
         window.onload = () => {
-            const saved = localStorage.getItem('kinetic_leader_master_v2');
+            const saved = localStorage.getItem('kinetic_leader_master_v3');
             if (saved) { 
                 const data = JSON.parse(saved); 
                 Object.keys(data).forEach(key => { 
