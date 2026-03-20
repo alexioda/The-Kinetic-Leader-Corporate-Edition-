@@ -65,16 +65,16 @@
 
     <nav class="bg-white border-b border-stone-200 no-print">
         <div class="max-w-5xl mx-auto flex">
-            <button id="btn1" onclick="showTab(1)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-stone-900 text-stone-900 transition-all">S1: Foundation</button>
-            <button id="btn2" onclick="showTab(2)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-400 transition-all hover:text-stone-600">S2: Agility</button>
-            <button id="btn3" onclick="showTab(3)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-400 transition-all hover:text-stone-600">S3: Sovereignty</button>
-            <button id="btn4" onclick="showTab(4)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-400 transition-all hover:text-stone-600">S4: Identity</button>
+            <button id="btn1" onclick="window.showTab(1)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-stone-900 text-stone-900 transition-all">S1: Foundation</button>
+            <button id="btn2" onclick="window.showTab(2)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-400 transition-all hover:text-stone-600">S2: Agility</button>
+            <button id="btn3" onclick="window.showTab(3)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-400 transition-all hover:text-stone-600">S3: Sovereignty</button>
+            <button id="btn4" onclick="window.showTab(4)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-400 transition-all hover:text-stone-600">S4: Identity</button>
         </div>
     </nav>
 
     <main class="max-w-5xl mx-auto px-8 py-12 pb-40">
         
-        <div id="tab1" class="tab-content active animate-fade-in">
+        <div id="tab1" class="tab-content active">
             <div class="flex flex-col md:flex-row justify-between items-center gap-12 mb-16">
                 <div class="flex-1 text-center md:text-left">
                     <span class="text-gold-600 font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">Workshop: Internal Operating System</span>
@@ -117,33 +117,33 @@
                     <div>
                         <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-4">Lab 01: Energy Leak Detection</h3>
                         <label class="block text-xs font-bold text-stone-900 mb-2 uppercase">The Primary Leak</label>
-                        <textarea id="s1_leak" class="w-full bg-stone-50 border-none p-4 rounded-xl focus:ring-1 focus:ring-gold-500 outline-none h-32 text-sm mb-6" placeholder="Identify your specific mental 'static'..." oninput="saveAndScore()"></textarea>
+                        <textarea id="s1_leak" class="w-full bg-stone-50 border-none p-4 rounded-xl focus:ring-1 focus:ring-gold-500 outline-none h-32 text-sm mb-6" placeholder="Identify your specific mental 'static'..." oninput="window.saveAndScore()"></textarea>
                         
                         <label class="block text-xs font-bold text-stone-900 mb-2 uppercase">The Metabolic Cost</label>
                         <p class="text-[10px] text-stone-500 mb-4 italic">How many hours per week do you lose to this "Static"?</p>
-                        <input type="number" id="leak_hours" class="w-full bg-stone-50 border-none p-4 rounded-xl focus:ring-1 focus:ring-gold-500 outline-none text-sm mb-2" placeholder="Hours per week..." oninput="saveData()">
+                        <input type="number" id="leak_hours" class="w-full bg-stone-50 border-none p-4 rounded-xl focus:ring-1 focus:ring-gold-500 outline-none text-sm mb-2" placeholder="Hours per week..." oninput="window.saveData()">
                         <p class="text-[9px] text-gold-600 font-bold uppercase tracking-wider">Estimated Resource Loss: <span id="roi_display">0</span>%</p>
                     </div>
                     <div class="space-y-2">
                         <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Performance Behavior Check:</p>
                         <label class="flex items-center gap-3 p-3 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition-all border border-transparent">
-                            <input type="checkbox" id="check_1" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900">
+                            <input type="checkbox" id="check_1" onchange="window.saveAndScore()" class="w-4 h-4 accent-stone-900">
                             <span class="text-[10px] font-medium text-stone-600 leading-tight">I delay starting tasks because I'm afraid they won't be perfect.</span>
                         </label>
                         <label class="flex items-center gap-3 p-3 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition-all border border-transparent">
-                            <input type="checkbox" id="check_2" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900">
+                            <input type="checkbox" id="check_2" onchange="window.saveAndScore()" class="w-4 h-4 accent-stone-900">
                             <span class="text-[10px] font-medium text-stone-600 leading-tight">I feel feedback or correction as a personal failure.</span>
                         </label>
                         <label class="flex items-center gap-3 p-3 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition-all border border-transparent">
-                            <input type="checkbox" id="check_3" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900">
+                            <input type="checkbox" id="check_3" onchange="window.saveAndScore()" class="w-4 h-4 accent-stone-900">
                             <span class="text-[10px] font-medium text-stone-600 leading-tight">I spend energy comparing my progress to my peers.</span>
                         </label>
                         <label class="flex items-center gap-3 p-3 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition-all border border-transparent">
-                            <input type="checkbox" id="check_4" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900">
+                            <input type="checkbox" id="check_4" onchange="window.saveAndScore()" class="w-4 h-4 accent-stone-900">
                             <span class="text-[10px] font-medium text-stone-600 leading-tight">I spend hours over-thinking simple messages.</span>
                         </label>
                         <label class="flex items-center gap-3 p-3 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition-all border border-transparent">
-                            <input type="checkbox" id="check_5" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900">
+                            <input type="checkbox" id="check_5" onchange="window.saveAndScore()" class="w-4 h-4 accent-stone-900">
                             <span class="text-[10px] font-medium text-stone-600 leading-tight">I reply to messages immediately even when anxious.</span>
                         </label>
                     </div>
@@ -154,28 +154,28 @@
                     <div class="grid md:grid-cols-2 gap-10">
                         <div>
                             <label class="block text-[10px] font-bold text-gold-600 mb-4 uppercase tracking-widest">The Fortress (My Actions)</label>
-                            <textarea id="s1_control" class="w-full bg-stone-50 border-none p-4 rounded-xl text-sm focus:ring-1 focus:ring-gold-500 outline-none h-40" placeholder="My preparation, my schedule, my focus..." oninput="saveData()"></textarea>
+                            <textarea id="s1_control" class="w-full bg-stone-50 border-none p-4 rounded-xl text-sm focus:ring-1 focus:ring-gold-500 outline-none h-40" placeholder="My preparation, my schedule, my focus..." oninput="window.saveData()"></textarea>
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-stone-400 mb-4 uppercase tracking-widest">The Noise (External Factors)</label>
-                            <textarea id="s1_noise" class="w-full bg-stone-50 border-none p-4 rounded-xl text-sm focus:ring-1 focus:ring-stone-300 outline-none h-40" placeholder="Client decisions, peer opinions, final results..." oninput="saveData()"></textarea>
+                            <textarea id="s1_noise" class="w-full bg-stone-50 border-none p-4 rounded-xl text-sm focus:ring-1 focus:ring-stone-300 outline-none h-40" placeholder="Client decisions, peer opinions, final results..." oninput="window.saveData()"></textarea>
                         </div>
                     </div>
                 </div>
 
                 <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden shadow-sm">
                     <div class="bg-stone-100 p-4 border-b border-stone-200 grid grid-cols-2 md:grid-cols-4 gap-4 no-print">
-                        <div class="h-12"><button onclick="setScenario('help', this)" class="scenario-btn active">Ask Help</button></div>
-                        <div class="h-12"><button onclick="setScenario('no', this)" class="scenario-btn">Setting 'No'</button></div>
-                        <div class="h-12"><button onclick="setScenario('networking', this)" class="scenario-btn">Networking</button></div>
-                        <div class="h-12"><button onclick="setScenario('self', this)" class="scenario-btn">Self-Talk</button></div>
+                        <div class="h-12"><button onclick="window.setScenario('help', this)" class="scenario-btn active">Ask Help</button></div>
+                        <div class="h-12"><button onclick="window.setScenario('no', this)" class="scenario-btn">Setting 'No'</button></div>
+                        <div class="h-12"><button onclick="window.setScenario('networking', this)" class="scenario-btn">Networking</button></div>
+                        <div class="h-12"><button onclick="window.setScenario('self', this)" class="scenario-btn">Self-Talk</button></div>
                     </div>
                     <div class="p-8">
                         <div class="grid md:grid-cols-2 gap-12 items-start">
                             <div class="space-y-6" id="script-inputs">
-                                <div><label class="text-[10px] uppercase font-bold text-stone-400" id="label-1">Recipient</label><input id="inp-1" type="text" class="w-full bg-stone-50 border-b border-stone-200 py-2 outline-none focus:border-gold-500 text-sm" oninput="generateScript()"></div>
-                                <div><label class="text-[10px] uppercase font-bold text-stone-400" id="label-2">The Barrier</label><input id="inp-2" type="text" class="w-full bg-stone-50 border-b border-stone-200 py-2 outline-none focus:border-gold-500 text-sm" oninput="generateScript()"></div>
-                                <div><label class="text-[10px] uppercase font-bold text-stone-400" id="label-3">The Intent</label><input id="inp-3" type="text" class="w-full bg-stone-50 border-b border-stone-200 py-2 outline-none focus:border-gold-500 text-sm" oninput="generateScript()"></div>
+                                <div><label class="text-[10px] uppercase font-bold text-stone-400" id="label-1">Recipient</label><input id="inp-1" type="text" class="w-full bg-stone-50 border-b border-stone-200 py-2 outline-none focus:border-gold-500 text-sm" oninput="window.generateScript()"></div>
+                                <div><label class="text-[10px] uppercase font-bold text-stone-400" id="label-2">The Barrier</label><input id="inp-2" type="text" class="w-full bg-stone-50 border-b border-stone-200 py-2 outline-none focus:border-gold-500 text-sm" oninput="window.generateScript()"></div>
+                                <div><label class="text-[10px] uppercase font-bold text-stone-400" id="label-3">The Intent</label><input id="inp-3" type="text" class="w-full bg-stone-50 border-b border-stone-200 py-2 outline-none focus:border-gold-500 text-sm" oninput="window.generateScript()"></div>
                             </div>
                             <div class="p-8 bg-stone-900 rounded-xl relative shadow-2xl min-h-[160px]">
                                 <span class="absolute top-0 right-0 bg-gold-500 text-white text-[8px] px-2 py-1 font-bold uppercase tracking-widest">Master Script</span>
@@ -194,14 +194,14 @@
                                 "The walls in a maximum security prison are made of concrete. The walls in your career are made of thoughts. Both require the same physics to break through."
                             </p>
                             <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-4">Your Commitment to Excellence</label>
-                            <textarea id="final_intent" class="w-full bg-transparent border-b border-stone-200 text-2xl font-serif italic text-center focus:outline-none focus:border-gold-500 h-32 resize-none" placeholder="I will operate with curiosity, not judgment..." oninput="saveData()"></textarea>
+                            <textarea id="final_intent" class="w-full bg-transparent border-b border-stone-200 text-2xl font-serif italic text-center focus:outline-none focus:border-gold-500 h-32 resize-none" placeholder="I will operate with curiosity, not judgment..." oninput="window.saveData()"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="mt-16 pt-8 border-t border-stone-200 text-right no-print">
-                <button onclick="showTab(2)" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all">
+            <div class="mt-16 pt-8 border-t border-stone-200 flex justify-end no-print">
+                <button onclick="window.showTab(2)" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all shadow-lg">
                     Proceed to S2: Agility <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -232,15 +232,15 @@
                     <label class="block text-sm font-bold text-stone-900 mb-4">When the system breaks down, how do you instinctively react?</label>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div onclick="selectArchetype(this)" class="archetype-btn">
+                        <div onclick="window.selectArchetype(this)" class="archetype-btn">
                             <h4 class="font-bold text-stone-900 uppercase tracking-widest text-[10px] mb-3">The Rusher</h4>
                             <p class="text-xs text-stone-500 leading-relaxed">I treat time as the enemy. My nervous system locks into a sprint, forcing action to outrun the overwhelm. I believe speed equals safety.</p>
                         </div>
-                        <div onclick="selectArchetype(this)" class="archetype-btn">
+                        <div onclick="window.selectArchetype(this)" class="archetype-btn">
                             <h4 class="font-bold text-stone-900 uppercase tracking-widest text-[10px] mb-3">The Fixer</h4>
                             <p class="text-xs text-stone-500 leading-relaxed">I absorb the system's anxiety. I over-function and take over tasks to ensure they are done right. I believe control equals safety.</p>
                         </div>
-                        <div onclick="selectArchetype(this)" class="archetype-btn">
+                        <div onclick="window.selectArchetype(this)" class="archetype-btn">
                             <h4 class="font-bold text-stone-900 uppercase tracking-widest text-[10px] mb-3">The Freezer</h4>
                             <p class="text-xs text-stone-500 leading-relaxed">I detach. When the load gets heavy, my nervous system pulls the emergency brake, leading to paralysis. I believe invisibility equals safety.</p>
                         </div>
@@ -257,7 +257,7 @@
                     
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-widest text-gold-600 mb-3">If you stopped operating in your default archetype today, what are you secretly afraid would happen?</label>
-                        <textarea id="s2_shadow" class="w-full bg-stone-50 border-b border-stone-200 p-5 rounded-t-xl text-sm h-32 font-serif italic text-stone-700 focus:border-gold-500 outline-none" placeholder="e.g., If I stop fixing everything, people will realize I'm not actually essential to the company..." oninput="saveData()"></textarea>
+                        <textarea id="s2_shadow" class="w-full bg-stone-50 border-b border-stone-200 p-5 rounded-t-xl text-sm h-32 font-serif italic text-stone-700 focus:border-gold-500 outline-none" placeholder="e.g., If I stop fixing everything, people will realize I'm not actually essential to the company..." oninput="window.saveData()"></textarea>
                     </div>
                 </div>
 
@@ -273,21 +273,21 @@
                     <div class="space-y-8 relative z-10">
                         <div>
                             <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-500 mb-2">The Collapse</label>
-                            <input type="text" id="s2_failure" class="w-full bg-transparent border-b border-stone-700 py-3 text-sm font-sans text-white focus:border-gold-500 outline-none" placeholder="A massive professional failure or misstep..." oninput="saveData()">
+                            <input type="text" id="s2_failure" class="w-full bg-transparent border-b border-stone-700 py-3 text-sm font-sans text-white focus:border-gold-500 outline-none" placeholder="A massive professional failure or misstep..." oninput="window.saveData()">
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold uppercase tracking-widest text-gold-500 mb-2">The Kinetic Yield</label>
-                            <textarea id="s2_yield" class="w-full bg-stone-800/50 border border-stone-700 p-5 rounded-xl text-lg h-32 font-serif italic text-white focus:border-gold-500 outline-none" placeholder="What specific strength, boundary, or perspective did this force you to build?" oninput="saveData()"></textarea>
+                            <textarea id="s2_yield" class="w-full bg-stone-800/50 border border-stone-700 p-5 rounded-xl text-lg h-32 font-serif italic text-white focus:border-gold-500 outline-none" placeholder="What specific strength, boundary, or perspective did this force you to build?" oninput="window.saveData()"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="mt-16 pt-8 border-t border-stone-200 flex justify-between no-print">
-                <button onclick="showTab(1)" class="inline-flex items-center justify-center gap-2 px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all">
+                <button onclick="window.showTab(1)" class="inline-flex items-center justify-center gap-2 px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all">
                     &larr; Back to S1
                 </button>
-                <button onclick="showTab(3)" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all">
+                <button onclick="window.showTab(3)" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all shadow-lg">
                     Proceed to S3: Sovereignty <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -318,7 +318,7 @@
                     
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-widest text-gold-600 mb-3">Who or what is your "Empty Boat" right now? (The systemic issue you are taking personally)</label>
-                        <textarea id="s3_boat" class="w-full bg-stone-50 border-b border-stone-200 p-5 rounded-t-xl text-sm h-32 font-serif italic text-stone-700 focus:border-gold-500 outline-none" placeholder="My manager isn't attacking me; they are just drowning in their own stress and drifting into my lane..." oninput="saveData()"></textarea>
+                        <textarea id="s3_boat" class="w-full bg-stone-50 border-b border-stone-200 p-5 rounded-t-xl text-sm h-32 font-serif italic text-stone-700 focus:border-gold-500 outline-none" placeholder="My manager isn't attacking me; they are just drowning in their own stress and drifting into my lane..." oninput="window.saveData()"></textarea>
                     </div>
                 </div>
 
@@ -334,12 +334,12 @@
                         <div>
                             <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">The Liability</label>
                             <p class="text-[10px] text-stone-500 mb-3 italic">Name the specific task or meeting that drains your cognitive bandwidth.</p>
-                            <textarea id="s3_portfolio_drain" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 focus:border-gold-500 outline-none transition-all" placeholder="e.g., The weekly sync where I have to justify my team's metrics to other departments..." oninput="saveData()"></textarea>
+                            <textarea id="s3_portfolio_drain" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 focus:border-gold-500 outline-none transition-all" placeholder="e.g., The weekly sync where I have to justify my team's metrics to other departments..." oninput="window.saveData()"></textarea>
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold uppercase tracking-widest text-gold-600 mb-2">The Restructuring</label>
                             <p class="text-[10px] text-stone-500 mb-3 italic">How will you Diminish, Delegate, or Delete this liability next week?</p>
-                            <textarea id="s3_portfolio_fix" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 focus:border-gold-500 outline-none transition-all" placeholder="e.g., I will send a pre-read memo on Tuesday and cut the meeting down to 15 minutes for Q&A only." oninput="saveData()"></textarea>
+                            <textarea id="s3_portfolio_fix" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 focus:border-gold-500 outline-none transition-all" placeholder="e.g., I will send a pre-read memo on Tuesday and cut the meeting down to 15 minutes for Q&A only." oninput="window.saveData()"></textarea>
                         </div>
                     </div>
                 </div>
@@ -352,16 +352,16 @@
                         <div class="text-left space-y-8">
                             <div>
                                 <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">1. Where am I complicit in creating the conditions I say I don't want?</label>
-                                <textarea id="s3_mirror1" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-24 focus:border-gold-500 outline-none transition-all" placeholder="e.g., I complain about working late, but I always reply to emails at 9:00 PM, training my team to expect it..." oninput="saveData()"></textarea>
+                                <textarea id="s3_mirror1" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-24 focus:border-gold-500 outline-none transition-all" placeholder="e.g., I complain about working late, but I always reply to emails at 9:00 PM, training my team to expect it..." oninput="window.saveData()"></textarea>
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">2. What is the hidden payoff I get for keeping this problem alive?</label>
                                 <p class="text-[10px] text-stone-500 mb-2 italic">(e.g., Feeling important, avoiding deeper strategic work, proving I work the hardest).</p>
-                                <textarea id="s3_mirror_payoff" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-24 focus:border-gold-500 outline-none transition-all" oninput="saveData()"></textarea>
+                                <textarea id="s3_mirror_payoff" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-24 focus:border-gold-500 outline-none transition-all" oninput="window.saveData()"></textarea>
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">3. What boundary am I refusing to set because I want to be liked?</label>
-                                <textarea id="s3_mirror2" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-24 focus:border-gold-500 outline-none transition-all" oninput="saveData()"></textarea>
+                                <textarea id="s3_mirror2" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-24 focus:border-gold-500 outline-none transition-all" oninput="window.saveData()"></textarea>
                             </div>
                         </div>
                     </div>
@@ -369,10 +369,10 @@
             </div>
             
             <div class="mt-16 pt-8 border-t border-stone-200 flex justify-between no-print">
-                <button onclick="showTab(2)" class="inline-flex items-center justify-center gap-2 px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all">
+                <button onclick="window.showTab(2)" class="inline-flex items-center justify-center gap-2 px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all">
                     &larr; Back to S2
                 </button>
-                <button onclick="showTab(4)" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all">
+                <button onclick="window.showTab(4)" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all shadow-lg">
                     Proceed to S4: Blueprint <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -397,7 +397,7 @@
                         <i data-lucide="users" class="w-5 h-5 text-stone-300"></i>
                     </div>
                     <p class="text-sm text-stone-600 mb-6 leading-relaxed">A leader's unmanaged stress becomes the team's culture. Based on your Archetype (Rusher/Fixer/Freezer), how is your default reaction accidentally damaging the autonomy and morale of your direct reports?</p>
-                    <textarea id="s4_ripple" class="w-full bg-stone-50 border border-stone-200 p-5 rounded-xl text-sm h-28 font-sans text-stone-900 focus:border-gold-500 outline-none" placeholder="e.g., Because I am a 'Fixer', I step in too early when my team struggles. This teaches them they don't have to problem-solve, crippling their growth." oninput="saveData()"></textarea>
+                    <textarea id="s4_ripple" class="w-full bg-stone-50 border border-stone-200 p-5 rounded-xl text-sm h-28 font-sans text-stone-900 focus:border-gold-500 outline-none" placeholder="e.g., Because I am a 'Fixer', I step in too early when my team struggles. This teaches them they don't have to problem-solve, crippling their growth." oninput="window.saveData()"></textarea>
                 </div>
 
                 <div class="bg-stone-100 p-8 rounded-2xl border border-stone-200 shadow-sm">
@@ -414,12 +414,12 @@
                         <div>
                             <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">The Expired Metric</label>
                             <p class="text-[10px] text-stone-500 mb-3 italic">What is the old, external measure of success that you are officially retiring today?</p>
-                            <textarea id="s4_expired_metric" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-28 focus:border-gold-500 outline-none transition-all" placeholder="e.g., Believing that achieving 'inbox zero' by midnight makes me a reliable and essential leader..." oninput="saveData()"></textarea>
+                            <textarea id="s4_expired_metric" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-28 focus:border-gold-500 outline-none transition-all" placeholder="e.g., Believing that achieving 'inbox zero' by midnight makes me a reliable and essential leader..." oninput="window.saveData()"></textarea>
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold uppercase tracking-widest text-gold-600 mb-2">The Sovereign Metric</label>
                             <p class="text-[10px] text-stone-500 mb-3 italic">What is the new, internal metric you will use to measure a successful day moving forward?</p>
-                            <textarea id="s4_new_metric" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-28 font-serif italic text-stone-700 focus:border-gold-500 outline-none transition-all" placeholder="e.g., My ability to stay calm and present when timelines shift, and leaving my laptop closed after 6:00 PM." oninput="saveData()"></textarea>
+                            <textarea id="s4_new_metric" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-28 font-serif italic text-stone-700 focus:border-gold-500 outline-none transition-all" placeholder="e.g., My ability to stay calm and present when timelines shift, and leaving my laptop closed after 6:00 PM." oninput="window.saveData()"></textarea>
                         </div>
                     </div>
                 </div>
@@ -428,13 +428,13 @@
                     <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
                         <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-6">Lab 12: The 90-Day Vision</h3>
                         <p class="text-xs text-stone-500 mb-6">If you successfully integrate this architecture, what are the tangible metrics of success 90 days from now?</p>
-                        <textarea id="s4_vision" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 font-sans text-stone-900 focus:border-gold-500 outline-none" placeholder="1. I leave the office by 5:30 PM.&#10;2. My team handles Tier-1 issues without me.&#10;3. I am sleeping 7 hours a night." oninput="saveData()"></textarea>
+                        <textarea id="s4_vision" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 font-sans text-stone-900 focus:border-gold-500 outline-none" placeholder="1. I leave the office by 5:30 PM.&#10;2. My team handles Tier-1 issues without me.&#10;3. I am sleeping 7 hours a night." oninput="window.saveData()"></textarea>
                     </div>
 
                     <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
                         <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-6">Lab 13: 72-Hour Integration</h3>
                         <p class="text-xs text-stone-500 mb-6">Insight decays rapidly. What is the single, frictionless action you will take within the next 72 hours to prove to your nervous system that this shift is real?</p>
-                        <textarea id="s4_action" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 font-sans text-stone-900 focus:border-gold-500 outline-none" placeholder="e.g., I will cancel the Thursday 'status update' meeting and let them email me the metrics." oninput="saveData()"></textarea>
+                        <textarea id="s4_action" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 font-sans text-stone-900 focus:border-gold-500 outline-none" placeholder="e.g., I will cancel the Thursday 'status update' meeting and let them email me the metrics." oninput="window.saveData()"></textarea>
                     </div>
                 </div>
 
@@ -450,7 +450,7 @@
 
                     <div class="relative z-10 text-left bg-stone-950/80 p-8 rounded-2xl border border-stone-800 mb-10 max-w-2xl mx-auto shadow-inner">
                         <p class="text-gold-500 font-bold text-[10px] uppercase tracking-widest mb-4">I Commit To:</p>
-                        <textarea id="s4_oath" class="w-full bg-transparent border-none p-0 text-2xl font-serif italic text-white focus:ring-0 resize-none h-32 placeholder-stone-700 text-center leading-relaxed outline-none" placeholder="Executing the strategy without absorbing the system's anxiety..." oninput="saveData()"></textarea>
+                        <textarea id="s4_oath" class="w-full bg-transparent border-none p-0 text-2xl font-serif italic text-white focus:ring-0 resize-none h-32 placeholder-stone-700 text-center leading-relaxed outline-none" placeholder="Executing the strategy without absorbing the system's anxiety..." oninput="window.saveData()"></textarea>
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-4 justify-center relative z-10 no-print">
@@ -462,7 +462,7 @@
             </div>
             
             <div class="mt-16 pt-8 border-t border-stone-200 flex justify-start no-print">
-                <button onclick="showTab(3)" class="inline-flex items-center justify-center gap-2 px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all">
+                <button onclick="window.showTab(3)" class="inline-flex items-center justify-center gap-2 px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all">
                     &larr; Back to S3
                 </button>
             </div>
@@ -480,48 +480,164 @@
     </footer>
 
     <script>
-        function showTab(n) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab' + n).classList.add('active');
-            
-            document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
-                if (idx === n - 1) {
-                    btn.classList.add('border-stone-900', 'text-stone-900');
-                    btn.classList.remove('border-transparent', 'text-stone-400');
-                } else {
-                    btn.classList.remove('border-stone-900', 'text-stone-900');
-                    btn.classList.add('border-transparent', 'text-stone-400');
+        // CORE NAVIGATION - FORCED TO GLOBAL WINDOW
+        window.showTab = function(n) {
+            try {
+                const tabs = document.querySelectorAll('.tab-content');
+                for (let i=0; i<tabs.length; i++) {
+                    tabs[i].classList.remove('active');
                 }
-            });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+                
+                const targetTab = document.getElementById('tab' + n);
+                if(targetTab) targetTab.classList.add('active');
+                
+                const btns = document.querySelectorAll('.tab-btn');
+                for (let i=0; i<btns.length; i++) {
+                    if (i === n - 1) {
+                        btns[i].classList.add('border-stone-900', 'text-stone-900');
+                        btns[i].classList.remove('border-transparent', 'text-stone-400');
+                    } else {
+                        btns[i].classList.remove('border-stone-900', 'text-stone-900');
+                        btns[i].classList.add('border-transparent', 'text-stone-400');
+                    }
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch(e) { console.error("Navigation error:", e); }
+        };
 
-        // --- S1: FOUNDATION LOGIC (UNCHANGED) ---
-        function saveAndScore() { saveData(); calculatePulse(); }
+        // --- S1: FOUNDATION LOGIC ---
+        window.saveAndScore = function() { 
+            window.saveData(); 
+            window.calculatePulse(); 
+        };
         
-        function saveData() {
-            const data = {};
-            document.querySelectorAll('textarea, input').forEach(el => { if (el.id) data[el.id] = el.type === 'checkbox' ? el.checked : el.value; });
-            localStorage.setItem('kinetic_leader_master_v4', JSON.stringify(data));
-            const indicator = document.getElementById('saveIndicator'); 
-            indicator.style.opacity = '1'; 
-            setTimeout(() => indicator.style.opacity = '0', 1500);
-            
-            const hrs = parseFloat(document.getElementById('leak_hours')?.value) || 0;
-            const roiDisplay = document.getElementById('roi_display');
-            if (roiDisplay) roiDisplay.innerText = Math.min(100, Math.round((hrs / 40) * 100));
-        }
+        window.saveData = function() {
+            try {
+                const data = {};
+                document.querySelectorAll('textarea, input').forEach(el => { 
+                    if (el.id) data[el.id] = el.type === 'checkbox' ? el.checked : el.value; 
+                });
+                localStorage.setItem('kinetic_leader_master_v6', JSON.stringify(data));
+                
+                const indicator = document.getElementById('saveIndicator'); 
+                if(indicator) {
+                    indicator.style.opacity = '1'; 
+                    setTimeout(() => indicator.style.opacity = '0', 1500);
+                }
+                
+                const hrsInput = document.getElementById('leak_hours');
+                const roiDisplay = document.getElementById('roi_display');
+                if (hrsInput && roiDisplay) {
+                    const hrs = parseFloat(hrsInput.value) || 0;
+                    roiDisplay.innerText = Math.min(100, Math.round((hrs / 40) * 100));
+                }
+            } catch (e) { console.error("Save error:", e); }
+        };
 
-        function calculatePulse() {
-            let score = 100;
-            const boxes = ['check_1', 'check_2', 'check_3', 'check_4', 'check_5'];
-            boxes.forEach(id => { 
-                const el = document.getElementById(id);
-                if (el && el.checked) score -= 12; 
-            });
-            const scoreDisplay = document.getElementById('scoreDisplay');
-            if (scoreDisplay) scoreDisplay.innerText = score + "%";
-        }
+        window.calculatePulse = function() {
+            try {
+                let score = 100;
+                const boxes = ['check_1', 'check_2', 'check_3', 'check_4', 'check_5'];
+                boxes.forEach(id => { 
+                    const el = document.getElementById(id);
+                    if (el && el.checked) score -= 12; 
+                });
+                const scoreDisplay = document.getElementById('scoreDisplay');
+                if (scoreDisplay) scoreDisplay.innerText = score + "%";
+            } catch(e) { console.error("Score error:", e); }
+        };
 
         const scenarios = {
-            'help': { labels: ["Mentor Name", "Technical Gap", "Goal"], placeholders: ["Alex", "Complex modeling", "Meeting the deadline"], template: (a, b, c) => `"Hi ${a},
+            'help': { labels: ["Mentor Name", "Technical Gap", "Goal"], placeholders: ["Alex", "Complex modeling", "Meeting the deadline"], template: (a, b, c) => `"Hi ${a}, I'm working through the <strong>${b}</strong> and want to ensure I'm aligned with EY standards.<br><br>I've reached a hurdle and want to resolve it quickly so I can <strong>${c}</strong>. Do you have 5 minutes for a tactical check?"`},
+            'no': { labels: ["Requester", "Low-Priority Task", "Primary Commitment"], placeholders: ["Peer", "Voluntary research", "The client presentation"], template: (a, b, c) => `"Hi ${a}, thanks for thinking of me. To ensure I deliver the best quality for <strong>${c}</strong>, I won't be able to take on <strong>${b}</strong> right now. I'm focusing my energy on the core deliverable."`},
+            'networking': { labels: ["Director Name", "Shared Interest", "Next Step"], placeholders: ["Sarah", "Digital Strategy", "A brief intro call"], template: (a, b, c) => `"Hi ${a}, I was fascinated by your recent work on <strong>${b}</strong>.<br><br>As I build my career architecture at EY, I'd love to learn about your perspective. Would you be open to <strong>${c}</strong> next week?"`},
+            'self': { labels: ["My Name", "The 'Foggy' Thought", "The Evidence"], placeholders: ["Alex", "I'm not smart enough", "I was selected out of 5,000 applicants"], template: (a, b, c) => `"Note to self: I hear the thought that <strong>${b}</strong>.<br><br>The fact is: <strong>${c}</strong>. I am clearing the noise and proceeding with curiosity."`}
+        };
+
+        window.setScenario = function(type, btn) {
+            try {
+                document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active')); 
+                if(btn) btn.classList.add('active');
+                
+                const data = scenarios[type]; 
+                window.currentScenario = type;
+                
+                document.getElementById('label-1').innerText = data.labels[0]; 
+                document.getElementById('label-2').innerText = data.labels[1]; 
+                document.getElementById('label-3').innerText = data.labels[2];
+                document.getElementById('inp-1').placeholder = data.placeholders[0]; 
+                document.getElementById('inp-2').placeholder = data.placeholders[1]; 
+                document.getElementById('inp-3').placeholder = data.placeholders[2];
+                document.getElementById('inp-1').value = ""; 
+                document.getElementById('inp-2').value = ""; 
+                document.getElementById('inp-3').value = "";
+                
+                window.generateScript();
+            } catch(e) { console.error("Scenario error:", e); }
+        };
+
+        window.generateScript = function() {
+            try {
+                if(!window.currentScenario) return;
+                const i1 = document.getElementById('inp-1').value || "[...]"; 
+                const i2 = document.getElementById('inp-2').value || "[...]"; 
+                const i3 = document.getElementById('inp-3').value || "[...]";
+                const scriptBox = document.getElementById('final-script');
+                if(scriptBox) scriptBox.innerHTML = scenarios[window.currentScenario].template(i1, i2, i3);
+            } catch(e) { console.error("Script gen error:", e); }
+        };
+
+        // --- S2: AGILITY LOGIC (Archetype Selection) ---
+        window.selectArchetype = function(btn) {
+            try {
+                const container = btn.parentElement;
+                container.querySelectorAll('.archetype-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+                
+                const archetypeSelected = btn.querySelector('h4').innerText;
+                localStorage.setItem('kinetic_master_archetype', archetypeSelected);
+                
+                const indicator = document.getElementById('saveIndicator'); 
+                if(indicator) {
+                    indicator.style.opacity = '1'; 
+                    setTimeout(() => indicator.style.opacity = '0', 1500);
+                }
+            } catch(e) { console.error("Archetype error:", e); }
+        };
+
+        // --- SAFE INIT ---
+        window.onload = () => {
+            try {
+                const saved = localStorage.getItem('kinetic_leader_master_v6');
+                if (saved) { 
+                    const data = JSON.parse(saved); 
+                    Object.keys(data).forEach(key => { 
+                        const el = document.getElementById(key); 
+                        if (el) { 
+                            if (el.type === 'checkbox') el.checked = data[key]; 
+                            else el.value = data[key]; 
+                        } 
+                    }); 
+                }
+            } catch(e) { console.error("Load Memory Error:", e); }
+            
+            try {
+                const savedArchetype = localStorage.getItem('kinetic_master_archetype');
+                if (savedArchetype) {
+                    document.querySelectorAll('.archetype-btn h4').forEach(h4 => {
+                        if (h4.innerText === savedArchetype) {
+                            h4.parentElement.classList.add('active');
+                        }
+                    });
+                }
+            } catch(e) { console.error("Load Archetype Error:", e); }
+
+            try { window.calculatePulse(); } catch(e) {}
+            try { window.setScenario('help', document.querySelector('.scenario-btn')); } catch(e) {}
+            try { if (typeof lucide !== 'undefined') lucide.createIcons(); } catch(e) { console.error("Icon Error:", e); }
+        };
+    </script>
+</body>
+</html>
