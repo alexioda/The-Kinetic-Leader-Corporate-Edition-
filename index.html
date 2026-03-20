@@ -384,7 +384,7 @@
                     <span class="text-gold-600 font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">Workshop: Integration</span>
                     <h2 class="text-5xl font-serif italic text-stone-900 mb-4 leading-tight">The Final Blueprint.</h2>
                     <p class="text-lg text-stone-500 font-light max-w-xl">
-                        Transformation without documentation is a hallucination. Anticipate your failure, define your metrics, and lock in the 72-hour integration protocol.
+                        Transformation without documentation is a hallucination. Redefine your metrics of success and lock in the 72-hour integration protocol.
                     </p>
                 </div>
             </div>
@@ -402,11 +402,26 @@
 
                 <div class="bg-stone-100 p-8 rounded-2xl border border-stone-200 shadow-sm">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400">Lab 11: The Pre-Mortem</h3>
-                        <i data-lucide="alert-triangle" class="w-5 h-5 text-stone-400"></i>
+                        <h3 class="font-bold text-xs uppercase tracking-widest text-stone-900">Lab 11: The Sovereign Metric</h3>
+                        <i data-lucide="compass" class="w-5 h-5 text-stone-400"></i>
                     </div>
-                    <p class="text-sm text-stone-600 mb-6 leading-relaxed">Assume it is 30 days from now and you have completely failed to implement these boundaries. You are right back where you started. <strong>What exact excuse did you use to justify giving up?</strong> Name it now to disarm it.</p>
-                    <textarea id="s4_premorteum" class="w-full bg-white border border-stone-200 p-5 rounded-xl text-sm h-28 font-serif italic text-stone-700 focus:border-gold-500 outline-none" placeholder="e.g., I will tell myself that 'this specific project is just too important' and that I will set boundaries next month..." oninput="saveData()"></textarea>
+                    
+                    <div class="executive-border p-6 rounded-r-xl mb-6 bg-white border border-stone-200">
+                        <p class="text-xs text-stone-600 italic leading-relaxed">"True philosophy dictates that suffering comes from measuring our lives with someone else's ruler. The corporate world measures success by accumulation—more hours, more output, more titles. A Sovereign Leader measures success by alignment, peace, and deliberate subtraction. You must redefine the victory condition."</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">The Expired Metric</label>
+                            <p class="text-[10px] text-stone-500 mb-3 italic">What is the old, external measure of success that you are officially retiring today?</p>
+                            <textarea id="s4_expired_metric" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-28 focus:border-gold-500 outline-none transition-all" placeholder="e.g., Believing that achieving 'inbox zero' by midnight makes me a reliable and essential leader..." oninput="saveData()"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-gold-600 mb-2">The Sovereign Metric</label>
+                            <p class="text-[10px] text-stone-500 mb-3 italic">What is the new, internal metric you will use to measure a successful day moving forward?</p>
+                            <textarea id="s4_new_metric" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-28 font-serif italic text-stone-700 focus:border-gold-500 outline-none transition-all" placeholder="e.g., My ability to stay calm and present when timelines shift, and leaving my laptop closed after 6:00 PM." oninput="saveData()"></textarea>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="grid md:grid-cols-2 gap-8">
@@ -487,7 +502,7 @@
         function saveData() {
             const data = {};
             document.querySelectorAll('textarea, input').forEach(el => { if (el.id) data[el.id] = el.type === 'checkbox' ? el.checked : el.value; });
-            localStorage.setItem('kinetic_leader_master_v3', JSON.stringify(data));
+            localStorage.setItem('kinetic_leader_master_v4', JSON.stringify(data));
             const indicator = document.getElementById('saveIndicator'); 
             indicator.style.opacity = '1'; 
             setTimeout(() => indicator.style.opacity = '0', 1500);
@@ -509,79 +524,4 @@
         }
 
         const scenarios = {
-            'help': { labels: ["Mentor Name", "Technical Gap", "Goal"], placeholders: ["Alex", "Complex modeling", "Meeting the deadline"], template: (a, b, c) => `"Hi ${a}, I'm working through the <strong>${b}</strong> and want to ensure I'm aligned with EY standards.<br><br>I've reached a hurdle and want to resolve it quickly so I can <strong>${c}</strong>. Do you have 5 minutes for a tactical check?"`},
-            'no': { labels: ["Requester", "Low-Priority Task", "Primary Commitment"], placeholders: ["Peer", "Voluntary research", "The client presentation"], template: (a, b, c) => `"Hi ${a}, thanks for thinking of me. To ensure I deliver the best quality for <strong>${c}</strong>, I won't be able to take on <strong>${b}</strong> right now. I'm focusing my energy on the core deliverable."`},
-            'networking': { labels: ["Director Name", "Shared Interest", "Next Step"], placeholders: ["Sarah", "Digital Strategy", "A brief intro call"], template: (a, b, c) => `"Hi ${a}, I was fascinated by your recent work on <strong>${b}</strong>.<br><br>As I build my career architecture at EY, I'd love to learn about your perspective. Would you be open to <strong>${c}</strong> next week?"`},
-            'self': { labels: ["My Name", "The 'Foggy' Thought", "The Evidence"], placeholders: ["Alex", "I'm not smart enough", "I was selected out of 5,000 applicants"], template: (a, b, c) => `"Note to self: I hear the thought that <strong>${b}</strong>.<br><br>The fact is: <strong>${c}</strong>. I am clearing the noise and proceeding with curiosity."`}
-        };
-
-        function setScenario(type, btn) {
-            document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active')); 
-            btn.classList.add('active');
-            const data = scenarios[type]; 
-            window.currentScenario = type;
-            document.getElementById('label-1').innerText = data.labels[0]; 
-            document.getElementById('label-2').innerText = data.labels[1]; 
-            document.getElementById('label-3').innerText = data.labels[2];
-            document.getElementById('inp-1').placeholder = data.placeholders[0]; 
-            document.getElementById('inp-2').placeholder = data.placeholders[1]; 
-            document.getElementById('inp-3').placeholder = data.placeholders[2];
-            document.getElementById('inp-1').value = ""; 
-            document.getElementById('inp-2').value = ""; 
-            document.getElementById('inp-3').value = "";
-            generateScript();
-        }
-
-        function generateScript() {
-            const i1 = document.getElementById('inp-1').value || "[...]"; 
-            const i2 = document.getElementById('inp-2').value || "[...]"; 
-            const i3 = document.getElementById('inp-3').value || "[...]";
-            document.getElementById('final-script').innerHTML = scenarios[window.currentScenario].template(i1, i2, i3);
-        }
-
-        // --- S2: AGILITY LOGIC (Archetype Selection) ---
-        function selectArchetype(btn) {
-            const container = btn.parentElement;
-            container.querySelectorAll('.archetype-btn').forEach(b => {
-                b.classList.remove('active');
-            });
-            btn.classList.add('active');
-            
-            const archetypeSelected = btn.querySelector('h4').innerText;
-            localStorage.setItem('kinetic_master_archetype', archetypeSelected);
-            
-            const indicator = document.getElementById('saveIndicator'); 
-            indicator.style.opacity = '1'; 
-            setTimeout(() => indicator.style.opacity = '0', 1500);
-        }
-
-        // --- INIT ---
-        window.onload = () => {
-            const saved = localStorage.getItem('kinetic_leader_master_v3');
-            if (saved) { 
-                const data = JSON.parse(saved); 
-                Object.keys(data).forEach(key => { 
-                    const el = document.getElementById(key); 
-                    if (el) { 
-                        if (el.type === 'checkbox') el.checked = data[key]; 
-                        else el.value = data[key]; 
-                    } 
-                }); 
-            }
-            
-            const savedArchetype = localStorage.getItem('kinetic_master_archetype');
-            if (savedArchetype) {
-                document.querySelectorAll('.archetype-btn h4').forEach(h4 => {
-                    if (h4.innerText === savedArchetype) {
-                        h4.parentElement.classList.add('active');
-                    }
-                });
-            }
-
-            calculatePulse(); 
-            lucide.createIcons(); 
-            setScenario('help', document.querySelector('.scenario-btn'));
-        };
-    </script>
-</body>
-</html>
+            'help': { labels: ["Mentor Name", "Technical Gap", "Goal"], placeholders: ["Alex", "Complex modeling", "Meeting the deadline"], template: (a, b, c) => `"Hi ${a},
