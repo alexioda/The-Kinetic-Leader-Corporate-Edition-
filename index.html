@@ -247,6 +247,9 @@
                         <span>Flow</span><span>Friction</span><span>Burnout</span>
                     </div>
                 </div>
+                <div id="resultCrisisNote" class="hidden border-t border-white/10 pt-6 mt-4 text-left">
+                    <p class="text-[10px] leading-relaxed opacity-60">This is a self-assessment, not a clinical diagnosis. If you're in crisis or having thoughts of harming yourself, call or text 988 (US Suicide &amp; Crisis Lifeline) or go to your nearest emergency room.</p>
+                </div>
             </div>
 
             <button onclick="enterHub()" class="w-full py-5 bg-white text-stone-900 font-bold rounded-xl text-xs uppercase tracking-widest hover:bg-gold-400 transition-all shadow-2xl mb-3">
@@ -588,7 +591,7 @@
     <div id="tab4" class="tab-content">
         <div class="flex flex-col md:flex-row justify-between items-center gap-12 mb-16">
             <div class="flex-1 text-center md:text-left">
-                <span class="text-gold-600 font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">Workshop Three · Integration</span>
+                <span class="text-gold-600 font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">Workshop Four · Integration</span>
                 <h2 class="text-5xl font-serif italic text-stone-900 mb-4 leading-tight">The Final<br>Blueprint.</h2>
                 <p class="text-lg text-stone-500 font-light max-w-xl">Transformation without documentation is a hallucination. Redefine your metrics of success and lock in the 72-hour integration protocol.</p>
             </div>
@@ -722,7 +725,7 @@
             <div>
                 <div class="bp-logo">LiveAdaptiv · The Kinetic Leader</div>
                 <div class="bp-title">Personal Blueprint</div>
-                <div class="bp-subtitle">Cognitive Endurance Lab · EY Intern Cohort</div>
+                <div class="bp-subtitle">Cognitive Endurance Lab · Corporate Cohort</div>
             </div>
             <div class="bp-date" id="bp-date-display"></div>
         </div>
@@ -922,7 +925,7 @@
         <div class="bp-access-row">
             <div class="bp-access-label">Your 90-Day App Access</div>
             <div class="bp-access-value">Adaptiv App · liveadaptiv.com</div>
-            <div class="bp-access-note">Access Code: <strong id="bp-access-code">EY2026</strong> · Valid for 90 days from session date · Full protocol: 7 layers, AI-integrated coaching, Parts Work, ELI profiling</div>
+            <div class="bp-access-note">Access Code: <strong id="bp-access-code">LEADER-90</strong> · Valid for 90 days from session date · Full protocol: 7 layers, AI-integrated coaching, Parts Work, ELI profiling</div>
         </div>
 
         <div class="bp-footer">
@@ -1037,6 +1040,7 @@ const ARCHETYPE_MAP = {
     "The Rusher": { desc: "Anxiety through acceleration — speed as a safety mechanism" },
     "The Fixer": { desc: "Control through over-functioning — taking over as protection" },
     "The Freezer": { desc: "Safety through withdrawal — paralysis as self-preservation" },
+    "The Integrated": { desc: "Ventral vagal stability — responding to pressure without defaulting to a survival pattern" },
 };
 
 // Result tiers
@@ -1141,6 +1145,7 @@ function computeAuditResults() {
     let fixer = 0;
     let rusher = 0;
     let freezer = 0;
+    let integrated = 0;
 
     AUDIT_QUESTIONS.forEach((q, qIdx) => {
         const selectedOptIdx = auditAnswers[qIdx];
@@ -1151,18 +1156,25 @@ function computeAuditResults() {
 
         // Correct Archetype Tally Logic (Only applies to Question 7 / index 6)
         if (qIdx === 6) { 
+            if (selectedOptIdx === 0) integrated++;
             if (selectedOptIdx === 1) rusher++;
             if (selectedOptIdx === 2) fixer++;
             if (selectedOptIdx === 3) freezer++;
         }
     });
 
-    if (freezer > 0 && freezer >= rusher && freezer >= fixer) {
+    // NOTE: previously, a fully healthy Q7 answer (index 0) incremented
+    // nothing, so every branch below fell through to the final `else` and
+    // labeled a healthy respondent "The Fixer". `integrated` now has its
+    // own branch so it only loses to a genuinely dominant survival pattern.
+    if (freezer > 0 && freezer >= rusher && freezer >= fixer && freezer >= integrated) {
         auditArchetype = "The Freezer";
-    } else if (rusher > 0 && rusher >= fixer) {
+    } else if (rusher > 0 && rusher >= fixer && rusher >= integrated) {
         auditArchetype = "The Rusher";
-    } else {
+    } else if (fixer > 0 && fixer >= integrated) {
         auditArchetype = "The Fixer";
+    } else {
+        auditArchetype = "The Integrated";
     }
 
     auditTotalScore = Math.min(score, 30);
@@ -1207,6 +1219,9 @@ function showAuditResult() {
     const bar = document.getElementById('resultScoreBar');
     bar.style.background = r.color;
     setTimeout(() => bar.style.width = ((auditTotalScore / 30) * 100) + '%', 100);
+
+    const crisisNote = document.getElementById('resultCrisisNote');
+    if (crisisNote) crisisNote.classList.toggle('hidden', r.tier !== 'inferno');
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
@@ -1514,7 +1529,7 @@ const scenarios = {
     help: {
         labels: ['Mentor Name','Technical Gap','Goal'],
         placeholders: ['Alex','Complex financial modeling','Delivering by Friday'],
-        template: (a,b,c) => `"Hi ${a}, I'm working through <strong>${b}</strong> and want to ensure I'm aligned with EY standards.<br><br>I've reached a hurdle and want to resolve it quickly so I can <strong>${c}</strong>. Do you have 5 minutes for a tactical check?"`
+        template: (a,b,c) => `"Hi ${a}, I'm working through <strong>${b}</strong> and want to ensure I'm aligned with what's expected here.<br><br>I've reached a hurdle and want to resolve it quickly so I can <strong>${c}</strong>. Do you have 5 minutes for a tactical check?"`
     },
     no: {
         labels: ['Requester','Low-Priority Task','Primary Commitment'],
@@ -1524,7 +1539,7 @@ const scenarios = {
     networking: {
         labels: ['Director Name','Shared Interest','Next Step'],
         placeholders: ['Sarah Chen','Digital Strategy','A brief 15-min intro call'],
-        template: (a,b,c) => `"Hi ${a}, I was genuinely fascinated by your work on <strong>${b}</strong>.<br><br>As I build my career architecture at EY, I'd love to hear your perspective. Would you be open to <strong>${c}</strong> next week?"`
+        template: (a,b,c) => `"Hi ${a}, I was genuinely fascinated by your work on <strong>${b}</strong>.<br><br>As I build my career architecture here, I'd love to hear your perspective. Would you be open to <strong>${c}</strong> next week?"`
     },
     self: {
         labels: ['Your Name','The Foggy Thought','The Evidence'],
@@ -1734,7 +1749,7 @@ function populateBlueprint() {
 
     // ── ACCESS CODE ──
     const codeEl = document.getElementById('bp-access-code');
-    if (codeEl) codeEl.textContent = 'EY2026';
+    if (codeEl) codeEl.textContent = 'LEADER-90';
 }
 
 // ─────────────────────────────────────────────
