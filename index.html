@@ -322,7 +322,7 @@
             </div>
             <div class="bg-stone-900 text-white p-8 rounded-2xl relative overflow-hidden flex flex-col justify-center">
                 <p class="text-[10px] font-bold text-gold-500 uppercase tracking-widest mb-3">The Performance Balance</p>
-                <p class="text-xs text-stone-400 leading-relaxed mb-6">When you approach with <strong class="text-white">Fear or Judgment</strong>, you create Brain Fog. When you approach with <strong class="text-gold-400">Curiosity</strong>, you unlock Clear Logic.</p>
+                <p class="text-xs text-stone-400 leading-relaxed mb-6">When you approach with <strong class="text-white">Fear or Judgment</strong>, you create Brain Fog. When you approach with <strong class="text-gold-400">Curiosity</strong>, Clear Logic returns.</p>
                 <div class="flex justify-between items-center gap-3">
                     <span class="text-[8px] font-bold uppercase text-red-400 tracking-wider shrink-0">Brain Fog</span>
                     <div class="flex-1 h-1 bg-stone-700 rounded-full overflow-hidden">
@@ -479,7 +479,7 @@
                 </div>
                 <div onclick="selectArchetype(this,'The Freezer')" class="archetype-btn">
                     <h4 class="font-bold text-stone-900 uppercase tracking-widest text-[10px] mb-3">The Freezer</h4>
-                    <p class="text-xs text-stone-500 leading-relaxed">I detach. When the load gets heavy, my nervous system pulls the emergency brake, leading to paralysis. I believe invisibility equals safety.</p>
+                    <p class="text-xs text-stone-500 leading-relaxed">I contain. When the load gets heavy, I go still and composed on the outside while everything locks down inside. I believe that if no one sees the strain, I stay safe.</p>
                 </div>
             </div>
         </div>
@@ -490,7 +490,7 @@
             <p class="text-sm text-stone-600 mb-4 leading-relaxed">Humans only repeat behaviors that serve them. Your burnout is not an accident — it is a defense mechanism protecting something vulnerable.</p>
             <div class="bg-stone-50 border border-stone-100 rounded-xl p-4 mb-5">
                 <p class="text-[9px] font-bold uppercase tracking-widest text-stone-400 mb-1">⚠ Private Exercise — Your answer stays on this device only.</p>
-                <p class="text-[10px] text-stone-500 italic">Complete honesty unlocks the value. No one will see what you write here.</p>
+                <p class="text-[10px] text-stone-500 italic">Complete honesty is where the value lives. No one will see what you write here.</p>
             </div>
             <label class="block text-[10px] font-bold uppercase tracking-widest text-gold-600 mb-3">If you stopped operating in your default archetype today, what are you secretly afraid would happen?</label>
             <textarea id="s2_shadow" class="w-full bg-stone-50 border border-stone-200 p-5 rounded-xl text-sm h-32 font-serif italic text-stone-700 focus:border-gold-500 outline-none resize-none" placeholder="e.g., If I stop fixing everything, people will realize I'm not actually essential..." oninput="saveData()"></textarea>
@@ -640,7 +640,7 @@
             <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
                 <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-1">Lab 13</h3>
                 <h4 class="font-serif text-2xl italic text-stone-900 mb-4">72-Hour Integration</h4>
-                <p class="text-xs text-stone-500 mb-4">The single, frictionless action you will take within 72 hours to prove this shift is real.</p>
+                <p class="text-xs text-stone-500 mb-4">The single, clean action you will take within 72 hours to prove this shift is real.</p>
                 <textarea id="s4_action" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 focus:border-gold-500 outline-none resize-none" placeholder="e.g., I will cancel the Thursday status update and let them email me the metrics." oninput="saveData()"></textarea>
             </div>
         </div>
@@ -1001,9 +1001,9 @@ const AUDIT_QUESTIONS = [
         text: "When a major deadline or high-stakes moment is approaching and you feel behind, your instinct is to:",
         options: [
             { text: "Triage and prioritize — I work the situation, not the panic", score: 0 },
-            { text: "Push harder and move faster — more hours, more output, outrun the pressure", score: 1 },
+            { text: "Push harder and move faster — more hours, more output, outrun the pressure", score: 2 },
             { text: "Take over — in group work I step in and handle more than my share because I can't risk it going wrong", score: 2 },
-            { text: "Freeze — the weight of where to start becomes so heavy I struggle to begin at all", score: 3 }
+            { text: "Go still — I hold a composed exterior while the weight of where to start locks up underneath, and I don't let it show", score: 2 }
         ]
     },
     {
@@ -1039,15 +1039,15 @@ const AUDIT_QUESTIONS = [
 const ARCHETYPE_MAP = {
     "The Rusher": { desc: "Anxiety through acceleration — speed as a safety mechanism" },
     "The Fixer": { desc: "Control through over-functioning — taking over as protection" },
-    "The Freezer": { desc: "Safety through withdrawal — paralysis as self-preservation" },
-    "The Integrated": { desc: "Ventral vagal stability — responding to pressure without defaulting to a survival pattern" },
+    "The Freezer": { desc: "Safety through containment — composure held over full internal activation" },
+    "The Sovereign": { desc: "Ventral vagal stability — metabolizing pressure without dropping into a survival pattern" },
 };
 
 // Result tiers
 function getAuditResult(score) {
     if (score <= 7) return { tier: "friction", title: "Friction", subtitle: "Acute Stress", color: "#14b8a6", badge: "bg-teal-900/50 text-teal-300 border border-teal-500/50", desc: "You are under pressure, but the engine is still intact. The recruiting season and academic load are stressing your system — not breaking it. Today we install the tools to keep it that way and give you an edge before the pressure peaks.", icon: "activity" };
     if (score <= 16) return { tier: "smoldering", title: "Smoldering", subtitle: "Early Burnout", color: "#f59e0b", badge: "bg-gold-900/50 text-gold-300 border border-gold-500/50", desc: "The warning lights are on. The combination of academic pressure, recruiting anxiety, and constant peer comparison is accumulating faster than you're recovering. This session is the intervention — before it becomes something harder to reverse.", icon: "alert-triangle" };
-    return { tier: "inferno", title: "Inferno", subtitle: "Full Burnout", color: "#f43f5e", badge: "bg-red-900/50 text-red-300 border border-red-500/50", desc: "Your battery isn't just low — it's damaged. You cannot performance-optimize your way out of physiological depletion. This session will not solve everything. But it will give you the first real thing to hold onto, and a protocol that stops the drain.", icon: "flame" };
+    return { tier: "inferno", title: "Inferno", subtitle: "Full Burnout", color: "#f43f5e", badge: "bg-red-900/50 text-red-300 border border-red-500/50", desc: "Your battery isn't just low — it's damaged. You cannot push your way out of physiological depletion. This session will not solve everything. But it will give you the first real thing to hold onto, and a protocol that stops the drain.", icon: "flame" };
 }
 
 // ─────────────────────────────────────────────
@@ -1174,7 +1174,7 @@ function computeAuditResults() {
     } else if (fixer > 0 && fixer >= integrated) {
         auditArchetype = "The Fixer";
     } else {
-        auditArchetype = "The Integrated";
+        auditArchetype = "The Sovereign";
     }
 
     auditTotalScore = Math.min(score, 30);
@@ -1340,7 +1340,10 @@ function updateExitFriction(val) {
 function updateDeltaDisplay() {
     const arrow = document.getElementById('deltaArrow');
     const result = document.getElementById('deltaResult');
-    if (!arrow || !result || !auditTotalScore) return;
+    // auditTotalScore can legitimately be 0 (a perfect, no-burnout-signals
+    // result) — gate on auditResultData (only set once the audit is
+    // complete) instead, so that respondent still sees their delta.
+    if (!arrow || !result || !auditResultData) return;
 
     // Normalize audit score (0–30) to a 1–10 scale for comparison
     const entryNormalized = Math.round((auditTotalScore / 30) * 9) + 1;
@@ -1492,9 +1495,9 @@ function updateArchetypeCarry() {
     const oathLabel = document.getElementById('oathArchetypeLabel');
     const oathPrompt = document.getElementById('oathArchetypePrompt');
     const prompts = {
-        'The Rusher': 'Your oath should address how you will replace speed with deliberate presence. What does operating with intentional pace look like for you?',
+        'The Rusher': 'Your oath should address how you will replace speed with deliberate presence. What does operating with a deliberate pace look like for you?',
         'The Fixer': "Your oath should address how you will protect your team's autonomy. What does trusting others to carry their own weight look like?",
-        'The Freezer': 'Your oath should address the one protocol you will follow when the emergency brake engages. What is your one step forward when the load peaks?',
+        'The Freezer': 'Your oath should name the signal that tells you you\'re containing again, and the one thing you\'ll let others see when the load peaks.',
     };
     if (oathHint && oathLabel && oathPrompt && prompts[name]) {
         oathLabel.innerText = name;
@@ -1511,7 +1514,7 @@ function updateRippleHint() {
     const hints = {
         'The Rusher': 'Your frantic energy creates chronic anxiety in your team. They may feel they can never work fast enough, leading to errors and low confidence.',
         'The Fixer': 'Your tendency to step in early robs your team of the chance to grow through struggle. You are inadvertently training dependence, not capability.',
-        'The Freezer': 'Your withdrawal under pressure creates a vacuum. Your team reads your silence as disapproval or uncertainty, amplifying their own anxiety.',
+        'The Freezer': 'Your composure hides the strain, so your team can\'t read what\'s actually happening. Your calm silence gets read as distance or disapproval, and they\'re left guessing.',
     };
     if (hint && text && hints[name]) {
         text.innerText = hints[name];
@@ -1651,7 +1654,7 @@ function populateBlueprint() {
     const archDescs = {
         'The Rusher': 'Under pressure, you treat time as the enemy. Your nervous system locks into a sprint — speed as control.',
         'The Fixer': 'Under pressure, you absorb the system\'s anxiety. You over-function and take over tasks — control as safety.',
-        'The Freezer': 'Under pressure, you detach. The cognitive load triggers the emergency brake — invisibility as safety.',
+        'The Freezer': 'Under pressure, you contain — composure held on the outside while the load locks down underneath.',
     };
     if (archBadge) archBadge.textContent = archName || '—';
     if (archDesc && archName) archDesc.textContent = archDescs[archName] || '';
@@ -1710,7 +1713,10 @@ function populateBlueprint() {
     const exitEl = document.getElementById('bp-delta-exit');
     const deltaRes = document.getElementById('bp-delta-result');
 
-    const entryNorm = auditTotalScore
+    // auditTotalScore can legitimately be 0 (a perfect, no-burnout-signals
+    // result) — gate on auditResultData instead so the PDF still shows an
+    // Entry value for that respondent, rather than falling back to "—".
+    const entryNorm = auditResultData
         ? Math.round((auditTotalScore / 30) * 9) + 1
         : null;
         
