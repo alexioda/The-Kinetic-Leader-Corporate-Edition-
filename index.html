@@ -309,7 +309,7 @@
                 <div id="s1AuditSummary" class="hidden w-full bg-stone-900 rounded-2xl p-4 border border-stone-700 text-center">
                     <p class="text-[9px] font-bold uppercase tracking-widest text-gold-500 mb-2">Your Entry Baseline</p>
                     <p class="font-serif text-xl italic text-white mb-1" id="s1AuditTitle"></p>
-                    <p class="text-[9px] text-stone-400 uppercase tracking-widest">Score: <span id="s1AuditScore" class="text-gold-400 font-bold"></span>/30 · <span id="s1AuditArchetype" class="text-gold-400"></span></p>
+                    <p class="text-[9px] text-stone-400 uppercase tracking-widest">Score: <span id="s1AuditScore" class="text-gold-400 font-bold"></span>/30<span id="s1AuditArchetypeWrap"> · <span id="s1AuditArchetype" class="text-gold-400"></span></span></p>
                 </div>
             </div>
         </div>
@@ -760,7 +760,7 @@
             </div>
         </div>
 
-        <div class="bp-section">
+        <div class="bp-section" id="bp-section-lab01">
             <div class="bp-section-label">Lab 01 · Energy Leak Detection</div>
             <div class="bp-two-col">
                 <div class="bp-field">
@@ -774,7 +774,7 @@
             </div>
         </div>
 
-        <div class="bp-section">
+        <div class="bp-section" id="bp-section-lab02">
             <div class="bp-section-label">Lab 02 · The Control Fortress</div>
             <div class="bp-two-col">
                 <div class="bp-field">
@@ -788,7 +788,7 @@
             </div>
         </div>
 
-        <div class="bp-section">
+        <div class="bp-section" id="bp-section-s1intent">
             <div class="bp-section-label">Session 1 · The Sovereign Choice</div>
             <div class="bp-field">
                 <div class="bp-field-label">Commitment to Excellence</div>
@@ -811,7 +811,7 @@
             </div>
         </div>
 
-        <div class="bp-section">
+        <div class="bp-section" id="bp-section-lab06">
             <div class="bp-section-label">Lab 06 · The Failure Resume</div>
             <div class="bp-two-col">
                 <div class="bp-field">
@@ -825,7 +825,7 @@
             </div>
         </div>
 
-        <div class="bp-section">
+        <div class="bp-section" id="bp-section-lab07">
             <div class="bp-section-label">Lab 07 · The Empty Boat Inquiry</div>
             <div class="bp-field">
                 <div class="bp-field-label">My "Empty Boat"</div>
@@ -833,7 +833,7 @@
             </div>
         </div>
 
-        <div class="bp-section">
+        <div class="bp-section" id="bp-section-lab08">
             <div class="bp-section-label">Lab 08 · The Energy Portfolio</div>
             <div class="bp-two-col">
                 <div class="bp-field">
@@ -847,7 +847,7 @@
             </div>
         </div>
 
-        <div class="bp-section">
+        <div class="bp-section" id="bp-section-lab09">
             <div class="bp-section-label">Lab 09 · The Radical Mirror</div>
             <div class="bp-field" style="margin-bottom:6px;">
                 <div class="bp-field-label">1. Where am I complicit in creating the conditions I say I don't want?</div>
@@ -863,7 +863,7 @@
             </div>
         </div>
 
-        <div class="bp-section">
+        <div class="bp-section" id="bp-section-lab12">
             <div class="bp-section-label">Lab 12 · The 90-Day Vision</div>
             <div class="bp-field">
                 <div class="bp-field-label">Metrics of Success</div>
@@ -904,7 +904,7 @@
                     <div class="bp-delta-label" id="bp-delta-result" style="color:#999;">—</div>
                 </div>
             </div>
-            <div class="bp-field">
+            <div class="bp-field" id="bp-section-shift">
                 <div class="bp-field-label">What Shifted</div>
                 <div class="bp-field-value" id="bp-shift-statement"></div>
             </div>
@@ -925,7 +925,7 @@
         <div class="bp-access-row">
             <div class="bp-access-label">Your 90-Day App Access</div>
             <div class="bp-access-value">Adaptiv App · liveadaptiv.com</div>
-            <div class="bp-access-note">Access Code: <strong id="bp-access-code">LEADER-90</strong> · Valid for 90 days from session date · Full protocol: 7 layers, AI-integrated coaching, Parts Work, ELI profiling</div>
+            <div class="bp-access-note">Access Code: <strong id="bp-access-code">LEADER-90</strong> · Valid for 90 days from session date · Full protocol: 7 layers, AI-integrated coaching, Parts Work</div>
         </div>
 
         <div class="bp-footer">
@@ -1040,7 +1040,6 @@ const ARCHETYPE_MAP = {
     "The Rusher": { desc: "Anxiety through acceleration — speed as a safety mechanism" },
     "The Fixer": { desc: "Control through over-functioning — taking over as protection" },
     "The Freezer": { desc: "Safety through containment — composure held over full internal activation" },
-    "The Sovereign": { desc: "Ventral vagal stability — metabolizing pressure without dropping into a survival pattern" },
 };
 
 // Result tiers
@@ -1174,7 +1173,11 @@ function computeAuditResults() {
     } else if (fixer > 0 && fixer >= integrated) {
         auditArchetype = "The Fixer";
     } else {
-        auditArchetype = "The Sovereign";
+        // No survival pattern dominated Q7 — leave auditArchetype unset
+        // rather than forcing a fourth label. There is no fourth archetype
+        // card in Lab 04 to confirm against, and none in the canon. The
+        // Hub already falls back gracefully everywhere this is read.
+        auditArchetype = "";
     }
 
     auditTotalScore = Math.min(score, 30);
@@ -1271,6 +1274,8 @@ function populateHubFromAudit() {
         document.getElementById('s1AuditTitle').innerText = auditResultData.title + ' — ' + auditResultData.tier.charAt(0).toUpperCase() + auditResultData.tier.slice(1);
         document.getElementById('s1AuditScore').innerText = auditTotalScore;
         document.getElementById('s1AuditArchetype').innerText = auditArchetype;
+        const archWrap = document.getElementById('s1AuditArchetypeWrap');
+        if (archWrap) archWrap.style.display = auditArchetype ? '' : 'none';
     }
 
     // Header pill
@@ -1312,12 +1317,6 @@ function populateHubFromAudit() {
             updateArchetypeCarry();
             updateRippleHint();
         }, 100);
-    }
-
-    // Welcome participant by name in header
-    if (participantName) {
-        const headerTitle = document.querySelector('header h1');
-        if (headerTitle) headerTitle.innerText = 'The Kinetic Leader';
     }
 }
 
@@ -1613,6 +1612,45 @@ function exportPDF() {
     window.print();
 }
 
+// Sections that are optional depending on how much of the Hub a participant
+// actually completed (e.g. a trimmed, single-session delivery). If every
+// field feeding a section is empty, the section is hidden from the export
+// instead of printing as a page of em-dashes. Sections not listed here
+// (Participant, Diagnostic Result, Archetype, Golden Shadow notice, Lab 13,
+// Session Audit, Oath, Access) always print.
+const OPTIONAL_PRINT_SECTIONS = [
+    { sectionId: 'bp-section-lab01', fieldIds: ['bp-leak', 'bp-leak-hours'] },
+    { sectionId: 'bp-section-lab02', fieldIds: ['bp-fortress', 'bp-noise'] },
+    { sectionId: 'bp-section-s1intent', fieldIds: ['bp-s1-intent'] },
+    { sectionId: 'bp-section-lab06', fieldIds: ['bp-failure', 'bp-yield'] },
+    { sectionId: 'bp-section-lab07', fieldIds: ['bp-boat'] },
+    { sectionId: 'bp-section-lab08', fieldIds: ['bp-portfolio-drain', 'bp-portfolio-fix'] },
+    { sectionId: 'bp-section-lab09', fieldIds: ['bp-mirror1', 'bp-mirror-payoff', 'bp-mirror2'] },
+    { sectionId: 'bp-section-lab12', fieldIds: ['bp-vision'] },
+];
+
+function applyOptionalSectionVisibility() {
+    OPTIONAL_PRINT_SECTIONS.forEach(({ sectionId, fieldIds }) => {
+        const section = document.getElementById(sectionId);
+        if (!section) return;
+        const allEmpty = fieldIds.every(id => {
+            const el = document.getElementById(id);
+            const v = el ? el.textContent.trim() : '';
+            return !v || v === '—';
+        });
+        section.style.display = allEmpty ? 'none' : '';
+    });
+
+    // "What shifted" is one field inside the always-on Session Audit section —
+    // hide just that field, not the whole section, if it was left blank.
+    const shiftField = document.getElementById('bp-section-shift');
+    const shiftVal = document.getElementById('bp-shift-statement');
+    if (shiftField && shiftVal) {
+        const v = shiftVal.textContent.trim();
+        shiftField.style.display = (!v || v === '—') ? 'none' : '';
+    }
+}
+
 function populateBlueprint() {
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
@@ -1756,6 +1794,9 @@ function populateBlueprint() {
     // ── ACCESS CODE ──
     const codeEl = document.getElementById('bp-access-code');
     if (codeEl) codeEl.textContent = 'LEADER-90';
+
+    // ── HIDE ANY SECTION THAT WASN'T COMPLETED (e.g. a trimmed session) ──
+    applyOptionalSectionVisibility();
 }
 
 // ─────────────────────────────────────────────
@@ -1789,6 +1830,7 @@ window.onload = function() {
     } catch(e) {}
 
     try { calculatePulse(); } catch(e) {}
+    try { updateROI(); } catch(e) {}
     try { setScenario('help', document.getElementById('scBtn_help')); } catch(e) {}
     try { if (typeof lucide !== 'undefined') lucide.createIcons(); } catch(e) {}
     try { updateDeltaDisplay(); } catch(e) {}
