@@ -1,1798 +1,670 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Kinetic Leader | Integrated Blueprint</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { serif: ['"Cormorant Garamond"', 'serif'], sans: ['"Inter"', 'sans-serif'] },
-                    colors: {
-                        stone: { 50:'#fafaf9',100:'#f5f5f4',200:'#e7e5e4',300:'#d6d3d1',400:'#a8a29e',500:'#78716c',600:'#57534e',700:'#44403c',800:'#292524',900:'#1c1917',950:'#0c0a09' },
-                        gold: { 400:'#fbbf24', 500:'#f59e0b', 600:'#d97706' }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        *, *::before, *::after { box-sizing: border-box; }
-        body { background: #fafaf9; }
-
-        /* ── AUDIT GATE ── */
-        #auditGate { position:fixed; inset:0; background:#0c0a09; z-index:9000; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; overflow-y:auto; }
-        #auditGate.hidden { display:none; }
-
-        /* Question progress bar */
-        .audit-progress-bar { height:3px; background:#292524; border-radius:2px; overflow:hidden; }
-        .audit-progress-fill { height:100%; background:linear-gradient(90deg,#f59e0b,#fbbf24); border-radius:2px; transition:width 0.4s ease; }
-
-        /* Audit option buttons */
-        .audit-opt { width:100%; text-align:left; padding:1rem 1.25rem; border:1px solid #292524; border-radius:12px; background:#1c1917; color:#a8a29e; font-size:13px; line-height:1.5; cursor:pointer; transition:all 0.2s ease; }
-        .audit-opt:hover { border-color:#f59e0b; color:white; background:#292424; }
-        .audit-opt.selected { border-color:#f59e0b; background:#292524; color:white; }
-
-        /* Audit result card */
-        .audit-result-card { border-radius:20px; padding:32px; text-align:center; }
-        .result-friction { background:linear-gradient(135deg,#1a3a2a,#0d2018); border:1px solid #14b8a6; }
-        .result-smoldering{ background:linear-gradient(135deg,#2a1f0d,#1a1000); border:1px solid #f59e0b; }
-        .result-inferno { background:linear-gradient(135deg,#2a0d0d,#1a0000); border:1px solid #f43f5e; }
-
-        /* ── TABS ── */
-        .tab-content { display:none; }
-        .tab-content.active { display:block; animation:fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-
-        /* ── PULSE CIRCLE ── */
-        .pulse-circle { width:148px;height:148px;border:3px solid #f59e0b;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto;background:#1c1917;color:white;box-shadow:0 0 0 8px rgba(245,158,11,0.08),0 0 40px rgba(245,158,11,0.15);transition:box-shadow 0.5s ease; }
-
-        /* ── SCENARIO BUTTONS ── */
-        .scenario-btn { border:1px solid #e7e5e4;color:#78716c;font-size:0.65rem;text-transform:uppercase;font-weight:800;letter-spacing:0.05em;padding:0.75rem 0.25rem;transition:all 0.2s;border-radius:8px;width:100%;text-align:center;height:100%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:white; }
-        .scenario-btn.active { background:#1c1917;color:white;border-color:#1c1917; }
-        .scenario-btn:hover:not(.active) { background:#f5f5f4;border-color:#d6d3d1; }
-
-        /* ── ARCHETYPE BUTTONS ── */
-        .archetype-btn { border:1px solid #e7e5e4;background:#fafaf9;text-align:left;padding:1.5rem;border-radius:1rem;transition:all 0.3s ease;cursor:pointer;width:100%; }
-        .archetype-btn:hover { border-color:#f59e0b;background:#fffbeb; }
-        .archetype-btn.active { background:#1c1917;border-color:#1c1917;color:white; }
-        .archetype-btn.active h4 { color:#f59e0b; }
-        .archetype-btn.active p { color:#e7e5e4; }
-
-        /* ── ARCHETYPE CARRY BADGE ── */
-        .archetype-tag { display:none;align-items:center;gap:8px;padding:8px 16px;background:#1c1917;color:#f59e0b;border-radius:8px;font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase; }
-        .archetype-tag.visible { display:inline-flex; }
-
-        /* ── DECORATIVE ── */
-        .executive-border { border-left:4px solid #f59e0b;background:#fffbeb; }
-
-        /* ── DELTA ── */
-        .delta-positive { color:#14b8a6; }
-        .delta-negative { color:#f43f5e; }
-        .delta-neutral { color:#a8a29e; }
-
-        /* ── RANGE SLIDER ── */
-        input[type=range] { -webkit-appearance:none;width:100%;background:transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance:none;height:22px;width:22px;border-radius:50%;background:#f59e0b;cursor:pointer;margin-top:-9px;box-shadow:0 0 10px rgba(245,158,11,0.4); }
-        input[type=range]::-webkit-slider-runnable-track { width:100%;height:4px;cursor:pointer;background:#e7e5e4;border-radius:2px; }
-        input[type=range]:focus { outline:none; }
-        input[type=range].teal-slider::-webkit-slider-thumb { background:#14b8a6;box-shadow:0 0 10px rgba(20,184,166,0.4); }
-
-        /* ── TOAST ── */
-        #toast { position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(10px);background:#1c1917;color:#f59e0b;padding:10px 20px;border-radius:100px;font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;opacity:0;transition:all 0.3s ease;z-index:9999;pointer-events:none;border:1px solid rgba(245,158,11,0.3); }
-        #toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
-
-        /* ── INPUTS ── */
-        textarea, input[type="text"], input[type="number"] { transition:border-color 0.3s ease;font-family:'Inter',sans-serif; }
-        textarea:focus, input:focus { outline:none; }
-
-        /* ── PRINT — Blueprint PDF only ── */
-        @media screen {
-            #blueprint-print { display: none; }
-        }
-
-        @media print {
-            body > *:not(#blueprint-print) { display:none !important; }
-            #blueprint-print { display:block !important; }
-            body { background:white !important; margin:0; padding:0; }
-
-            #blueprint-print { font-family:'Cormorant Garamond',Georgia,serif; color:#1c1917; padding:0; margin:0; width:100%; }
-
-            .bp-page { width:100%; padding:36px 44px; box-sizing:border-box; page-break-after:always; position:relative; }
-            .bp-page:last-child { page-break-after:auto; }
-
-            .bp-header { display:flex; justify-content:space-between; align-items:flex-start; border-bottom:3px solid #b8860b; padding-bottom:14px; margin-bottom:24px; print-color-adjust:exact; }
-            .bp-logo { font-size:10px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#b8860b; font-family:'Inter',sans-serif; print-color-adjust:exact; }
-            .bp-date { font-size:9px; color:#999; font-family:'Inter',sans-serif; text-align:right; }
-
-            .bp-title { font-size:38px; font-style:italic; color:#1c1917; margin:0 0 4px; line-height:1.1; }
-            .bp-subtitle { font-size:10px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#b8860b; margin:0 0 24px; font-family:'Inter',sans-serif; print-color-adjust:exact; }
-
-            .bp-section { margin-bottom:20px; }
-            .bp-section-label { font-size:8px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#b8860b; font-family:'Inter',sans-serif; margin-bottom:6px; print-color-adjust:exact; }
-
-            .bp-field { border-left:3px solid #b8860b; padding:8px 12px; background:#fdf8ee; margin-bottom:8px; border-radius:0 5px 5px 0; min-height:32px; print-color-adjust:exact; }
-            .bp-field-label { font-size:7px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#999; font-family:'Inter',sans-serif; margin-bottom:3px; }
-            .bp-field-value { font-size:14px; font-style:italic; color:#1c1917; line-height:1.4; }
-            .bp-field-value.large { font-size:18px; }
-            .bp-field-value.small { font-size:11px; font-style:normal; font-family:'Inter',sans-serif; }
-
-            .bp-two-col { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
-
-            .bp-badge { display:inline-block; padding:4px 10px; border-radius:100px; font-size:8px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; font-family:'Inter',sans-serif; margin-bottom:6px; print-color-adjust:exact; }
-            .bp-badge-friction { background:#e6faf7; color:#0d9488; border:1px solid #99f6e4; print-color-adjust:exact; }
-            .bp-badge-smoldering { background:#fefce8; color:#b45309; border:1px solid #fde68a; print-color-adjust:exact; }
-            .bp-badge-inferno { background:#fff1f2; color:#be123c; border:1px solid #fecdd3; print-color-adjust:exact; }
-            .bp-badge-archetype { background:#1c1917; color:#f59e0b; border:1px solid #44403c; print-color-adjust:exact; }
-
-            .bp-delta { display:flex; align-items:center; gap:10px; padding:10px 14px; background:#f8f8f8; border-radius:6px; margin-bottom:10px; }
-            .bp-delta-num { font-size:28px; font-style:italic; font-weight:700; }
-            .bp-delta-arrow { font-size:16px; color:#999; }
-            .bp-delta-info { flex:1; }
-            .bp-delta-label { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; font-family:'Inter',sans-serif; }
-            .bp-delta-positive { color:#0d9488; }
-            .bp-delta-negative { color:#be123c; }
-            .bp-delta-neutral { color:#999; }
-
-            .bp-oath-box { background:#1c1917; color:white; padding:18px 22px; border-radius:8px; margin-top:14px; print-color-adjust:exact; }
-            .bp-oath-label { font-size:8px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#f59e0b; font-family:'Inter',sans-serif; margin-bottom:8px; print-color-adjust:exact; }
-            .bp-oath-text { font-size:18px; font-style:italic; color:white; line-height:1.5; print-color-adjust:exact; }
-
-            .bp-rule { border:none; border-top:1px solid #e7e5e4; margin:16px 0; }
-
-            .bp-footer { position:fixed; bottom:0; left:0; right:0; display:flex; justify-content:space-between; align-items:center; padding:8px 44px; border-top:1px solid #e7e5e4; font-size:7px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#bbb; font-family:'Inter',sans-serif; background:white; print-color-adjust:exact; }
-            .bp-footer span { color:#b8860b; print-color-adjust:exact; }
-
-            .bp-access-row { margin-top:16px; padding:10px 14px; background:#fdf8ee; border:1px solid #e7d5a0; border-radius:6px; print-color-adjust:exact; }
-            .bp-access-label { font-size:7px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#b8860b; font-family:'Inter',sans-serif; margin-bottom:3px; print-color-adjust:exact; }
-            .bp-access-value { font-size:13px; font-family:'Inter',sans-serif; color:#1c1917; font-weight:600; }
-            .bp-access-note { font-size:8px; color:#999; font-family:'Inter',sans-serif; margin-top:2px; }
-
-            .bp-action-box { background:#f0fdf4; border:1px solid #86efac; border-radius:6px; padding:10px 14px; margin-bottom:8px; print-color-adjust:exact; }
-            .bp-action-label { font-size:7px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#16a34a; font-family:'Inter',sans-serif; margin-bottom:3px; print-color-adjust:exact; }
-            .bp-action-value { font-size:13px; font-style:italic; color:#1c1917; }
-        }
-    </style>
-</head>
-<body class="text-stone-900 font-sans antialiased min-h-screen">
-
-<div id="auditGate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
-    <div class="w-full max-w-xl">
-
-        <div class="text-center mb-10">
-            <div class="w-10 h-10 bg-gold-500 text-stone-900 flex items-center justify-center font-serif italic font-bold text-xl rounded-sm mx-auto mb-4">L</div>
-            <h1 id="gateTitle" class="font-serif text-4xl italic text-white mb-2">The Kinetic Blueprint</h1>
-            <p class="text-stone-400 text-xs uppercase tracking-[0.3em] font-bold">Performance Baseline Diagnostic · LiveAdaptiv</p>
-        </div>
-
-        <div id="auditIntro">
-            <div class="bg-stone-900 border border-stone-700 rounded-2xl p-8 mb-6 text-center">
-                <i data-lucide="activity" class="w-10 h-10 text-gold-500 mx-auto mb-4"></i>
-                <p class="font-serif text-xl italic text-white mb-4 leading-relaxed">
-                    Before we begin, we need your baseline.
-                </p>
-                <p class="text-stone-400 text-sm leading-relaxed mb-6">
-                    10 questions. 2 minutes. This diagnostic measures where your energy system is operating right now — under the weight of academics, recruiting, and the pressure of entering a high-performance professional environment.
-                </p>
-                <p class="text-[10px] font-bold uppercase tracking-widest text-stone-500 mb-6">Your answers are stored locally on this device only.</p>
-                <input type="text" id="auditName" placeholder="Enter your name or alias to begin" class="w-full bg-stone-800 border border-stone-600 text-white text-center text-lg font-serif italic py-4 px-6 rounded-xl mb-4 placeholder-stone-600 focus:border-gold-500 outline-none">
-                <button onclick="startAudit()" class="w-full py-4 bg-gold-500 text-stone-900 font-bold rounded-xl text-xs uppercase tracking-widest hover:bg-gold-400 transition-all shadow-lg">
-                    Begin Diagnostic
-                </button>
-            </div>
-            <p class="text-center text-[10px] text-stone-600 uppercase tracking-widest">© 2026 LiveAdaptiv</p>
-        </div>
-
-        <div id="auditQuestions" class="hidden">
-            <div class="mb-8">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-[9px] font-bold uppercase tracking-widest text-stone-500">Question <span id="qNum">1</span> of 10</span>
-                    <span id="qCategory" class="text-[9px] font-bold uppercase tracking-widest text-gold-500"></span>
-                </div>
-                <div class="audit-progress-bar">
-                    <div class="audit-progress-fill" id="auditProgressFill" style="width:0%"></div>
-                </div>
-            </div>
-
-            <div class="bg-stone-900 border border-stone-700 rounded-2xl p-8 mb-6">
-                <p class="font-serif text-2xl italic text-white leading-snug mb-8" id="qText">Loading...</p>
-                <div id="qOptions" class="space-y-3"></div>
-            </div>
-
-            <div class="flex justify-between items-center">
-                <button id="auditBackBtn" aria-disabled="true" onclick="auditBack()" class="text-stone-500 hover:text-white text-xs uppercase tracking-widest font-bold transition-colors flex items-center gap-2">
-                    <i data-lucide="arrow-left" class="w-3 h-3"></i> Back
-                </button>
-                <button id="auditNextBtn" onclick="auditNext()" disabled class="px-8 py-3 bg-gold-500 text-stone-900 font-bold rounded-full text-xs uppercase tracking-widest hover:bg-gold-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
-                    Next →
-                </button>
-            </div>
-        </div>
-
-        <div id="auditResult" class="hidden">
-            <div id="resultCard" class="audit-result-card mb-6">
-                <div id="resultIcon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"></div>
-                <p class="text-[9px] font-bold uppercase tracking-widest mb-2 opacity-60" id="resultLabel">Diagnostic Result</p>
-                <h2 class="font-serif text-3xl italic mb-2" id="resultTitle"></h2>
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest mb-6" id="resultBadge"></div>
-                <p class="text-sm leading-relaxed mb-6 opacity-80" id="resultDesc"></p>
-                <div class="border-t border-white/10 pt-6 text-left">
-                    <p class="text-[9px] font-bold uppercase tracking-widest opacity-50 mb-2">Your Kinetic Archetype</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 bg-gold-500/20 rounded-full flex items-center justify-center">
-                            <i data-lucide="compass" class="w-4 h-4 text-gold-400"></i>
-                        </div>
-                        <div>
-                            <p class="font-bold text-white text-sm" id="resultArchetype"></p>
-                            <p class="text-[10px] opacity-50" id="resultArchetypeDesc"></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="border-t border-white/10 pt-6 mt-4 text-left">
-                    <p class="text-[9px] font-bold uppercase tracking-widest opacity-50 mb-2">Burnout Score</p>
-                    <div class="flex items-end gap-3">
-                        <span class="font-serif text-4xl font-bold" id="resultScore"></span>
-                        <span class="text-sm opacity-50 mb-1">/ 30</span>
-                    </div>
-                    <div class="mt-2 h-2 bg-white/10 rounded-full overflow-hidden">
-                        <div id="resultScoreBar" class="h-full rounded-full transition-all duration-1000" style="width:0%"></div>
-                    </div>
-                    <div class="flex justify-between text-[8px] uppercase tracking-widest opacity-30 mt-1">
-                        <span>Flow</span><span>Friction</span><span>Burnout</span>
-                    </div>
-                </div>
-                <div id="resultCrisisNote" class="hidden border-t border-white/10 pt-6 mt-4 text-left">
-                    <p class="text-[10px] leading-relaxed opacity-60">This is a self-assessment, not a clinical diagnosis. If you're in crisis or having thoughts of harming yourself, call or text 988 (US Suicide &amp; Crisis Lifeline) or go to your nearest emergency room.</p>
-                </div>
-            </div>
-
-            <button onclick="enterHub()" class="w-full py-5 bg-white text-stone-900 font-bold rounded-xl text-xs uppercase tracking-widest hover:bg-gold-400 transition-all shadow-2xl mb-3">
-                Enter The Kinetic Leader Hub →
-            </button>
-            <p class="text-center text-[9px] text-stone-600 uppercase tracking-widest">Your results will carry through all four sessions</p>
-        </div>
-
-    </div>
-</div>
-
-<div id="toast">Synced</div>
-
-<header class="bg-stone-950 text-white py-5 px-6 sticky top-0 z-50 shadow-2xl no-print border-b border-stone-800">
-    <div class="max-w-5xl mx-auto flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-gold-500 text-stone-900 flex items-center justify-center font-serif italic font-bold text-lg rounded-sm">L</div>
-            <div>
-                <h1 class="text-xs font-bold tracking-[0.3em] uppercase text-white">The Kinetic Leader</h1>
-                <p class="text-[9px] text-stone-500 tracking-widest uppercase">Integrated Blueprint · LiveAdaptiv</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <div id="headerAuditPill" class="hidden items-center gap-2 px-3 py-1.5 rounded-full border text-[9px] font-bold uppercase tracking-widest"></div>
-            <div id="saveIndicator" class="text-[9px] font-bold text-gold-500 opacity-0 transition-opacity uppercase tracking-widest">Synced ✓</div>
-            <button onclick="exportPDF()" class="text-[10px] font-bold uppercase tracking-widest bg-white/5 border border-white/10 px-5 py-2.5 rounded-full hover:bg-gold-500 hover:text-stone-900 hover:border-gold-500 transition-all flex items-center gap-2">
-                <i data-lucide="download" class="w-3 h-3"></i> Export Blueprint
-            </button>
-        </div>
-    </div>
-</header>
-
-<nav class="bg-white border-b border-stone-200 no-print sticky top-[73px] z-40 shadow-sm" role="tablist">
-    <div class="max-w-5xl mx-auto flex">
-        <button id="btn1" role="tab" aria-selected="true" onclick="showTab(1)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-stone-900 text-stone-900 transition-all">S1: Foundation</button>
-        <button id="btn2" role="tab" aria-selected="false" onclick="showTab(2)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-400 hover:text-stone-600 transition-all">S2: Agility</button>
-        <button id="btn3" role="tab" aria-selected="false" onclick="showTab(3)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-400 hover:text-stone-600 transition-all">S3: Sovereignty</button>
-        <button id="btn4" role="tab" aria-selected="false" onclick="showTab(4)" class="tab-btn flex-1 py-4 text-[9px] font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-400 hover:text-stone-600 transition-all">S4: Blueprint</button>
-    </div>
-</nav>
-
-<main class="max-w-5xl mx-auto px-6 md:px-8 py-12 pb-40">
-
-    <div id="tab1" class="tab-content active">
-
-        <div class="flex flex-col md:flex-row justify-between items-center gap-12 mb-16">
-            <div class="flex-1 text-center md:text-left">
-                <span class="text-gold-600 font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">Workshop One · Internal Operating System</span>
-                <h2 class="text-5xl font-serif italic text-stone-900 mb-4 leading-tight">Professional<br>Architecture.</h2>
-                <p class="text-lg text-stone-500 font-light max-w-xl">Intelligence gets you the interview. <span class="text-stone-900 font-semibold">Energy management gets you the career.</span></p>
-            </div>
-            <div class="w-full md:w-64 no-print flex flex-col items-center gap-4">
-                <div class="pulse-circle">
-                    <span id="scoreDisplay" class="text-4xl font-serif font-bold text-gold-500">100%</span>
-                    <span class="text-[9px] uppercase tracking-widest mt-1 opacity-50">Resilience Pulse</span>
-                </div>
-                <div id="s1AuditSummary" class="hidden w-full bg-stone-900 rounded-2xl p-4 border border-stone-700 text-center">
-                    <p class="text-[9px] font-bold uppercase tracking-widest text-gold-500 mb-2">Your Entry Baseline</p>
-                    <p class="font-serif text-xl italic text-white mb-1" id="s1AuditTitle"></p>
-                    <p class="text-[9px] text-stone-400 uppercase tracking-widest">Score: <span id="s1AuditScore" class="text-gold-400 font-bold"></span>/30 · <span id="s1AuditArchetype" class="text-gold-400"></span></p>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-8 mb-12">
-            <div class="executive-border p-8 rounded-r-2xl">
-                <span class="text-[10px] font-bold uppercase tracking-widest text-gold-600 mb-2 block">The Architect: Alex Ioda</span>
-                <p class="text-sm text-stone-700 leading-relaxed mb-4">Current <strong>Treatment Team Leader</strong>. Previously 4 years as a <strong>Psychologist 2 in a Max Security Prison</strong> and 10 years as a frontline <strong>Crisis Counselor</strong>.</p>
-                <p class="text-xs text-stone-500 leading-relaxed italic">"I spent 14 years on the frontlines where stress is a survival metric. I help high-performers apply that same pressure-tested logic to the professional world."</p>
-            </div>
-            <div class="bg-stone-900 text-white p-8 rounded-2xl relative overflow-hidden flex flex-col justify-center">
-                <p class="text-[10px] font-bold text-gold-500 uppercase tracking-widest mb-3">The Performance Balance</p>
-                <p class="text-xs text-stone-400 leading-relaxed mb-6">When you approach with <strong class="text-white">Fear or Judgment</strong>, you create Brain Fog. When you approach with <strong class="text-gold-400">Curiosity</strong>, Clear Logic returns.</p>
-                <div class="flex justify-between items-center gap-3">
-                    <span class="text-[8px] font-bold uppercase text-red-400 tracking-wider shrink-0">Brain Fog</span>
-                    <div class="flex-1 h-1 bg-stone-700 rounded-full overflow-hidden">
-                        <div class="h-full bg-gradient-to-r from-red-500 via-gold-500 to-teal-400 w-full"></div>
-                    </div>
-                    <span class="text-[8px] font-bold uppercase text-teal-400 tracking-wider shrink-0">Clear Logic</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm grid md:grid-cols-2 gap-12 mb-12">
-            <div>
-                <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-1">Lab 01</h3>
-                <h4 class="font-serif text-2xl italic text-stone-900 mb-5">Energy Leak Detection</h4>
-                <label class="block text-[10px] font-bold text-stone-500 mb-2 uppercase tracking-widest">The Primary Leak</label>
-                <textarea id="s1_leak" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl focus:border-gold-500 outline-none h-28 text-sm mb-5 resize-none" placeholder="Identify your specific mental 'static' right now..." oninput="saveAndScore()"></textarea>
-                <label class="block text-[10px] font-bold text-stone-500 mb-2 uppercase tracking-widest">Metabolic Cost (hrs/week)</label>
-                <input type="number" id="leak_hours" class="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl focus:border-gold-500 outline-none text-sm mb-3" placeholder="Hours lost per week..." oninput="saveData(); updateROI()">
-                <div class="flex items-center gap-2">
-                    <div class="flex-1 h-1.5 bg-stone-100 rounded-full overflow-hidden">
-                        <div id="roiBar" class="h-full bg-gold-500 transition-all duration-500" style="width:0%"></div>
-                    </div>
-                    <span class="text-[9px] font-bold text-gold-600 uppercase tracking-wider whitespace-nowrap">Loss: <span id="roi_display">0</span>%</span>
-                </div>
-            </div>
-            <div class="space-y-2">
-                <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-3">Performance Behavior Audit:</p>
-                <label class="flex items-start gap-3 p-3 bg-stone-50 rounded-xl cursor-pointer hover:bg-stone-100 transition-all border border-transparent hover:border-stone-200">
-                    <input type="checkbox" id="check_1" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900 mt-0.5 shrink-0">
-                    <span class="text-[10px] font-medium text-stone-600 leading-relaxed">I delay starting tasks because I fear they won't be perfect.</span>
-                </label>
-                <label class="flex items-start gap-3 p-3 bg-stone-50 rounded-xl cursor-pointer hover:bg-stone-100 transition-all border border-transparent hover:border-stone-200">
-                    <input type="checkbox" id="check_2" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900 mt-0.5 shrink-0">
-                    <span class="text-[10px] font-medium text-stone-600 leading-relaxed">I feel feedback or correction as a personal failure.</span>
-                </label>
-                <label class="flex items-start gap-3 p-3 bg-stone-50 rounded-xl cursor-pointer hover:bg-stone-100 transition-all border border-transparent hover:border-stone-200">
-                    <input type="checkbox" id="check_3" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900 mt-0.5 shrink-0">
-                    <span class="text-[10px] font-medium text-stone-600 leading-relaxed">I spend energy comparing my progress to my peers.</span>
-                </label>
-                <label class="flex items-start gap-3 p-3 bg-stone-50 rounded-xl cursor-pointer hover:bg-stone-100 transition-all border border-transparent hover:border-stone-200">
-                    <input type="checkbox" id="check_4" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900 mt-0.5 shrink-0">
-                    <span class="text-[10px] font-medium text-stone-600 leading-relaxed">I spend hours over-thinking simple messages or emails.</span>
-                </label>
-                <label class="flex items-start gap-3 p-3 bg-stone-50 rounded-xl cursor-pointer hover:bg-stone-100 transition-all border border-transparent hover:border-stone-200">
-                    <input type="checkbox" id="check_5" onchange="saveAndScore()" class="w-4 h-4 accent-stone-900 mt-0.5 shrink-0">
-                    <span class="text-[10px] font-medium text-stone-600 leading-relaxed">I reply to messages immediately even when anxious.</span>
-                </label>
-            </div>
-        </div>
-
-        <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm mb-12">
-            <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-1">Lab 02</h3>
-            <h4 class="font-serif text-2xl italic text-stone-900 mb-6">The Control Fortress</h4>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                    <label class="flex items-center gap-2 text-[10px] font-bold text-gold-600 mb-3 uppercase tracking-widest">
-                        <span class="w-5 h-5 bg-gold-500 rounded-full flex items-center justify-center text-white text-[8px] font-black">✓</span>
-                        The Fortress (What I Control)
-                    </label>
-                    <textarea id="s1_control" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm focus:border-gold-500 outline-none h-40 resize-none" placeholder="My preparation, my schedule, my mindset, my response..." oninput="saveData()"></textarea>
-                </div>
-                <div>
-                    <label class="flex items-center gap-2 text-[10px] font-bold text-stone-400 mb-3 uppercase tracking-widest">
-                        <span class="w-5 h-5 bg-stone-200 rounded-full flex items-center justify-center text-stone-500 text-[8px] font-black">✗</span>
-                        The Noise (What I Don't Control)
-                    </label>
-                    <textarea id="s1_noise" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm focus:border-stone-300 outline-none h-40 resize-none" placeholder="Client decisions, peer opinions, market conditions..." oninput="saveData()"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden shadow-sm mb-12">
-            <div class="bg-stone-900 px-8 py-5 flex items-center justify-between">
-                <div>
-                    <h3 class="font-bold text-[10px] uppercase tracking-widest text-stone-400 mb-1">Lab 03</h3>
-                    <h4 class="font-serif text-2xl italic text-white">Sovereign Vocabulary</h4>
-                </div>
-                <p class="text-[10px] text-stone-500 uppercase tracking-widest max-w-xs hidden md:block">Select scenario · Fill fields · Deploy script</p>
-            </div>
-            <div class="bg-stone-100 px-6 py-4 border-b border-stone-200 grid grid-cols-2 md:grid-cols-4 gap-3 no-print">
-                <button id="scBtn_help" onclick="setScenario('help',this)" class="scenario-btn active">Ask for Help</button>
-                <button id="scBtn_no" onclick="setScenario('no',this)" class="scenario-btn">Setting 'No'</button>
-                <button id="scBtn_networking" onclick="setScenario('networking',this)" class="scenario-btn">Networking</button>
-                <button id="scBtn_self" onclick="setScenario('self',this)" class="scenario-btn">Self-Talk</button>
-            </div>
-            <div class="p-8">
-                <div class="grid md:grid-cols-2 gap-10 items-start">
-                    <div class="space-y-5">
-                        <div><label class="text-[10px] uppercase font-bold text-stone-400 tracking-widest block mb-1.5" id="label-1">Recipient</label><input id="inp-1" type="text" class="w-full bg-stone-50 border-b border-stone-200 py-2.5 outline-none focus:border-gold-500 text-sm transition-colors" oninput="generateScript()"></div>
-                        <div><label class="text-[10px] uppercase font-bold text-stone-400 tracking-widest block mb-1.5" id="label-2">The Barrier</label><input id="inp-2" type="text" class="w-full bg-stone-50 border-b border-stone-200 py-2.5 outline-none focus:border-gold-500 text-sm transition-colors" oninput="generateScript()"></div>
-                        <div><label class="text-[10px] uppercase font-bold text-stone-400 tracking-widest block mb-1.5" id="label-3">The Intent</label><input id="inp-3" type="text" class="w-full bg-stone-50 border-b border-stone-200 py-2.5 outline-none focus:border-gold-500 text-sm transition-colors" oninput="generateScript()"></div>
-                    </div>
-                    <div class="p-8 bg-stone-900 rounded-2xl relative shadow-2xl min-h-[160px] flex flex-col justify-between">
-                        <span class="absolute -top-3 right-4 bg-gold-500 text-stone-900 text-[8px] px-3 py-1 font-black uppercase tracking-widest rounded-full">Master Script</span>
-                        <p id="final-script" class="font-serif text-xl italic text-stone-200 leading-relaxed pt-2 flex-1">Complete inputs to generate your script.</p>
-                        <button onclick="copyScript()" class="mt-4 self-end text-[9px] font-bold uppercase tracking-widest text-stone-500 hover:text-gold-400 transition-colors flex items-center gap-1.5">
-                            <i data-lucide="copy" class="w-3 h-3"></i> Copy Script
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="pt-12 pb-10 border-t border-stone-200 text-center">
-            <div class="max-w-2xl mx-auto">
-                <h3 class="font-serif text-4xl italic text-stone-900 mb-6">The Sovereign Choice</h3>
-                <div class="bg-white p-10 rounded-3xl border border-stone-200 shadow-xl relative overflow-hidden">
-                    <div class="absolute -top-16 -right-16 w-64 h-64 bg-gold-500/5 rounded-full blur-3xl"></div>
-                    <p class="text-stone-500 text-sm font-light leading-relaxed mb-8 italic relative z-10">"The walls in a maximum security prison are made of concrete. The walls in your career are made of thoughts. Both require the same physics to break through."</p>
-                    <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-4 relative z-10">Your Commitment to Excellence</label>
-                    <textarea id="final_intent" class="w-full bg-transparent border-b-2 border-stone-200 text-2xl font-serif italic text-center focus:outline-none focus:border-gold-500 h-28 resize-none relative z-10 transition-colors" placeholder="I will operate with curiosity, not judgment..." oninput="saveData()"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-8 flex justify-end no-print">
-            <button onclick="showTab(2)" class="inline-flex items-center gap-2 px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all shadow-lg">
-                Proceed to S2: Agility <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </button>
-        </div>
-    </div>
-
-    <div id="tab2" class="tab-content">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-12 mb-16">
-            <div class="flex-1 text-center md:text-left">
-                <span class="text-gold-600 font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">Workshop Two · Kinetic Agility</span>
-                <h2 class="text-5xl font-serif italic text-stone-900 mb-4 leading-tight">The Identity<br>Architect.</h2>
-                <p class="text-lg text-stone-500 font-light max-w-xl">Identify your default response under pressure, interrogate the Golden Shadow, and engineer your kinetic agility.</p>
-            </div>
-        </div>
-
-        <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm mb-12">
-            <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-1">Lab 04</h3>
-            <h4 class="font-serif text-2xl italic text-stone-900 mb-5">The Default Architecture</h4>
-            <div id="auditArchetypeHint" class="hidden mb-6 p-4 bg-gold-500/10 border border-gold-500/30 rounded-xl flex items-center gap-3">
-                <i data-lucide="zap" class="w-4 h-4 text-gold-500 shrink-0"></i>
-                <div>
-                    <p class="text-[9px] font-bold uppercase tracking-widest text-gold-600 mb-0.5">Diagnostic Result</p>
-                    <p class="text-xs text-stone-700">Your diagnostic identified <strong id="auditArchetypeHintText"></strong> as your dominant pattern. Confirm or adjust below.</p>
-                </div>
-            </div>
-            <div class="executive-border p-6 rounded-r-xl mb-8">
-                <p class="text-sm text-stone-600 italic leading-relaxed">"Under extreme pressure, logic fails. You do not rise to the level of your intellect; you fall to the level of your default kinetic archetype. You must name the loop to dismantle the loop."</p>
-            </div>
-            <p class="text-sm font-semibold text-stone-900 mb-5">When the system breaks down, how do you instinctively react?</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="archetypeGrid">
-                <div onclick="selectArchetype(this,'The Rusher')" class="archetype-btn">
-                    <h4 class="font-bold text-stone-900 uppercase tracking-widest text-[10px] mb-3">The Rusher</h4>
-                    <p class="text-xs text-stone-500 leading-relaxed">I treat time as the enemy. My nervous system locks into a sprint, forcing action to outrun the overwhelm. I believe speed equals safety.</p>
-                </div>
-                <div onclick="selectArchetype(this,'The Fixer')" class="archetype-btn">
-                    <h4 class="font-bold text-stone-900 uppercase tracking-widest text-[10px] mb-3">The Fixer</h4>
-                    <p class="text-xs text-stone-500 leading-relaxed">I absorb the system's anxiety. I over-function and take over tasks to ensure they are done right. I believe control equals safety.</p>
-                </div>
-                <div onclick="selectArchetype(this,'The Freezer')" class="archetype-btn">
-                    <h4 class="font-bold text-stone-900 uppercase tracking-widest text-[10px] mb-3">The Freezer</h4>
-                    <p class="text-xs text-stone-500 leading-relaxed">I contain. When the load gets heavy, I go still and composed on the outside while everything locks down inside. I believe that if no one sees the strain, I stay safe.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm mb-12">
-            <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-1">Lab 05</h3>
-            <h4 class="font-serif text-2xl italic text-stone-900 mb-5">The Golden Shadow</h4>
-            <p class="text-sm text-stone-600 mb-4 leading-relaxed">Humans only repeat behaviors that serve them. Your burnout is not an accident — it is a defense mechanism protecting something vulnerable.</p>
-            <div class="bg-stone-50 border border-stone-100 rounded-xl p-4 mb-5">
-                <p class="text-[9px] font-bold uppercase tracking-widest text-stone-400 mb-1">⚠ Private Exercise — Your answer stays on this device only.</p>
-                <p class="text-[10px] text-stone-500 italic">Complete honesty is where the value lives. No one will see what you write here.</p>
-            </div>
-            <label class="block text-[10px] font-bold uppercase tracking-widest text-gold-600 mb-3">If you stopped operating in your default archetype today, what are you secretly afraid would happen?</label>
-            <textarea id="s2_shadow" class="w-full bg-stone-50 border border-stone-200 p-5 rounded-xl text-sm h-32 font-serif italic text-stone-700 focus:border-gold-500 outline-none resize-none" placeholder="e.g., If I stop fixing everything, people will realize I'm not actually essential..." oninput="saveData()"></textarea>
-        </div>
-
-        <div class="bg-stone-950 p-10 rounded-3xl border border-stone-800 shadow-2xl relative overflow-hidden mb-12">
-            <div class="absolute -top-20 -left-20 w-64 h-64 bg-gold-500/5 rounded-full blur-3xl pointer-events-none"></div>
-            <h3 class="font-bold text-xs uppercase tracking-widest text-stone-500 mb-1 relative z-10">Lab 06</h3>
-            <h4 class="font-serif text-2xl italic text-white mb-5 relative z-10">The Failure Resume</h4>
-            <p class="text-sm text-stone-300 mb-8 leading-relaxed relative z-10 max-w-2xl">We do not learn from success; we learn from the friction of collapse. Document a past failure and extract its kinetic value.</p>
-            <div class="space-y-6 relative z-10">
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-500 mb-2">The Collapse</label>
-                    <input type="text" id="s2_failure" class="w-full bg-transparent border-b border-stone-700 py-3 text-sm text-white focus:border-gold-500 outline-none" placeholder="A significant professional failure or misstep..." oninput="saveData()">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gold-500 mb-2">The Kinetic Yield</label>
-                    <textarea id="s2_yield" class="w-full bg-stone-900/50 border border-stone-700 p-5 rounded-xl text-lg h-32 font-serif italic text-white focus:border-gold-500 outline-none resize-none" placeholder="What specific strength, boundary, or perspective did this force you to build?" oninput="saveData()"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex justify-between no-print">
-            <button onclick="showTab(1)" class="inline-flex items-center gap-2 px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to S1</button>
-            <button onclick="showTab(3)" class="inline-flex items-center gap-2 px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all shadow-lg">Proceed to S3: Sovereignty <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
-        </div>
-    </div>
-
-    <div id="tab3" class="tab-content">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-12 mb-16">
-            <div class="flex-1 text-center md:text-left">
-                <span class="text-gold-600 font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">Workshop Three · Boundary Architecture</span>
-                <h2 class="text-5xl font-serif italic text-stone-900 mb-4 leading-tight">The Stoic<br>Professional.</h2>
-                <p class="text-lg text-stone-500 font-light max-w-xl">A leader's bandwidth is destroyed by carrying what does not belong to them. Audit your energy investments and build the internal fortress.</p>
-            </div>
-            <div class="flex flex-col items-center gap-2 no-print">
-                <p class="text-[9px] font-bold uppercase tracking-widest text-stone-400">Your Archetype</p>
-                <div id="archetypeCarryBadge" class="archetype-tag"><i data-lucide="compass" class="w-3 h-3"></i><span id="archetypeCarryText">None Selected</span></div>
-                <p class="text-[9px] text-stone-400 italic text-center max-w-[140px]">Use this lens for all S3 labs</p>
-            </div>
-        </div>
-
-        <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm mb-12">
-            <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-1">Lab 07</h3>
-            <h4 class="font-serif text-2xl italic text-stone-900 mb-5">The Empty Boat Inquiry</h4>
-            <div class="executive-border p-6 rounded-r-xl mb-8">
-                <p class="text-sm font-serif text-stone-700 italic leading-relaxed mb-3">"You are rowing across a foggy lake. Suddenly, another boat slams into yours. You look up, furious, ready to scream at the person steering... but the boat is empty. It just drifted into you.</p>
-                <p class="text-sm font-serif text-stone-700 italic leading-relaxed">Your anger vanishes. You simply push the boat away and keep rowing. The situation is exactly the same — but because there was no malice, there is no suffering."</p>
-            </div>
-            <label class="block text-[10px] font-bold uppercase tracking-widest text-gold-600 mb-3">Who or what is your "Empty Boat" right now?</label>
-            <textarea id="s3_boat" class="w-full bg-stone-50 border border-stone-200 p-5 rounded-xl text-sm h-32 font-serif italic text-stone-700 focus:border-gold-500 outline-none resize-none" placeholder="My manager isn't attacking me; they are drowning in their own stress and drifting into my lane..." oninput="saveData()"></textarea>
-        </div>
-
-        <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm mb-12">
-            <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-1">Lab 08</h3>
-            <h4 class="font-serif text-2xl italic text-stone-900 mb-5">The Energy Portfolio</h4>
-            <p class="text-sm text-stone-600 mb-8 leading-relaxed">Your calendar is a ledger of your energetic investments. Identify the recurring meeting or task at a severe deficit — then restructure it.</p>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">The Liability</label>
-                    <textarea id="s3_portfolio_drain" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 focus:border-gold-500 outline-none resize-none" placeholder="e.g., The weekly sync where I justify my team's metrics..." oninput="saveData()"></textarea>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gold-600 mb-2">The Restructuring</label>
-                    <textarea id="s3_portfolio_fix" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 focus:border-gold-500 outline-none resize-none" placeholder="e.g., I will send a pre-read memo and cut to 15 minutes Q&A only." oninput="saveData()"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-stone-100 p-10 rounded-3xl border border-stone-200 shadow-inner mb-12">
-            <div class="text-center max-w-3xl mx-auto">
-                <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-1">Lab 09</h3>
-                <h4 class="font-serif text-3xl italic text-stone-900 mb-5">The Radical Mirror</h4>
-                <p class="text-sm text-stone-500 mb-10 leading-relaxed">True sovereignty requires radical accountability. We must examine where we are complicit in creating the conditions we claim to hate.</p>
-                <div class="text-left space-y-6">
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">1. Where am I complicit in creating the conditions I say I don't want?</label>
-                        <textarea id="s3_mirror1" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-24 focus:border-gold-500 outline-none resize-none" placeholder="e.g., I complain about working late, but I always reply to emails at 9PM, training my team to expect it..." oninput="saveData()"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">2. What is the hidden payoff I get for keeping this problem alive?</label>
-                        <textarea id="s3_mirror_payoff" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-24 focus:border-gold-500 outline-none resize-none" oninput="saveData()"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">3. What boundary am I refusing to set because I want to be liked?</label>
-                        <textarea id="s3_mirror2" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-24 focus:border-gold-500 outline-none resize-none" oninput="saveData()"></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex justify-between no-print">
-            <button onclick="showTab(2)" class="inline-flex items-center gap-2 px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to S2</button>
-            <button onclick="showTab(4)" class="inline-flex items-center gap-2 px-8 py-4 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-stone-900 transition-all shadow-lg">Proceed to S4: Blueprint <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
-        </div>
-    </div>
-
-    <div id="tab4" class="tab-content">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-12 mb-16">
-            <div class="flex-1 text-center md:text-left">
-                <span class="text-gold-600 font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">Workshop Four · Integration</span>
-                <h2 class="text-5xl font-serif italic text-stone-900 mb-4 leading-tight">The Final<br>Blueprint.</h2>
-                <p class="text-lg text-stone-500 font-light max-w-xl">Transformation without documentation is a hallucination. Redefine your metrics of success and lock in the 72-hour integration protocol.</p>
-            </div>
-            <div class="flex flex-col items-center gap-2 no-print">
-                <p class="text-[9px] font-bold uppercase tracking-widest text-stone-400">Operating As</p>
-                <div id="archetypeCarryBadge2" class="archetype-tag"><i data-lucide="shield" class="w-3 h-3"></i><span id="archetypeCarryText2">Not yet selected</span></div>
-            </div>
-        </div>
-
-        <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm mb-8">
-            <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-1">Lab 10</h3>
-            <h4 class="font-serif text-2xl italic text-stone-900 mb-5">The Leadership Ripple</h4>
-            <p class="text-sm text-stone-600 mb-5 leading-relaxed">Your unmanaged stress pattern doesn't just affect you — it affects everyone you work with. How is your default archetype showing up in your group projects, your study partnerships, or your early professional relationships?</p>
-            <div id="archetypeRippleHint" class="hidden mb-5 p-4 bg-gold-500/10 border border-gold-500/30 rounded-xl">
-                <p class="text-[9px] font-bold text-gold-600 uppercase tracking-widest mb-1">Your Archetype Lens</p>
-                <p id="archetypeRippleText" class="text-xs text-stone-600 italic"></p>
-            </div>
-            <textarea id="s4_ripple" class="w-full bg-stone-50 border border-stone-200 p-5 rounded-xl text-sm h-28 focus:border-gold-500 outline-none resize-none" placeholder="e.g., Because I am a Fixer, I step in too early. This teaches my team they don't need to problem-solve..." oninput="saveData()"></textarea>
-        </div>
-
-        <div class="bg-stone-100 p-8 rounded-2xl border border-stone-200 mb-8">
-            <h3 class="font-bold text-xs uppercase tracking-widest text-stone-900 mb-1">Lab 11</h3>
-            <h4 class="font-serif text-2xl italic text-stone-900 mb-5">The Sovereign Metric</h4>
-            <div class="executive-border p-6 rounded-r-xl mb-6 bg-white border border-stone-200">
-                <p class="text-xs text-stone-600 italic leading-relaxed">"A Sovereign Leader measures success by alignment, peace, and deliberate subtraction — not accumulation. You must redefine the victory condition."</p>
-            </div>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">The Expired Metric</label>
-                    <textarea id="s4_expired_metric" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-28 focus:border-gold-500 outline-none resize-none" placeholder="e.g., Achieving inbox zero by midnight..." oninput="saveData()"></textarea>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gold-600 mb-2">The Sovereign Metric</label>
-                    <textarea id="s4_new_metric" class="w-full bg-white border border-stone-200 p-4 rounded-xl text-sm h-28 font-serif italic text-stone-700 focus:border-gold-500 outline-none resize-none" placeholder="e.g., Staying calm when timelines shift..." oninput="saveData()"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-8 mb-12">
-            <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
-                <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-1">Lab 12</h3>
-                <h4 class="font-serif text-2xl italic text-stone-900 mb-4">The 90-Day Vision</h4>
-                <p class="text-xs text-stone-500 mb-4">Tangible metrics of success if you integrate this architecture over 90 days.</p>
-                <textarea id="s4_vision" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 focus:border-gold-500 outline-none resize-none" placeholder="1. I leave the office by 5:30PM.&#10;2. My team handles Tier-1 issues without me.&#10;3. I sleep 7 hours a night." oninput="saveData()"></textarea>
-            </div>
-            <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
-                <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-1">Lab 13</h3>
-                <h4 class="font-serif text-2xl italic text-stone-900 mb-4">72-Hour Integration</h4>
-                <p class="text-xs text-stone-500 mb-4">The single, clean action you will take within 72 hours to prove this shift is real.</p>
-                <textarea id="s4_action" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-32 focus:border-gold-500 outline-none resize-none" placeholder="e.g., I will cancel the Thursday status update and let them email me the metrics." oninput="saveData()"></textarea>
-            </div>
-        </div>
-
-        <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm mb-12">
-            <h3 class="font-bold text-xs uppercase tracking-widest text-stone-400 mb-1">Session Audit</h3>
-            <h4 class="font-serif text-2xl italic text-stone-900 mb-2">The Kinetic Shift</h4>
-            <p class="text-sm text-stone-500 mb-8">Rate where you are now and compare it to where you started.</p>
-
-            <div class="grid md:grid-cols-3 gap-6 items-center mb-8">
-                <div class="text-center p-6 bg-stone-50 rounded-2xl border border-stone-200">
-                    <p class="text-[9px] uppercase tracking-widest text-stone-400 font-bold mb-2">Entry Baseline</p>
-                    <p class="text-[9px] uppercase tracking-widest text-stone-400 mb-2">Kinetic Blueprint Score</p>
-                    <div class="text-5xl font-serif italic mb-1" id="exitAuditScore" style="color:#a8a29e">—</div>
-                    <div class="text-[9px] font-bold uppercase tracking-widest mt-1" id="exitAuditLabel" style="color:#a8a29e">Complete audit to see</div>
-                </div>
-
-                <div class="text-center">
-                    <div id="deltaArrow" class="text-4xl font-serif text-stone-300 mb-2">→</div>
-                    <div id="deltaResult" class="text-xs font-bold uppercase tracking-widest text-stone-400 leading-snug">Rate your exit friction below</div>
-                </div>
-
-                <div class="text-center p-6 bg-stone-900 rounded-2xl border border-stone-800">
-                    <p class="text-[9px] uppercase tracking-widest text-stone-500 font-bold mb-2">Exit Friction</p>
-                    <div class="text-5xl font-serif italic text-gold-400 mb-3" id="exitFrictionDisplay">5</div>
-                    <input type="range" id="exit_friction" min="1" max="10" value="5" class="w-full teal-slider mb-2" oninput="updateExitFriction(this.value)">
-                    <div class="flex justify-between text-[8px] uppercase tracking-widest text-stone-600 mt-1">
-                        <span>1 Flow</span><span>10 Overload</span>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-3">In one sentence — what shifted for you today?</label>
-                <textarea id="s4_shift_statement" class="w-full bg-stone-50 border border-stone-200 p-4 rounded-xl text-sm h-20 font-serif italic text-stone-700 focus:border-gold-500 outline-none resize-none" placeholder="e.g., I realized I've been treating my team's growth as my personal liability..." oninput="saveData()"></textarea>
-            </div>
-        </div>
-
-        <div class="bg-stone-950 p-12 rounded-3xl border border-stone-800 shadow-2xl relative overflow-hidden text-center text-white">
-            <div class="absolute -top-20 -right-20 w-80 h-80 bg-gold-500/8 rounded-full blur-3xl pointer-events-none"></div>
-            <i data-lucide="shield-check" class="w-12 h-12 text-gold-500 mx-auto mb-6 relative z-10"></i>
-            <h3 class="text-4xl font-serif italic mb-3 relative z-10">The Sovereign Identity Oath</h3>
-            <p class="text-sm text-stone-400 mb-8 relative z-10 max-w-lg mx-auto leading-relaxed">You have mapped the friction, interrogated the shadow, and built the fortress. Write your final declaration.</p>
-
-            <div id="oathArchetypeHint" class="hidden mb-6 relative z-10 max-w-lg mx-auto">
-                <p class="text-[9px] text-stone-500 uppercase tracking-widest font-bold mb-1">Writing as <span id="oathArchetypeLabel" class="text-gold-400"></span></p>
-                <p id="oathArchetypePrompt" class="text-xs text-stone-400 italic"></p>
-            </div>
-
-            <div class="relative z-10 text-left bg-stone-900/80 p-8 rounded-2xl border border-stone-800 mb-10 max-w-2xl mx-auto shadow-inner">
-                <p class="text-gold-500 font-bold text-[10px] uppercase tracking-widest mb-4">I Commit To:</p>
-                <textarea id="s4_oath" class="w-full bg-transparent border-none p-0 text-2xl font-serif italic text-white focus:ring-0 resize-none h-32 placeholder-stone-700 text-center leading-relaxed outline-none" placeholder="Executing the strategy without absorbing the system's anxiety..." oninput="saveData()"></textarea>
-            </div>
-
-            <div class="flex flex-col sm:flex-row gap-4 justify-center relative z-10 no-print">
-                <button onclick="exportPDF()" class="px-10 py-5 bg-gold-500 text-stone-900 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-400 transition-all shadow-[0_0_30px_rgba(245,158,11,0.3)] flex items-center justify-center gap-2">
-                    <i data-lucide="printer" class="w-4 h-4"></i> Export PDF Blueprint
-                </button>
-            </div>
-        </div>
-
-        <div class="mt-12 flex justify-start no-print">
-            <button onclick="showTab(3)" class="inline-flex items-center gap-2 px-6 py-4 text-stone-400 text-xs font-bold uppercase tracking-widest hover:text-stone-900 transition-all">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to S3
-            </button>
-        </div>
-    </div>
-
-</main>
-
-<footer class="fixed bottom-0 w-full bg-white/95 backdrop-blur-md border-t border-stone-200 py-4 px-8 no-print z-40">
-    <div class="max-w-5xl mx-auto flex justify-between items-center text-[10px] text-stone-400 font-bold uppercase tracking-widest">
-        <p>© 2026 LiveAdaptiv <button onclick="resetApp()" class="ml-4 hover:text-red-400 transition-colors">Reset Progress</button></p>
-        <a href="https://liveadaptiv.com" target="_blank" class="hover:text-gold-600 transition-colors">liveadaptiv.com</a>
-    </div>
-</footer>
-
-<div id="blueprint-print">
-
-    <div class="bp-page">
-        <div class="bp-header">
-            <div>
-                <div class="bp-logo">LiveAdaptiv · The Kinetic Leader</div>
-                <div class="bp-title">Personal Blueprint</div>
-                <div class="bp-subtitle">Cognitive Endurance Lab · Corporate Cohort</div>
-            </div>
-            <div class="bp-date" id="bp-date-display"></div>
-        </div>
-
-        <div class="bp-two-col">
-            <div class="bp-section">
-                <div class="bp-section-label">Participant</div>
-                <div class="bp-field">
-                    <div class="bp-field-label">Name</div>
-                    <div class="bp-field-value large" id="bp-name">—</div>
-                </div>
-            </div>
-            <div class="bp-section">
-                <div class="bp-section-label">Diagnostic Result</div>
-                <div class="bp-field">
-                    <div class="bp-field-label">Burnout Score &amp; Tier</div>
-                    <span class="bp-badge" id="bp-audit-badge">—</span>
-                    <div class="bp-field-value" id="bp-audit-result">Complete audit to see</div>
-                    <div class="bp-field-value small" id="bp-audit-score"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bp-section">
-            <div class="bp-section-label">Kinetic Archetype</div>
-            <div class="bp-field">
-                <div class="bp-field-label">Dominant Pressure Pattern</div>
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-                    <span class="bp-badge bp-badge-archetype" id="bp-archetype-badge">—</span>
-                </div>
-                <div class="bp-field-value small" id="bp-archetype-desc"></div>
-            </div>
-        </div>
-
-        <div class="bp-section">
-            <div class="bp-section-label">Lab 01 · Energy Leak Detection</div>
-            <div class="bp-two-col">
-                <div class="bp-field">
-                    <div class="bp-field-label">The Primary Leak</div>
-                    <div class="bp-field-value small" id="bp-leak"></div>
-                </div>
-                <div class="bp-field">
-                    <div class="bp-field-label">Metabolic Cost (hrs/week)</div>
-                    <div class="bp-field-value small" id="bp-leak-hours"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bp-section">
-            <div class="bp-section-label">Lab 02 · The Control Fortress</div>
-            <div class="bp-two-col">
-                <div class="bp-field">
-                    <div class="bp-field-label">The Fortress — What I Control</div>
-                    <div class="bp-field-value small" id="bp-fortress"></div>
-                </div>
-                <div class="bp-field">
-                    <div class="bp-field-label">The Noise — What I Don't Control</div>
-                    <div class="bp-field-value small" id="bp-noise"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bp-section">
-            <div class="bp-section-label">Session 1 · The Sovereign Choice</div>
-            <div class="bp-field">
-                <div class="bp-field-label">Commitment to Excellence</div>
-                <div class="bp-field-value small" id="bp-s1-intent"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="bp-page">
-        <div class="bp-header">
-            <div class="bp-logo">LiveAdaptiv · The Kinetic Leader · Blueprint</div>
-            <div class="bp-date" id="bp-date-display-2"></div>
-        </div>
-
-        <div class="bp-section">
-            <div class="bp-section-label">Lab 05 · The Golden Shadow</div>
-            <div class="bp-field">
-                <div class="bp-field-label">Private — Not Printed</div>
-                <div class="bp-field-value small" style="color:#aaa;font-style:italic;">Your Golden Shadow response is stored on your device only and is not included in this export by design.</div>
-            </div>
-        </div>
-
-        <div class="bp-section">
-            <div class="bp-section-label">Lab 06 · The Failure Resume</div>
-            <div class="bp-two-col">
-                <div class="bp-field">
-                    <div class="bp-field-label">The Collapse</div>
-                    <div class="bp-field-value small" id="bp-failure"></div>
-                </div>
-                <div class="bp-field">
-                    <div class="bp-field-label">The Kinetic Yield</div>
-                    <div class="bp-field-value small" id="bp-yield"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bp-section">
-            <div class="bp-section-label">Lab 07 · The Empty Boat Inquiry</div>
-            <div class="bp-field">
-                <div class="bp-field-label">My "Empty Boat"</div>
-                <div class="bp-field-value small" id="bp-boat"></div>
-            </div>
-        </div>
-
-        <div class="bp-section">
-            <div class="bp-section-label">Lab 08 · The Energy Portfolio</div>
-            <div class="bp-two-col">
-                <div class="bp-field">
-                    <div class="bp-field-label">The Liability</div>
-                    <div class="bp-field-value small" id="bp-portfolio-drain"></div>
-                </div>
-                <div class="bp-field">
-                    <div class="bp-field-label">The Restructuring</div>
-                    <div class="bp-field-value small" id="bp-portfolio-fix"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bp-section">
-            <div class="bp-section-label">Lab 09 · The Radical Mirror</div>
-            <div class="bp-field" style="margin-bottom:6px;">
-                <div class="bp-field-label">1. Where am I complicit in creating the conditions I say I don't want?</div>
-                <div class="bp-field-value small" id="bp-mirror1"></div>
-            </div>
-            <div class="bp-field" style="margin-bottom:6px;">
-                <div class="bp-field-label">2. What is the hidden payoff I get for keeping this problem alive?</div>
-                <div class="bp-field-value small" id="bp-mirror-payoff"></div>
-            </div>
-            <div class="bp-field">
-                <div class="bp-field-label">3. What boundary am I refusing to set because I want to be liked?</div>
-                <div class="bp-field-value small" id="bp-mirror2"></div>
-            </div>
-        </div>
-
-        <div class="bp-section">
-            <div class="bp-section-label">Lab 12 · The 90-Day Vision</div>
-            <div class="bp-field">
-                <div class="bp-field-label">Metrics of Success</div>
-                <div class="bp-field-value small" id="bp-vision"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="bp-page">
-        <div class="bp-header">
-            <div class="bp-logo">LiveAdaptiv · The Kinetic Leader · Blueprint</div>
-            <div class="bp-date" id="bp-date-display-3"></div>
-        </div>
-
-        <div class="bp-section">
-            <div class="bp-section-label">Lab 13 · 72-Hour Integration</div>
-            <div class="bp-action-box">
-                <div class="bp-action-label">My Committed Action (within 72 hours)</div>
-                <div class="bp-action-value" id="bp-action"></div>
-            </div>
-        </div>
-
-        <div class="bp-section">
-            <div class="bp-section-label">Session Audit · The Kinetic Shift</div>
-            <div class="bp-delta">
-                <div>
-                    <div style="font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#999;font-family:'Inter',sans-serif;margin-bottom:2px;">Entry</div>
-                    <div class="bp-delta-num" id="bp-delta-entry" style="color:#999;">—</div>
-                    <div style="font-size:7px;color:#bbb;font-family:'Inter',sans-serif;">Diagnostic</div>
-                </div>
-                <div class="bp-delta-arrow">→</div>
-                <div>
-                    <div style="font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#999;font-family:'Inter',sans-serif;margin-bottom:2px;">Exit</div>
-                    <div class="bp-delta-num" id="bp-delta-exit" style="color:#1c1917;">—</div>
-                    <div style="font-size:7px;color:#bbb;font-family:'Inter',sans-serif;">Post-Session</div>
-                </div>
-                <div class="bp-delta-info">
-                    <div class="bp-delta-label" id="bp-delta-result" style="color:#999;">—</div>
-                </div>
-            </div>
-            <div class="bp-field">
-                <div class="bp-field-label">What Shifted</div>
-                <div class="bp-field-value" id="bp-shift-statement"></div>
-            </div>
-        </div>
-
-        <hr class="bp-rule">
-
-        <div class="bp-section">
-            <div class="bp-section-label">The Sovereign Identity Oath</div>
-            <div class="bp-oath-box">
-                <div class="bp-oath-label">I Commit To:</div>
-                <div class="bp-oath-text" id="bp-oath"></div>
-            </div>
-        </div>
-
-        <hr class="bp-rule">
-
-        <div class="bp-access-row">
-            <div class="bp-access-label">Your 90-Day App Access</div>
-            <div class="bp-access-value">Adaptiv App · liveadaptiv.com</div>
-            <div class="bp-access-note">Access Code: <strong id="bp-access-code">LEADER-90</strong> · Valid for 90 days from session date · Full protocol: 7 layers, AI-integrated coaching, Parts Work, ELI profiling</div>
-        </div>
-
-        <div class="bp-footer">
-            <div>© 2026 <span>LiveAdaptiv</span> · Performance Systems</div>
-            <div>Confidential · <span id="bp-footer-name"></span> · <span id="bp-footer-date"></span></div>
-            <div><span>liveadaptiv.com</span></div>
-        </div>
-
-    </div>
-</div>
-
-<script>
-// ─────────────────────────────────────────────
-// KINETIC AUDIT DATA
-// ─────────────────────────────────────────────
-const AUDIT_QUESTIONS = [
-    {
-        category: "Physical Drain",
-        text: "During high-pressure periods — exams, recruiting season, major deadlines — do you experience physical symptoms like disrupted sleep, headaches, jaw tension, or a persistent knot in your stomach?",
-        options: [
-            { text: "No — I feel reasonably rested and physically okay even under pressure", score: 0 },
-            { text: "Sometimes — certain weeks hit harder than others", score: 1 },
-            { text: "Yes, consistently — my body feels like it's always running hot", score: 3 }
-        ]
-    },
-    {
-        category: "Emotional State",
-        text: "How would you describe your current emotional baseline as you navigate academics, recruiting, and the transition into your career?",
-        options: [
-            { text: "Generally engaged and curious about what's ahead", score: 0 },
-            { text: "Coping — I get through it but the excitement has faded", score: 1 },
-            { text: "Increasingly cynical, detached, or just going through the motions", score: 3 }
-        ]
-    },
-    {
-        category: "Cognitive Load",
-        text: "When you sit down to study, work on a case, or prepare for an interview, how is your ability to focus?",
-        options: [
-            { text: "I can lock in and produce quality work", score: 0 },
-            { text: "It takes real effort — I get distracted and have to restart repeatedly", score: 1 },
-            { text: "Mental fog is constant. I work longer hours but feel like I accomplish less", score: 3 }
-        ]
-    },
-    {
-        category: "Relational Friction",
-        text: "How are you showing up in your relationships with classmates, study group partners, and the people closest to you right now?",
-        options: [
-            { text: "Patient and present — I have bandwidth for the people around me", score: 0 },
-            { text: "More short-tempered than usual, but managing it", score: 1 },
-            { text: "Irritable, withdrawn, or snapping — I have nothing left for anyone", score: 3 }
-        ]
-    },
-    {
-        category: "Anticipatory Dread",
-        text: "How do you feel the night before a high-stakes event — an exam, a recruiting interview, a presentation, or the start of something new?",
-        options: [
-            { text: "Prepared and ready — maybe nervous, but functional", score: 0 },
-            { text: "A heaviness that usually lifts once I'm actually in it", score: 1 },
-            { text: "Dread or anxiety that disrupts my sleep and follows me into the event", score: 3 }
-        ]
-    },
-    {
-        category: "Recovery Capacity",
-        text: "After an intense exam period, a difficult recruiting week, or a major deadline, how long does it take you to feel like yourself again?",
-        options: [
-            { text: "A day or two of rest resets me fully", score: 0 },
-            { text: "The full break, and I still drag back in when it starts again", score: 1 },
-            { text: "I never fully recover before the next wave hits", score: 3 }
-        ]
-    },
-    {
-        category: "Default Pattern",
-        text: "When a major deadline or high-stakes moment is approaching and you feel behind, your instinct is to:",
-        options: [
-            { text: "Triage and prioritize — I work the situation, not the panic", score: 0 },
-            { text: "Push harder and move faster — more hours, more output, outrun the pressure", score: 2 },
-            { text: "Take over — in group work I step in and handle more than my share because I can't risk it going wrong", score: 2 },
-            { text: "Go still — I hold a composed exterior while the weight of where to start locks up underneath, and I don't let it show", score: 2 }
-        ]
-    },
-    {
-        category: "Energy Investment",
-        text: "How much of your mental energy goes toward things outside your direct control — what recruiters think of you, how you compare to peers, whether you'll get the offer?",
-        options: [
-            { text: "I notice these thoughts but I don't carry them", score: 0 },
-            { text: "More than I should — probably 20-30% of my bandwidth", score: 1 },
-            { text: "Most of my anxiety lives in things I cannot control", score: 3 }
-        ]
-    },
-    {
-        category: "Boundary Architecture",
-        text: "How well are you protecting your time and energy right now — from over-commitment, from other people's urgency, from the pressure to always be available and always say yes?",
-        options: [
-            { text: "I have clear limits and mostly maintain them", score: 0 },
-            { text: "I know where the line should be but consistently cross it", score: 1 },
-            { text: "I have no real limits — my time belongs to whoever asks first", score: 3 }
-        ]
-    },
-    {
-        category: "Purpose Alignment",
-        text: "When you think about the path you're on — your degree, your career direction, the internship you're pursuing — you feel:",
-        options: [
-            { text: "Aligned — this connects to something that genuinely matters to me", score: 0 },
-            { text: "Neutral — it's a good path but I've lost touch with why I chose it", score: 1 },
-            { text: "Disconnected or trapped — I'm running on obligation and expectation, not purpose", score: 3 }
-        ]
-    }
+"use client";
+
+import { useState, useEffect } from 'react';
+import { Lock, ArrowLeft, Headphones, AlertCircle, LockKeyhole, CheckCircle, Gauge } from 'lucide-react';
+
+/**
+ * Kinetic Blueprint Diagnostic — LiveAdaptiv Ecosystem
+ *
+ * TWO INDEPENDENT AXES (this is the core of the redesign):
+ *
+ *   1. PATTERN  — which nervous-system response your system defaults to under
+ *                 pressure. Read from the 10 archetype questions.
+ *                 Rusher  = sympathetic overdrive (fight/flight / accelerate)
+ *                 Fixer   = anxious over-functioning, mixed sympathetic/dorsal
+ *                 Freezer = dorsal vagal shutdown / detachment
+ *                 Sovereign = ventral vagal, metabolizing friction (regulated)
+ *
+ *   2. LOAD     — how much friction you're actually carrying. Read from 6
+ *                 frequency-rated items informed by the same constructs the
+ *                 MBI measures (emotional exhaustion + depersonalization).
+ *
+ * Previously LOAD was just the sum of the archetype values, so the tier was a
+ * pure function of the archetype mix (every Fixer was "Friction", every Freezer
+ * was "Inferno + crisis"). There was no way to express a mild vs. severe version
+ * of the same pattern. Now the two are measured separately and reported
+ * separately, which is what the intro promises.
+ *
+ * PHILOSOPHY: an archetype is a STATE OF ACTIVATION, not a fixed identity. Copy
+ * is present-tense and framed as trainable ("your system currently defaults
+ * to..."), never "you are a Freezer." This is the line between clinical honesty
+ * and personality-quiz territory.
+ *
+ * Manuscript check (Metabolize_Revised):
+ *   - Two-axis design is CORRECT. The book separates "which archetype dominates"
+ *     from depletion/burnout, and treats Fixer/Freezer/Rusher as three co-equal
+ *     defenses whose escalation ORDER is individual — not a fixed severity
+ *     ranking. So load must NOT be derived from the archetype mix. (Resolved.)
+ *   - The book defines NO tier names and NO score thresholds. It calls the
+ *     diagnostic supplementary ("nothing in this book depends on them"). So the
+ *     LOAD_TIERS numbers below are a product decision, not a book fact — set
+ *     them to whatever converts/segments well for you.
+ *
+ * Still yours to wire up (infrastructure, not manuscript):
+ *   - INFERNO_CHECKOUT_URL uses the raw lemonsqueezy domain; the Smoldering tier
+ *     uses branded billing.liveadaptiv.com. Move it to the branded subdomain once
+ *     you confirm the buy path resolves. Left working as-is so checkout isn't broken.
+ *   - /audio/*.mp3 files must exist per pattern (rusher, fixer, freezer, mixed,
+ *     return-to-baseline). Missing files hide the player gracefully. The
+ *     regulated result is a STATE, not a fourth archetype — its track is a
+ *     universal "return to baseline" briefing, not a "you are a Sovereign" reward.
+ */
+
+// ── Product / routing config (edit these, not the logic below) ───────────────
+
+const SMOLDERING_CHECKOUT_URL =
+  "https://billing.liveadaptiv.com/checkout/buy/68001ac0-e86f-4135-846e-7cf66779a923";
+
+const INFERNO_PRODUCT = "Burnout Rescue Workbook";
+const INFERNO_CHECKOUT_URL =
+  "https://liveadaptiv.lemonsqueezy.com/checkout/buy/aab07394-9db6-46d1-8972-60038742f1b7"; // TODO(alex): move to billing.liveadaptiv.com
+
+// LOAD score runs 0–24 (6 items × 0–4). Tune to the manuscript's bands.
+const LOAD_TIERS = {
+  frictionMax: 8,   // 0–8   → Friction   (free)
+  smolderingMax: 16 // 9–16  → Smoldering (paid) ; 17–24 → Inferno (crisis)
+};
+
+// ── Assessment ───────────────────────────────────────────────────────────────
+
+type PatternType = 'rusher' | 'fixer' | 'freezer' | 'integrated';
+
+type PatternQuestion = {
+  kind: 'pattern';
+  id: number;
+  text: string;
+  options: { text: string; type: PatternType }[];
+};
+
+type LoadQuestion = {
+  kind: 'load';
+  id: number;
+  text: string;
+};
+
+type Question = PatternQuestion | LoadQuestion;
+
+// Shared frequency scale for the load items (MBI-style, 5-point).
+const FREQUENCY: { label: string; value: number }[] = [
+  { label: "Never", value: 0 },
+  { label: "Rarely", value: 1 },
+  { label: "Sometimes", value: 2 },
+  { label: "Often", value: 3 },
+  { label: "Almost daily", value: 4 }
 ];
 
-// Archetype scoring
-const ARCHETYPE_MAP = {
-    "The Rusher": { desc: "Anxiety through acceleration — speed as a safety mechanism" },
-    "The Fixer": { desc: "Control through over-functioning — taking over as protection" },
-    "The Freezer": { desc: "Safety through containment — composure held over full internal activation" },
-    "The Sovereign": { desc: "Ventral vagal stability — metabolizing pressure without dropping into a survival pattern" },
-};
+const patternQuestions: PatternQuestion[] = [
+  {
+    kind: 'pattern',
+    id: 1,
+    text: "When a project timeline suddenly collapses, your immediate physiological response is:",
+    options: [
+      { text: "My face stays still and my voice stays level — nobody watching would know anything shifted.", type: "freezer" },
+      { text: "Heart rate spikes; I immediately start firing off directives.", type: "rusher" },
+      { text: "I feel a weight in my chest and silently rewrite the entire plan myself.", type: "fixer" },
+      { text: "I pause, breathe, and systematically assess the new constraints.", type: "integrated" }
+    ]
+  },
+  {
+    kind: 'pattern',
+    id: 2,
+    text: "How do you internally view the people on your team when under extreme pressure?",
+    options: [
+      { text: "As people to keep at a distance until the pressure passes.", type: "freezer" },
+      { text: "As obstacles slowing me down.", type: "rusher" },
+      { text: "As dependents who need me to save them.", type: "fixer" },
+      { text: "As capable adults experiencing friction.", type: "integrated" }
+    ]
+  },
+  {
+    kind: 'pattern',
+    id: 3,
+    text: "Your relationship with your email inbox at 9:00 PM is best described as:",
+    options: [
+      { text: "Sealed off. I've shut the door on it, though it's still humming in the background.", type: "freezer" },
+      { text: "Combative. I must hit inbox zero before I can rest.", type: "rusher" },
+      { text: "Anxious. I check it to make sure nothing caught fire.", type: "fixer" },
+      { text: "Detached. Notifications are off.", type: "integrated" }
+    ]
+  },
+  {
+    kind: 'pattern',
+    id: 4,
+    text: "When facing a systemic bottleneck, your default operational mode shifts to:",
+    options: [
+      { text: "Holding a calm, unreadable exterior while I quietly wait it out.", type: "freezer" },
+      { text: "Overriding the system with sheer force and velocity.", type: "rusher" },
+      { text: "Absorbing the workload to make sure it gets done correctly.", type: "fixer" },
+      { text: "Identifying the root constraint and adjusting the workflow.", type: "integrated" }
+    ]
+  },
+  {
+    kind: 'pattern',
+    id: 5,
+    text: "How does your body physically carry extended periods of friction?",
+    options: [
+      { text: "Outward stillness over a clenched, braced interior — the calm is holding something down.", type: "freezer" },
+      { text: "Jaw clenching, shallow breathing, and restless energy.", type: "rusher" },
+      { text: "Shoulder tension, headaches, and chronic fatigue.", type: "fixer" },
+      { text: "I catch early tension and metabolize it through movement.", type: "integrated" }
+    ]
+  },
+  {
+    kind: 'pattern',
+    id: 6,
+    text: "When someone on your team makes a critical error, your internal narrative is:",
+    options: [
+      { text: "'Reveal nothing. Stay level. Don't let them see this land.'", type: "freezer" },
+      { text: "'I don't have time for this; I'll push it through myself.'", type: "rusher" },
+      { text: "'I should have watched them closer; I'll fix this for them.'", type: "fixer" },
+      { text: "'This is a system gap; how do we build a better guardrail?'", type: "integrated" }
+    ]
+  },
+  {
+    kind: 'pattern',
+    id: 7,
+    text: "Your approach to establishing and holding professional boundaries is:",
+    options: [
+      { text: "Rigid and isolating. I build walls to keep demands out.", type: "freezer" },
+      { text: "Non-existent. Boundaries slow down progress.", type: "rusher" },
+      { text: "Guilt-ridden. I say 'yes' to protect others from friction.", type: "fixer" },
+      { text: "Clear and communicated. I protect my baseline bandwidth.", type: "integrated" }
+    ]
+  },
+  {
+    kind: 'pattern',
+    id: 8,
+    text: "With a completely open Sunday afternoon, you are most likely to:",
+    options: [
+      { text: "Retreat somewhere quiet and unreachable, where no one needs anything from me.", type: "freezer" },
+      { text: "Pace the house or get a head start on Monday's tasks.", type: "rusher" },
+      { text: "Spend it on favors, errands, or emotional labor for others.", type: "fixer" },
+      { text: "Choose deliberate recovery — hobbies, movement, active rest.", type: "integrated" }
+    ]
+  },
+  {
+    kind: 'pattern',
+    id: 9,
+    text: "When conflict arises in a meeting, your autonomic response pulls you to:",
+    options: [
+      { text: "Go quiet and unreadable, waiting for it to pass.", type: "freezer" },
+      { text: "Dominate the conversation and force a resolution.", type: "rusher" },
+      { text: "Mediate hard to make everyone comfortable again.", type: "fixer" },
+      { text: "Hold space for the friction without absorbing the anxiety.", type: "integrated" }
+    ]
+  },
+  {
+    kind: 'pattern',
+    id: 10,
+    text: "How do you view your own capacity for output?",
+    options: [
+      { text: "Steady on the surface. I hold it together by sealing off what I'm carrying.", type: "freezer" },
+      { text: "Infinite, as long as I keep my momentum high.", type: "rusher" },
+      { text: "Tied to my worth; I have to be useful to be valuable.", type: "fixer" },
+      { text: "Finite and cyclical. It needs systems to stay sustainable.", type: "integrated" }
+    ]
+  }
+];
 
-// Result tiers
-function getAuditResult(score) {
-    if (score <= 7) return { tier: "friction", title: "Friction", subtitle: "Acute Stress", color: "#14b8a6", badge: "bg-teal-900/50 text-teal-300 border border-teal-500/50", desc: "You are under pressure, but the engine is still intact. The recruiting season and academic load are stressing your system — not breaking it. Today we install the tools to keep it that way and give you an edge before the pressure peaks.", icon: "activity" };
-    if (score <= 16) return { tier: "smoldering", title: "Smoldering", subtitle: "Early Burnout", color: "#f59e0b", badge: "bg-gold-900/50 text-gold-300 border border-gold-500/50", desc: "The warning lights are on. The combination of academic pressure, recruiting anxiety, and constant peer comparison is accumulating faster than you're recovering. This session is the intervention — before it becomes something harder to reverse.", icon: "alert-triangle" };
-    return { tier: "inferno", title: "Inferno", subtitle: "Full Burnout", color: "#f43f5e", badge: "bg-red-900/50 text-red-300 border border-red-500/50", desc: "Your battery isn't just low — it's damaged. You cannot push your way out of physiological depletion. This session will not solve everything. But it will give you the first real thing to hold onto, and a protocol that stops the drain.", icon: "flame" };
-}
+// Frequency-rated LOAD items. These measure severity independently of pattern —
+// tapping emotional exhaustion + depersonalization, the two constructs named in
+// the intro. Ordered from lower to higher signal.
+const loadQuestions: LoadQuestion[] = [
+  { kind: 'load', id: 11, text: "I wake up already depleted, before the day has started." },
+  { kind: 'load', id: 12, text: "I feel emotionally drained by my work." },
+  { kind: 'load', id: 13, text: "Small requests land like heavy ones." },
+  { kind: 'load', id: 14, text: "By the end of the day I have nothing left to give." },
+  { kind: 'load', id: 15, text: "I've grown more detached or cynical about the people I work with." },
+  { kind: 'load', id: 16, text: "I've stopped caring whether the work gets done well." }
+];
 
-// ─────────────────────────────────────────────
-// AUDIT STATE
-// ─────────────────────────────────────────────
-let auditCurrentQ = 0;
-let auditAnswers = {}; // { qIndex: optionIndex }
-let auditTotalScore = 0;
-let auditArchetype = "";
-let auditResultData = null;
-let participantName = "";
+const assessment: Question[] = [...patternQuestions, ...loadQuestions];
 
-const STORAGE_KEY = 'kinetic_leader_v8';
-const AUDIT_KEY = 'kinetic_audit_v8';
+// ── Component ─────────────────────────────────────────────────────────────────
 
-// ─────────────────────────────────────────────
-// RESET FUNCTIONALITY
-// ─────────────────────────────────────────────
-function resetApp() {
-    if (confirm("Are you sure you want to clear all data and retake the diagnostic? This cannot be undone.")) {
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem(AUDIT_KEY);
-        localStorage.removeItem('kinetic_leader_archetype_v8');
-        location.reload();
-    }
-}
+export default function KineticDiagnostic() {
+  const [view, setView] = useState<'intro' | 'quiz' | 'processing' | 'results'>('intro');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  // Each entry is the selected option index for that question (or null).
+  const [answers, setAnswers] = useState<(number | null)[]>(new Array(assessment.length).fill(null));
+  const [resultData, setResultData] = useState<any>(null);
+  const [isGated, setIsGated] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [capturedEmail, setCapturedEmail] = useState("");
+  const [leadCaptureFailed, setLeadCaptureFailed] = useState(false);
+  const [audioFailed, setAudioFailed] = useState(false);
 
-// ─────────────────────────────────────────────
-// AUDIT ENGINE
-// ─────────────────────────────────────────────
-function startAudit() {
-    const nameInput = document.getElementById('auditName');
-    const name = nameInput ? nameInput.value.trim() : '';
-    if (!name) { nameInput.focus(); nameInput.style.borderColor = '#f43f5e'; return; }
-    participantName = name;
-    document.getElementById('auditIntro').classList.add('hidden');
-    document.getElementById('auditQuestions').classList.remove('hidden');
-    renderQuestion(0);
-}
-
-function renderQuestion(idx) {
-    const q = AUDIT_QUESTIONS[idx];
-    document.getElementById('qNum').innerText = idx + 1;
-    document.getElementById('qCategory').innerText = q.category;
-    document.getElementById('qText').innerText = q.text;
-    document.getElementById('auditProgressFill').style.width = ((idx / AUDIT_QUESTIONS.length) * 100) + '%';
-    
-    const backBtn = document.getElementById('auditBackBtn');
-    backBtn.style.opacity = idx === 0 ? '0.3' : '1';
-    backBtn.disabled = idx === 0;
-    backBtn.setAttribute('aria-disabled', idx === 0);
-
-    const optContainer = document.getElementById('qOptions');
-    optContainer.innerHTML = '';
-    q.options.forEach((opt, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'audit-opt' + (auditAnswers[idx] === i ? ' selected' : '');
-        btn.innerText = opt.text;
-        btn.onclick = () => selectAuditOption(idx, i);
-        optContainer.appendChild(btn);
-    });
-
-    const nextBtn = document.getElementById('auditNextBtn');
-    nextBtn.disabled = auditAnswers[idx] === undefined;
-    nextBtn.innerText = idx === AUDIT_QUESTIONS.length - 1 ? 'See Results →' : 'Next →';
-}
-
-function selectAuditOption(qIdx, optIdx) {
-    auditAnswers[qIdx] = optIdx;
-    document.querySelectorAll('.audit-opt').forEach((b, i) => {
-        b.classList.toggle('selected', i === optIdx);
-    });
-    document.getElementById('auditNextBtn').disabled = false;
-}
-
-function auditNext() {
-    if (auditAnswers[auditCurrentQ] === undefined) return;
-    if (auditCurrentQ < AUDIT_QUESTIONS.length - 1) {
-        auditCurrentQ++;
-        renderQuestion(auditCurrentQ);
-    } else {
-        computeAuditResults();
-    }
-}
-
-function auditBack() {
-    if (auditCurrentQ > 0) {
-        auditCurrentQ--;
-        renderQuestion(auditCurrentQ);
-    }
-}
-
-function computeAuditResults() {
-    let score = 0;
-    let fixer = 0;
-    let rusher = 0;
-    let freezer = 0;
-    let integrated = 0;
-
-    AUDIT_QUESTIONS.forEach((q, qIdx) => {
-        const selectedOptIdx = auditAnswers[qIdx];
-        if (selectedOptIdx === undefined) return;
-        
-        const opt = q.options[selectedOptIdx];
-        score += opt.score || 0;
-
-        // Correct Archetype Tally Logic (Only applies to Question 7 / index 6)
-        if (qIdx === 6) { 
-            if (selectedOptIdx === 0) integrated++;
-            if (selectedOptIdx === 1) rusher++;
-            if (selectedOptIdx === 2) fixer++;
-            if (selectedOptIdx === 3) freezer++;
+  useEffect(() => {
+    const saved = localStorage.getItem('kineticState');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Only restore in-progress quizzes. Completed runs clear their own state
+        // at the processing step, so a reload on the results screen no longer
+        // dumps the user back onto the final question.
+        if (
+          Array.isArray(parsed.answers) &&
+          typeof parsed.currentIndex === 'number' &&
+          parsed.currentIndex > 0 &&
+          parsed.currentIndex < assessment.length
+        ) {
+          setCurrentIndex(parsed.currentIndex);
+          setAnswers(parsed.answers);
+          setView('quiz');
         }
+      } catch (err) {
+        console.error('Failed to restore saved quiz state:', err);
+        localStorage.removeItem('kineticState');
+      }
+    }
+  }, []);
+
+  const saveState = (idx: number, ans: (number | null)[]) => {
+    localStorage.setItem('kineticState', JSON.stringify({ currentIndex: idx, answers: ans }));
+  };
+
+  const handleSelect = (idx: number) => {
+    const newAnswers = [...answers];
+    newAnswers[currentIndex] = idx;
+    setAnswers(newAnswers);
+    saveState(currentIndex, newAnswers);
+  };
+
+  const handleBack = () => {
+    if (currentIndex > 0) {
+      const newIndex = currentIndex - 1;
+      setCurrentIndex(newIndex);
+      saveState(newIndex, answers);
+    }
+  };
+
+  const calculateResults = (finalAnswers: (number | null)[]) => {
+    // ── Axis 1: PATTERN ──────────────────────────────────────────────────────
+    const types: Record<PatternType, number> = { rusher: 0, fixer: 0, freezer: 0, integrated: 0 };
+    // ── Axis 2: LOAD ─────────────────────────────────────────────────────────
+    let loadScore = 0;
+
+    finalAnswers.forEach((optIdx, i) => {
+      if (optIdx == null) return;
+      const q = assessment[i];
+      if (q.kind === 'pattern') {
+        const t = q.options[optIdx]?.type;
+        if (t) types[t]++;
+      } else {
+        loadScore += FREQUENCY[optIdx]?.value ?? 0;
+      }
     });
 
-    // NOTE: previously, a fully healthy Q7 answer (index 0) incremented
-    // nothing, so every branch below fell through to the final `else` and
-    // labeled a healthy respondent "The Fixer". `integrated` now has its
-    // own branch so it only loses to a genuinely dominant survival pattern.
-    if (freezer > 0 && freezer >= rusher && freezer >= fixer && freezer >= integrated) {
-        auditArchetype = "The Freezer";
-    } else if (rusher > 0 && rusher >= fixer && rusher >= integrated) {
-        auditArchetype = "The Rusher";
-    } else if (fixer > 0 && fixer >= integrated) {
-        auditArchetype = "The Fixer";
-    } else {
-        auditArchetype = "The Sovereign";
-    }
+    // --- Resolve the pattern (which default dominates under pressure) ---
+    const maxOverall = Math.max(types.rusher, types.fixer, types.freezer, types.integrated);
 
-    auditTotalScore = Math.min(score, 30);
-    auditResultData = getAuditResult(auditTotalScore);
+    let primaryType = "A Regulated Baseline";
+    let desc = "Under pressure, you're currently metabolizing friction rather than being run by it. This isn't a fourth type — it's a state, the one all three patterns return to. Sovereignty isn't never leaving it; it's how fast you come back.";
+    let audioSrc = "/audio/return-to-baseline.mp3";
+    let patternProtocol =
+      "Maintenance protocol. Keep one daily recovery anchor non-negotiable — the practice that holds this is the practice you'll drop first when load climbs. The three defaults are mapped in full in Metabolize.";
+    let dominant: PatternType | null = null;
+    let isMixed = false;
 
-    showAuditResult();
-    saveAuditData();
-}
+    if (maxOverall > 0 && types.integrated < maxOverall) {
+      const tied: PatternType[] = [];
+      if (types.rusher === maxOverall) tied.push("rusher");
+      if (types.fixer === maxOverall) tied.push("fixer");
+      if (types.freezer === maxOverall) tied.push("freezer");
 
-function showAuditResult() {
-    document.getElementById('auditQuestions').classList.add('hidden');
-    const resultDiv = document.getElementById('auditResult');
-    resultDiv.classList.remove('hidden');
-
-    const r = auditResultData;
-
-    // Style result card
-    const card = document.getElementById('resultCard');
-    card.className = 'audit-result-card result-' + r.tier;
-
-    // Icon
-    const iconDiv = document.getElementById('resultIcon');
-    iconDiv.style.background = r.color + '20';
-    iconDiv.style.border = '2px solid ' + r.color;
-    iconDiv.innerHTML = `<i data-lucide="${r.icon}" style="color:${r.color};width:28px;height:28px;"></i>`;
-
-    document.getElementById('resultTitle').style.color = 'white';
-    document.getElementById('resultTitle').innerText = r.title;
-    document.getElementById('resultBadge').className = 'inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest mb-6 ' + r.badge;
-    document.getElementById('resultBadge').innerText = r.subtitle;
-    document.getElementById('resultDesc').style.color = 'rgba(255,255,255,0.7)';
-    document.getElementById('resultDesc').innerText = r.desc;
-
-    document.getElementById('resultArchetype').innerText = auditArchetype || 'To be identified';
-    document.getElementById('resultArchetypeDesc').style.color = 'rgba(255,255,255,0.4)';
-    document.getElementById('resultArchetypeDesc').innerText = ARCHETYPE_MAP[auditArchetype]?.desc || '';
-
-    const scoreEl = document.getElementById('resultScore');
-    scoreEl.style.color = r.color;
-    scoreEl.innerText = auditTotalScore;
-
-    const bar = document.getElementById('resultScoreBar');
-    bar.style.background = r.color;
-    setTimeout(() => bar.style.width = ((auditTotalScore / 30) * 100) + '%', 100);
-
-    const crisisNote = document.getElementById('resultCrisisNote');
-    if (crisisNote) crisisNote.classList.toggle('hidden', r.tier !== 'inferno');
-
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-}
-
-function enterHub() {
-    document.getElementById('auditGate').classList.add('hidden');
-    populateHubFromAudit();
-}
-
-function saveAuditData() {
-    try {
-        localStorage.setItem(AUDIT_KEY, JSON.stringify({
-            name: participantName,
-            score: auditTotalScore,
-            archetype: auditArchetype,
-            tier: auditResultData?.tier,
-            title: auditResultData?.title,
-            answers: auditAnswers
-        }));
-    } catch(e) {}
-}
-
-function loadAuditData() {
-    try {
-        const raw = localStorage.getItem(AUDIT_KEY);
-        if (!raw) return false;
-        const d = JSON.parse(raw);
-        auditTotalScore = d.score || 0;
-        auditArchetype = d.archetype || '';
-        auditResultData = getAuditResult(auditTotalScore);
-        participantName = d.name || '';
-        auditAnswers = d.answers || {};
-        return true;
-    } catch(e) { return false; }
-}
-
-// ─────────────────────────────────────────────
-// POPULATE HUB FROM AUDIT RESULTS
-// ─────────────────────────────────────────────
-function populateHubFromAudit() {
-    if (!auditResultData) return;
-
-    // S1 summary card
-    const s1Sum = document.getElementById('s1AuditSummary');
-    if (s1Sum) {
-        s1Sum.classList.remove('hidden');
-        document.getElementById('s1AuditTitle').innerText = auditResultData.title + ' — ' + auditResultData.tier.charAt(0).toUpperCase() + auditResultData.tier.slice(1);
-        document.getElementById('s1AuditScore').innerText = auditTotalScore;
-        document.getElementById('s1AuditArchetype').innerText = auditArchetype;
-    }
-
-    // Header pill
-    const pill = document.getElementById('headerAuditPill');
-    if (pill) {
-        pill.style.display = 'flex';
-        const colors = { friction: 'border-teal-500/40 text-teal-400 bg-teal-900/20', smoldering: 'border-gold-500/40 text-gold-400 bg-gold-900/20', inferno: 'border-red-500/40 text-red-400 bg-red-900/20' };
-        pill.className = 'flex items-center gap-2 px-3 py-1.5 rounded-full border text-[9px] font-bold uppercase tracking-widest ' + (colors[auditResultData.tier] || '');
-        pill.innerHTML = `<span>${auditResultData.title}</span><span class="opacity-40">·</span><span>${auditTotalScore}/30</span>`;
-    }
-
-    // S4 exit scale — show audit score as entry reference
-    const exitAuditScore = document.getElementById('exitAuditScore');
-    const exitAuditLabel = document.getElementById('exitAuditLabel');
-    if (exitAuditScore) { exitAuditScore.innerText = auditTotalScore; exitAuditScore.style.color = auditResultData.color; }
-    if (exitAuditLabel) { exitAuditLabel.innerText = auditResultData.title; exitAuditLabel.style.color = auditResultData.color; }
-
-    // Pre-select archetype in Lab 04 and carry forward
-    if (auditArchetype) {
-        selectedArchetypeName = auditArchetype;
-        localStorage.setItem('kinetic_leader_archetype_v8', auditArchetype);
-
-        // Show hint in Lab 04
-        const hint = document.getElementById('auditArchetypeHint');
-        const hintText = document.getElementById('auditArchetypeHintText');
-        if (hint && hintText) {
-            hintText.innerText = auditArchetype;
-            hint.classList.remove('hidden');
-            hint.classList.add('flex');
+      if (tied.length > 1) {
+        isMixed = true;
+        const label = tied.map(cap).join(" / ");
+        primaryType = `Mixed Default: ${label}`;
+        desc = `Right now your default shifts between ${tied.map(cap).join(" and ")} depending on the load. That fluidity is information, not a flaw — it tells you which state to catch first.`;
+        audioSrc = "/audio/mixed.mp3";
+        patternProtocol =
+          "Orienting protocol. Slowly turn your head left and right, letting your eyes drift across the room without fixing on anything, for 30 seconds. This re-engages the social-engagement system and can interrupt both the freeze and the fight/flight loop.";
+      } else {
+        dominant = tied[0];
+        if (dominant === "freezer") {
+          primaryType = "The Freezer";
+          desc = "Under pressure, your system currently contains — the exterior composes itself, the voice stays level, while the activation stays locked inside. It reads as grace under pressure. It is also expensive, and it is trainable.";
+          audioSrc = "/audio/freezer.mp3";
+          patternProtocol =
+            "Activation protocol. Stand up and take 10 slow steps, feeling each foot fully land. Freeze is exited through gentle movement, not through more thinking.";
+        } else if (dominant === "rusher") {
+          primaryType = "The Rusher";
+          desc = "Under pressure, your system currently accelerates — sympathetic activation, pushing through by force and speed. A state your body has learned, not a trait you're stuck with.";
+          audioSrc = "/audio/rusher.mp3";
+          patternProtocol =
+            "Deceleration protocol. Make your exhale longer than your inhale — in for four, out for six — for six breaths. The long exhale is the one lever that talks directly to the brake.";
+        } else if (dominant === "fixer") {
+          primaryType = "The Fixer";
+          desc = "Under pressure, you currently over-function — absorbing the system's anxiety and carrying what isn't yours. A learned pattern, not an identity.";
+          audioSrc = "/audio/fixer.mp3";
+          patternProtocol =
+            "Boundary protocol. Before you take on the next thing, ask one question out loud: 'Whose problem is this to solve?' Name the owner before you pick it up.";
         }
+      }
+    } else if (maxOverall > 0 && types.integrated === maxOverall) {
+      // Regulated is (tied for) highest. This is NOT a fourth archetype — it is
+      // a state. But we still surface the pattern they LEAN toward under heavier
+      // load, pulled from their actual answers: either a survival pattern tied at
+      // the top (emerging), or the highest-scoring one below it (quiet lean).
+      primaryType = "A Regulated Baseline";
+      audioSrc = "/audio/return-to-baseline.mp3";
 
-        // Pre-select the archetype card
-        setTimeout(() => {
-            document.querySelectorAll('.archetype-btn h4').forEach(h4 => {
-                if (h4.innerText.trim() === auditArchetype) {
-                    h4.closest('.archetype-btn').classList.add('active');
-                }
-            });
-            updateArchetypeCarry();
-            updateRippleHint();
-        }, 100);
+      const emerging: PatternType[] = [];
+      if (types.rusher === maxOverall) emerging.push("rusher");
+      if (types.fixer === maxOverall) emerging.push("fixer");
+      if (types.freezer === maxOverall) emerging.push("freezer");
+
+      const leanMax = Math.max(types.rusher, types.fixer, types.freezer);
+      const lean: PatternType[] = [];
+      if (leanMax > 0) {
+        if (types.rusher === leanMax) lean.push("rusher");
+        if (types.fixer === leanMax) lean.push("fixer");
+        if (types.freezer === leanMax) lean.push("freezer");
+      }
+
+      if (emerging.length > 0) {
+        desc = `You're largely regulated under pressure — no pattern is running the show. There's an emerging ${emerging.map(cap).join(" and ")} lean worth catching before it becomes the default. That's the one to watch, not to fix.`;
+        patternProtocol =
+          `Watch protocol. Your lean is ${emerging.map(cap).join(" / ")}. Learn its earliest physical signal — noticing it IS the Return Rate. The pattern is mapped in full in Metabolize.`;
+      } else if (lean.length > 0) {
+        desc = `You're regulated right now — no survival pattern is running the show. If anything tips you under heavier load, it leans toward ${lean.map(cap).join(" or ")}. Worth knowing before it gets loud.`;
+        patternProtocol =
+          `Watch protocol. Your quiet lean is ${lean.map(cap).join(" / ")}. You don't need to fix it — just learn its early signal so your Return Rate stays fast. It's mapped in full in Metabolize.`;
+      } else {
+        desc = "You're regulated right now, and no single pattern surfaced. The three defaults — Rusher, Fixer, Freezer — are the terrain, not a verdict. Knowing all three is what keeps your Return Rate fast.";
+        patternProtocol =
+          "Map protocol. Read the three defaults — Rusher, Fixer, Freezer — as states, not types. Metabolize walks all three, and the Return Rate that keeps you here.";
+      }
     }
 
-    // Welcome participant by name in header
-    if (participantName) {
-        const headerTitle = document.querySelector('header h1');
-        if (headerTitle) headerTitle.innerText = 'The Kinetic Leader';
-    }
-}
-
-// ─────────────────────────────────────────────
-// EXIT FRICTION SCALE
-// ─────────────────────────────────────────────
-let exitFrictionValue = 5;
-
-function updateExitFriction(val) {
-    exitFrictionValue = parseInt(val);
-    const disp = document.getElementById('exitFrictionDisplay');
-    if (disp) disp.innerText = exitFrictionValue;
-    updateDeltaDisplay();
-    saveData();
-}
-
-// ─────────────────────────────────────────────
-// DATA SYNC AND COHORT DEFAULTS
-// ─────────────────────────────────────────────
-function updateDeltaDisplay() {
-    const arrow = document.getElementById('deltaArrow');
-    const result = document.getElementById('deltaResult');
-    // auditTotalScore can legitimately be 0 (a perfect, no-burnout-signals
-    // result) — gate on auditResultData (only set once the audit is
-    // complete) instead, so that respondent still sees their delta.
-    if (!arrow || !result || !auditResultData) return;
-
-    // Normalize audit score (0–30) to a 1–10 scale for comparison
-    const entryNormalized = Math.round((auditTotalScore / 30) * 9) + 1;
-    
-    // Fallback to ensuring DOM value matches
-    const exitFrictionEl = document.getElementById('exit_friction');
-    const currentExitVal = exitFrictionEl ? parseInt(exitFrictionEl.value) : exitFrictionValue;
-    
-    const delta = currentExitVal - entryNormalized;
-
-    if (delta < 0) {
-        arrow.className = 'text-4xl font-serif text-teal-400 mb-2';
-        result.className = 'text-xs font-bold uppercase tracking-widest delta-positive leading-snug';
-        result.innerText = `${Math.abs(delta)} Points Metabolized ↓`;
-    } else if (delta === 0) {
-        arrow.className = 'text-4xl font-serif text-stone-400 mb-2';
-        result.className = 'text-xs font-bold uppercase tracking-widest delta-neutral leading-snug';
-        result.innerText = 'Baseline Maintained';
+    // --- Resolve the load tier (severity) — driven ONLY by the load score ---
+    let tierInfo: any;
+    if (loadScore <= LOAD_TIERS.frictionMax) {
+      tierInfo = {
+        name: "Friction",
+        class: "border-teal-500 bg-gradient-to-br from-[#0f2a20] to-[#0c0a09]",
+        color: "text-teal-600",
+        cta: "Sovereign Command Center",
+        ctaDesc: "A free daily protocol to metabolize friction before it compounds.",
+        checkoutUrl: "https://sovereign.liveadaptiv.com",
+        isFree: true,
+        crisis: false
+      };
+    } else if (loadScore <= LOAD_TIERS.smolderingMax) {
+      tierInfo = {
+        name: "Smoldering",
+        class: "border-gold-500 bg-gradient-to-br from-[#2a1f0d] to-[#0c0a09]",
+        color: "text-gold-600",
+        cta: "Adaptiv App",
+        ctaDesc: "Track your states, catch energy leaks, and adjust your defaults daily.",
+        checkoutUrl: SMOLDERING_CHECKOUT_URL,
+        isFree: false,
+        crisis: false
+      };
     } else {
-        arrow.className = 'text-4xl font-serif text-red-400 mb-2';
-        result.className = 'text-xs font-bold uppercase tracking-widest delta-negative leading-snug';
-        result.innerText = `+${delta} Points — Review Protocol`;
+      tierInfo = {
+        name: "Inferno",
+        class: "border-rose-500 bg-gradient-to-br from-[#2a0d0d] to-[#0c0a09]",
+        color: "text-rose-600",
+        cta: INFERNO_PRODUCT,
+        ctaDesc: "A structured, immediate triage system to halt the spiral.",
+        checkoutUrl: INFERNO_CHECKOUT_URL,
+        isFree: false,
+        crisis: true
+      };
     }
-}
 
-// ─────────────────────────────────────────────
-// NAVIGATION
-// ─────────────────────────────────────────────
-function showTab(n) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach((b, i) => {
-        const active = i === n - 1;
-        b.classList.toggle('border-stone-900', active);
-        b.classList.toggle('text-stone-900', active);
-        b.classList.toggle('border-transparent', !active);
-        b.classList.toggle('text-stone-400', !active);
-        b.setAttribute('aria-selected', active);
+    setResultData({
+      primaryType,
+      desc,
+      tierInfo,
+      audioSrc,
+      isMixed,
+      dominant,
+      loadScore,
+      loadMax: loadQuestions.length * 4,
+      patternProtocol
     });
-    const target = document.getElementById('tab' + n);
-    if (target) target.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (n === 3 || n === 4) updateArchetypeCarry();
-    if (n === 4) { updateRippleHint(); updateDeltaDisplay(); }
-}
+  };
 
-// ─────────────────────────────────────────────
-// SAVE / LOAD
-// ─────────────────────────────────────────────
-function saveData() {
-    try {
-        const data = {};
-        document.querySelectorAll('textarea, input[type="text"], input[type="number"]').forEach(el => {
-            if (el.id) data[el.id] = el.value;
-        });
-        document.querySelectorAll('input[type="checkbox"]').forEach(el => {
-            if (el.id) data[el.id] = el.checked;
-        });
-        const exitEl = document.getElementById('exit_friction');
-        if (exitEl) data['exit_friction_val'] = exitEl.value;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        flashSave();
-    } catch(e) {}
-}
-
-function loadData() {
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        const data = JSON.parse(raw);
-        Object.keys(data).forEach(key => {
-            const el = document.getElementById(key);
-            if (!el) return;
-            if (el.type === 'checkbox') el.checked = data[key];
-            else el.value = data[key];
-        });
-        if (data['exit_friction_val']) {
-            exitFrictionValue = parseInt(data['exit_friction_val']);
-            const el = document.getElementById('exit_friction');
-            if (el) { el.value = exitFrictionValue; updateExitFriction(exitFrictionValue); }
-        }
-    } catch(e) {}
-}
-
-function flashSave() {
-    const el = document.getElementById('saveIndicator');
-    if (!el) return;
-    el.style.opacity = '1';
-    setTimeout(() => el.style.opacity = '0', 1500);
-}
-
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-// ─────────────────────────────────────────────
-// PULSE SCORE + ROI
-// ─────────────────────────────────────────────
-function saveAndScore() { saveData(); calculatePulse(); }
-
-function calculatePulse() {
-    let score = 100;
-    ['check_1','check_2','check_3','check_4','check_5'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el && el.checked) score -= 12;
-    });
-    score = Math.max(score, 40);
-    const disp = document.getElementById('scoreDisplay');
-    if (disp) disp.innerText = score + '%';
-}
-
-function updateROI() {
-    const hrs = parseFloat(document.getElementById('leak_hours')?.value) || 0;
-    const pct = Math.min(100, Math.round((hrs / 40) * 100));
-    const disp = document.getElementById('roi_display');
-    const bar = document.getElementById('roiBar');
-    if (disp) disp.innerText = pct;
-    if (bar) bar.style.width = pct + '%';
-}
-
-// ─────────────────────────────────────────────
-// ARCHETYPE
-// ─────────────────────────────────────────────
-let selectedArchetypeName = '';
-
-function selectArchetype(btn, name) {
-    document.querySelectorAll('.archetype-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    selectedArchetypeName = name;
-    localStorage.setItem('kinetic_leader_archetype_v8', name);
-    flashSave();
-    updateArchetypeCarry();
-    updateRippleHint();
-}
-
-function updateArchetypeCarry() {
-    const name = selectedArchetypeName || localStorage.getItem('kinetic_leader_archetype_v8') || '';
-    if (!name) return;
-
-    [['archetypeCarryBadge','archetypeCarryText'], ['archetypeCarryBadge2','archetypeCarryText2']].forEach(([badgeId, textId]) => {
-        const badge = document.getElementById(badgeId);
-        const text = document.getElementById(textId);
-        if (badge && text) { text.innerText = name; badge.classList.add('visible'); }
-    });
-
-    const oathHint = document.getElementById('oathArchetypeHint');
-    const oathLabel = document.getElementById('oathArchetypeLabel');
-    const oathPrompt = document.getElementById('oathArchetypePrompt');
-    const prompts = {
-        'The Rusher': 'Your oath should address how you will replace speed with deliberate presence. What does operating with a deliberate pace look like for you?',
-        'The Fixer': "Your oath should address how you will protect your team's autonomy. What does trusting others to carry their own weight look like?",
-        'The Freezer': 'Your oath should name the signal that tells you you\'re containing again, and the one thing you\'ll let others see when the load peaks.',
-    };
-    if (oathHint && oathLabel && oathPrompt && prompts[name]) {
-        oathLabel.innerText = name;
-        oathPrompt.innerText = prompts[name];
-        oathHint.classList.remove('hidden');
-        oathHint.classList.add('block');
-    }
-}
-
-function updateRippleHint() {
-    const name = selectedArchetypeName || localStorage.getItem('kinetic_leader_archetype_v8') || '';
-    const hint = document.getElementById('archetypeRippleHint');
-    const text = document.getElementById('archetypeRippleText');
-    const hints = {
-        'The Rusher': 'Your frantic energy creates chronic anxiety in your team. They may feel they can never work fast enough, leading to errors and low confidence.',
-        'The Fixer': 'Your tendency to step in early robs your team of the chance to grow through struggle. You are inadvertently training dependence, not capability.',
-        'The Freezer': 'Your composure hides the strain, so your team can\'t read what\'s actually happening. Your calm silence gets read as distance or disapproval, and they\'re left guessing.',
-    };
-    if (hint && text && hints[name]) {
-        text.innerText = hints[name];
-        hint.classList.remove('hidden');
-        hint.classList.add('flex');
-    }
-}
-
-// ─────────────────────────────────────────────
-// SOVEREIGN VOCABULARY
-// ─────────────────────────────────────────────
-let currentScenario = 'help';
-
-const scenarios = {
-    help: {
-        labels: ['Mentor Name','Technical Gap','Goal'],
-        placeholders: ['Alex','Complex financial modeling','Delivering by Friday'],
-        template: (a,b,c) => `"Hi ${a}, I'm working through <strong>${b}</strong> and want to ensure I'm aligned with what's expected here.<br><br>I've reached a hurdle and want to resolve it quickly so I can <strong>${c}</strong>. Do you have 5 minutes for a tactical check?"`
-    },
-    no: {
-        labels: ['Requester','Low-Priority Task','Primary Commitment'],
-        placeholders: ['Peer','Voluntary research brief','The client presentation'],
-        template: (a,b,c) => `"Hi ${a}, to ensure I deliver the best quality for <strong>${c}</strong>, I won't be able to take on <strong>${b}</strong> right now.<br><br>I'm focusing my energy on the core deliverable."`
-    },
-    networking: {
-        labels: ['Director Name','Shared Interest','Next Step'],
-        placeholders: ['Sarah Chen','Digital Strategy','A brief 15-min intro call'],
-        template: (a,b,c) => `"Hi ${a}, I was genuinely fascinated by your work on <strong>${b}</strong>.<br><br>As I build my career architecture here, I'd love to hear your perspective. Would you be open to <strong>${c}</strong> next week?"`
-    },
-    self: {
-        labels: ['Your Name','The Foggy Thought','The Evidence'],
-        placeholders: ['Alex',"I'm not ready for this","I was selected from 5,000 applicants"],
-        template: (a,b,c) => `"Note to self: I hear the thought that <strong>${b}</strong>.<br><br>The fact: <strong>${c}</strong>. I am clearing the noise and proceeding with curiosity."`
-    }
-};
-
-function setScenario(type, btn) {
-    document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    currentScenario = type;
-    const sc = scenarios[type];
-    ['1','2','3'].forEach((n, i) => {
-        const label = document.getElementById('label-' + n);
-        const input = document.getElementById('inp-' + n);
-        if (label) label.innerText = sc.labels[i];
-        if (input) { input.placeholder = sc.placeholders[i]; input.value = ''; }
-    });
-    generateScript();
-}
-
-function generateScript() {
-    if (!currentScenario) return;
-    const i1 = document.getElementById('inp-1')?.value || '[...]';
-    const i2 = document.getElementById('inp-2')?.value || '[...]';
-    const i3 = document.getElementById('inp-3')?.value || '[...]';
-    const box = document.getElementById('final-script');
-    if (box) box.innerHTML = scenarios[currentScenario].template(i1, i2, i3);
-}
-
-function copyScript() {
-    const box = document.getElementById('final-script');
-    if (!box) return;
-    const text = box.innerText;
-    
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text)
-            .then(() => showToast('Script copied'))
-            .catch(() => fallbackCopy(text));
+  const handleNext = () => {
+    if (currentIndex < assessment.length - 1) {
+      const nextIndex = currentIndex + 1;
+      setCurrentIndex(nextIndex);
+      saveState(nextIndex, answers);
     } else {
-        fallbackCopy(text);
+      // Finished. Clear in-progress state so a reload here starts clean rather
+      // than restoring onto the final question.
+      localStorage.removeItem('kineticState');
+      setView('processing');
+      calculateResults(answers);
+      setTimeout(() => setView('results'), 2000);
     }
-}
+  };
 
-function fallbackCopy(text) {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.position = "fixed";
-    textArea.style.left = "-9999px";
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setLeadCaptureFailed(false);
+
+    const formData = new FormData(e.target as HTMLFormElement);
+    const userEmail = formData.get('email') as string;
+
     try {
-        document.execCommand('copy');
-        showToast('Script copied');
+      const res = await fetch('/api/capture-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: userEmail,
+          b_name: formData.get('b_name'),
+          pattern: resultData.primaryType,
+          loadScore: resultData.loadScore,
+          tier: resultData.tierInfo.name
+        })
+      });
+
+      if (!res.ok) {
+        console.error('capture-lead returned non-OK status:', res.status, await res.text().catch(() => ''));
+        setLeadCaptureFailed(true);
+      }
     } catch (err) {
-        showToast('Copy failed — try manual selection');
+      console.error('capture-lead request failed:', err);
+      setLeadCaptureFailed(true);
+    } finally {
+      // Let the user through to their results regardless — never block someone
+      // from their own result over a backend hiccup.
+      setCapturedEmail(userEmail);
+      setIsGated(false);
+      setIsSubmitting(false);
     }
-    document.body.removeChild(textArea);
+  };
+
+  // ── Intro ──────────────────────────────────────────────────────────────────
+  if (view === 'intro') {
+    return (
+      <div className="w-full text-center space-y-6">
+        <div className="flex justify-center gap-3 mb-6 opacity-70">
+          <span className="text-[10px] font-bold tracking-widest text-stone-400 uppercase border border-stone-800 px-2 py-1 rounded">Polyvagal-Informed</span>
+          <span className="text-[10px] font-bold tracking-widest text-stone-400 uppercase border border-stone-800 px-2 py-1 rounded">No Third-Party Sharing</span>
+        </div>
+        <p className="text-gold-500 tracking-[0.2em] text-xs font-bold uppercase">LiveAdaptiv Ecosystem</p>
+        <h1 className="text-4xl md:text-5xl font-serif italic text-stone-50 leading-tight">The Kinetic Blueprint<br/>Diagnostic.</h1>
+        <p className="text-stone-400 max-w-md mx-auto text-sm leading-relaxed">Two readings in one: how your nervous system defaults under pressure, and how much friction you're actually carrying. Answer honestly — don't overthink it.</p>
+        <button onClick={() => setView('quiz')} className="mt-8 px-8 py-3 bg-stone-50 text-stone-950 font-bold rounded-lg hover:bg-gold-400 transition-colors">Begin Assessment</button>
+        <p className="text-stone-600 text-xs mt-4 flex items-center justify-center gap-2"><Lock className="w-3 h-3" /> Private and secure. Progress saves automatically.</p>
+        <p className="text-stone-500 text-[10px] max-w-md mx-auto mt-6">
+          The load reading is informed by the same constructs the Maslach Burnout Inventory measures — emotional exhaustion and depersonalization. It maps workplace friction, not a clinical diagnosis.
+        </p>
+      </div>
+    );
+  }
+
+  // ── Processing ──────────────────────────────────────────────────────────────
+  if (view === 'processing') {
+    return (
+      <div className="w-full text-center space-y-6 animate-pulse">
+        <div className="w-16 h-16 border-2 border-stone-800 border-t-gold-500 rounded-full animate-spin mx-auto"></div>
+        <h2 className="text-2xl font-serif italic text-stone-50">Mapping your Kinetic Blueprint...</h2>
+        <p className="text-stone-500 text-sm">Reading your default pattern and your friction load.</p>
+      </div>
+    );
+  }
+
+  // ── Quiz ────────────────────────────────────────────────────────────────────
+  if (view === 'quiz') {
+    const q = assessment[currentIndex];
+    const progress = Math.round(((currentIndex + 1) / assessment.length) * 100);
+    const selected = answers[currentIndex];
+    const hasAnswer = selected !== null;
+    const optionLabels = q.kind === 'pattern' ? q.options.map(o => o.text) : FREQUENCY.map(f => f.label);
+
+    return (
+      <div className="w-full flex-col">
+        <div className="mb-8">
+          <div className="flex justify-between items-end mb-2">
+            <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">{progress}% Complete</span>
+            <button onClick={() => { localStorage.removeItem('kineticState'); location.reload(); }} className="text-[10px] text-stone-600 hover:text-stone-400 underline">Reset</button>
+          </div>
+          <div className="h-1.5 w-full bg-stone-800 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-gold-600 to-gold-400 transition-all duration-300" style={{ width: `${progress}%` }}></div>
+          </div>
+        </div>
+
+        {q.kind === 'load' && (
+          <p className="text-[10px] font-bold uppercase tracking-widest text-stone-500 mb-2">How often is this true lately?</p>
+        )}
+        <h2 className="text-2xl font-serif italic text-stone-50 mb-6">{q.text}</h2>
+
+        <div className="space-y-3 mb-8" role="radiogroup">
+          {optionLabels.map((label, idx) => {
+            const isSelected = selected === idx;
+            return (
+              <button
+                key={idx}
+                role="radio"
+                aria-checked={isSelected}
+                onClick={() => handleSelect(idx)}
+                className={`w-full text-left p-4 border rounded-xl flex items-center justify-between transition-all duration-200 group ${isSelected ? 'border-gold-500 bg-gold-500/5 text-gold-500' : 'border-stone-800 bg-stone-900 text-stone-400 hover:border-stone-600 hover:text-stone-200'}`}
+              >
+                <span className="text-sm">{label}</span>
+                <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-gold-500' : 'border-stone-600 group-hover:border-stone-400'}`}>
+                  {isSelected && <div className="w-2 h-2 rounded-full bg-gold-500"></div>}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex justify-between items-center pt-4 border-t border-stone-800">
+          <button onClick={handleBack} className={`text-sm text-stone-400 hover:text-stone-200 flex items-center gap-2 ${currentIndex === 0 ? 'invisible' : ''}`}><ArrowLeft className="w-4 h-4" /> Back</button>
+          <button onClick={handleNext} disabled={!hasAnswer} className={`px-6 py-2 rounded-lg font-semibold transition-colors ${hasAnswer ? 'bg-stone-50 text-stone-950 hover:bg-gold-400' : 'bg-stone-800 text-stone-500 cursor-not-allowed'}`}>
+            {currentIndex === assessment.length - 1 ? 'See Results' : 'Continue'}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Results ─────────────────────────────────────────────────────────────────
+  const loadPct = Math.round((resultData.loadScore / resultData.loadMax) * 100);
+
+  return (
+    <div className="w-full flex-col">
+      <div className={`p-8 rounded-2xl mb-8 text-center border ${resultData.tierInfo.class}`}>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">Your Current Default Under Pressure</p>
+        <h2 className="text-4xl font-serif italic text-white mb-4">{resultData.primaryType}</h2>
+        <p className="text-stone-300 text-sm mb-4 max-w-md mx-auto">{resultData.desc}</p>
+        <p className="text-stone-500 text-xs italic mb-6 max-w-md mx-auto">This is a state, not a sentence. The goal isn't to erase the pattern — it's to shorten your Return Rate: how fast you catch it firing and step back.</p>
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-stone-900/50 rounded-lg border border-stone-800">
+          <Gauge className="w-4 h-4 text-stone-400" />
+          <span className="text-xs text-stone-400">Metabolic Load:</span>
+          <span className={`text-sm font-bold tracking-wider uppercase ${resultData.tierInfo.color}`}>{resultData.tierInfo.name}</span>
+          <span className="text-xs text-stone-500">({resultData.loadScore}/{resultData.loadMax})</span>
+        </div>
+        <div className="mt-3 h-1 w-40 mx-auto bg-stone-800 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-gold-600 to-rose-500" style={{ width: `${loadPct}%` }}></div>
+        </div>
+      </div>
+
+      {!audioFailed && (
+        <div className="bg-stone-900 border border-stone-800 rounded-xl p-5 mb-8">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 rounded-full bg-gold-500/20 flex items-center justify-center">
+              <Headphones className="w-4 h-4 text-gold-500" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-stone-300">LiveAdaptiv Audio Briefing</p>
+              <p className="text-[10px] text-stone-500">A short breakdown of your current state</p>
+            </div>
+          </div>
+          <audio controls className="w-full h-10 rounded" onError={() => setAudioFailed(true)}>
+            <source src={resultData.audioSrc} type="audio/mpeg" />
+          </audio>
+        </div>
+      )}
+
+      {resultData.tierInfo.crisis && (
+        <div className="mb-8 p-6 border border-rose-900/50 bg-rose-950/20 rounded-xl">
+          <h3 className="text-rose-500 font-serif italic text-xl mb-2 flex items-center gap-2"><AlertCircle className="w-5 h-5" /> A moment of pause.</h3>
+          <p className="text-stone-400 text-sm leading-relaxed mb-3">Your load reading sits in the highest band — the friction you're carrying is significant. The protocols below are built for immediate, acute triage. When you're ready, there's a precise system to help you stabilize.</p>
+          <p className="text-stone-500 text-xs leading-relaxed border-t border-rose-900/30 pt-3">
+            This tool measures workplace friction, not mental-health crisis. If you are in crisis or having thoughts of harming yourself, please contact the 988 Suicide &amp; Crisis Lifeline (call or text 988) or go to your nearest emergency room.
+          </p>
+        </div>
+      )}
+
+      {isGated ? (
+        <div className="bg-stone-900 border border-stone-800 p-8 rounded-xl text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-stone-950/90 pointer-events-none"></div>
+          <div className="relative z-10">
+            <LockKeyhole className="w-6 h-6 text-gold-500 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-white mb-2">Your Recovery Protocols Are Ready</h3>
+            <p className="text-stone-400 text-sm mb-6">Enter your email to open your tailored recovery systems, pattern analysis, and next step.</p>
+            <form onSubmit={handleEmailSubmit} className="flex flex-col sm:flex-row gap-3 max-w-sm mx-auto">
+              <input type="email" name="email" required placeholder="Enter your best email" className="flex-grow px-4 py-3 rounded-lg bg-stone-950 border border-stone-700 text-white text-sm focus:outline-none focus:border-gold-500" />
+              <input type="text" name="b_name" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
+              <button type="submit" disabled={isSubmitting} className="px-6 py-3 bg-gold-600 hover:bg-gold-500 text-white font-bold rounded-lg text-sm transition-colors whitespace-nowrap disabled:opacity-50">
+                {isSubmitting ? 'Securing...' : 'Show My Protocols'}
+              </button>
+            </form>
+          </div>
+        </div>
+      ) : (
+        <div className="flex-col gap-6 animate-in fade-in duration-1000">
+          {leadCaptureFailed && (
+            <p className="text-[11px] text-stone-500 italic mb-4">
+              We couldn't confirm your email saved on our end — your results below are unaffected, but you may not receive the follow-up materials. Reach out directly if that matters to you.
+            </p>
+          )}
+          <h3 className="text-2xl font-serif italic border-b border-stone-800 pb-2 mb-6">Your Kinetic Protocols</h3>
+          <ul className="space-y-4 text-sm text-stone-300">
+            <li className="flex gap-3"><CheckCircle className="w-5 h-5 text-gold-500 shrink-0" /> <span><strong>Protocol 1 — Ground.</strong> When you feel the pull of your default, press both feet flat to the floor for 60 seconds and name three things you can see.</span></li>
+            <li className="flex gap-3"><CheckCircle className="w-5 h-5 text-gold-500 shrink-0" /> <span><strong>Protocol 2 — Audit your yes.</strong> Say no to any new non-essential request for the next 48 hours. Protect the bandwidth before you rebuild it.</span></li>
+            <li className="flex gap-3"><CheckCircle className="w-5 h-5 text-gold-500 shrink-0" /> <span><strong>Protocol 3 — Your pattern.</strong> {resultData.patternProtocol}</span></li>
+          </ul>
+          <div className="mt-8 p-6 bg-stone-50 rounded-xl text-stone-950 text-center">
+            <p className="text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Your Next Step</p>
+            <h4 className="text-2xl font-serif italic mb-3">{resultData.tierInfo.cta}</h4>
+            <p className="text-sm text-stone-600 mb-6">{resultData.tierInfo.ctaDesc}</p>
+
+            <a
+              href={resultData.tierInfo.isFree
+                ? resultData.tierInfo.checkoutUrl
+                : `${resultData.tierInfo.checkoutUrl}?checkout[email]=${encodeURIComponent(capturedEmail)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-8 py-3 bg-stone-950 text-white font-bold rounded-lg hover:bg-stone-800 transition"
+            >
+              {resultData.tierInfo.isFree ? "Launch Now" : "Access System Now"}
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
-// ─────────────────────────────────────────────
-// EXPORT PDF — populates Blueprint panel then prints
-// ─────────────────────────────────────────────
-function exportPDF() {
-    try { populateBlueprint(); } catch(e) { console.error('Blueprint populate error:', e); }
-    window.print();
+function cap(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
-
-function populateBlueprint() {
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-
-    // Dates
-    ['bp-date-display','bp-date-display-2','bp-date-display-3'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = dateStr + '<br><span style="font-size:8px;color:#bbb;">Session Date</span>';
-    });
-
-    // Footer
-    const fpName = document.getElementById('bp-footer-name');
-    const fpDate = document.getElementById('bp-footer-date');
-    if (fpName) fpName.textContent = participantName || '';
-    if (fpDate) fpDate.textContent = now.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-
-    // ── PARTICIPANT NAME (from Kinetic Audit) ──
-    const nameEl = document.getElementById('bp-name');
-    if (nameEl) nameEl.textContent = participantName || '—';
-
-    // ── AUDIT RESULT ──
-    if (auditResultData) {
-        const badge = document.getElementById('bp-audit-badge');
-        const result = document.getElementById('bp-audit-result');
-        const score = document.getElementById('bp-audit-score');
-
-        if (badge) {
-            badge.textContent = auditResultData.subtitle || auditResultData.tier;
-            badge.className = 'bp-badge bp-badge-' + (auditResultData.tier || 'friction');
-        }
-        if (result) result.textContent = auditResultData.title || '';
-        if (score) score.textContent = `Score: ${auditTotalScore} / 30`;
-    }
-
-    // ── ARCHETYPE ──
-    const archName = selectedArchetypeName || localStorage.getItem('kinetic_leader_archetype_v8') || '';
-    const archBadge = document.getElementById('bp-archetype-badge');
-    const archDesc = document.getElementById('bp-archetype-desc');
-    const archDescs = {
-        'The Rusher': 'Under pressure, you treat time as the enemy. Your nervous system locks into a sprint — speed as control.',
-        'The Fixer': 'Under pressure, you absorb the system\'s anxiety. You over-function and take over tasks — control as safety.',
-        'The Freezer': 'Under pressure, you contain — composure held on the outside while the load locks down underneath.',
-    };
-    if (archBadge) archBadge.textContent = archName || '—';
-    if (archDesc && archName) archDesc.textContent = archDescs[archName] || '';
-    
-    // ── LABS DATA ──
-    const safeValue = (id) => document.getElementById(id)?.value || '—';
-
-    const bpLeak = document.getElementById('bp-leak');
-    if (bpLeak) bpLeak.textContent = safeValue('s1_leak');
-    
-    const bpLeakHours = document.getElementById('bp-leak-hours');
-    if (bpLeakHours) bpLeakHours.textContent = safeValue('leak_hours');
-    
-    const fortress = document.getElementById('bp-fortress');
-    if (fortress) fortress.textContent = safeValue('s1_control');
-    
-    const noise = document.getElementById('bp-noise');
-    if (noise) noise.textContent = safeValue('s1_noise');
-    
-    const bpS1Intent = document.getElementById('bp-s1-intent');
-    if (bpS1Intent) bpS1Intent.textContent = safeValue('final_intent');
-    
-    const bpFailure = document.getElementById('bp-failure');
-    if (bpFailure) bpFailure.textContent = safeValue('s2_failure');
-    
-    const bpYield = document.getElementById('bp-yield');
-    if (bpYield) bpYield.textContent = safeValue('s2_yield');
-    
-    const bpBoat = document.getElementById('bp-boat');
-    if (bpBoat) bpBoat.textContent = safeValue('s3_boat');
-    
-    const bpDrain = document.getElementById('bp-portfolio-drain');
-    if (bpDrain) bpDrain.textContent = safeValue('s3_portfolio_drain');
-    
-    const bpFix = document.getElementById('bp-portfolio-fix');
-    if (bpFix) bpFix.textContent = safeValue('s3_portfolio_fix');
-    
-    const bpMirror1 = document.getElementById('bp-mirror1');
-    if (bpMirror1) bpMirror1.textContent = safeValue('s3_mirror1');
-    
-    const bpMirrorPayoff = document.getElementById('bp-mirror-payoff');
-    if (bpMirrorPayoff) bpMirrorPayoff.textContent = safeValue('s3_mirror_payoff');
-    
-    const bpMirror2 = document.getElementById('bp-mirror2');
-    if (bpMirror2) bpMirror2.textContent = safeValue('s3_mirror2');
-    
-    const bpVision = document.getElementById('bp-vision');
-    if (bpVision) bpVision.textContent = safeValue('s4_vision');
-
-    // ── 72-HOUR ACTION ──
-    const action = document.getElementById('bp-action');
-    if (action) action.textContent = safeValue('s4_action');
-
-    // ── KINETIC SHIFT DELTA ──
-    const entryEl = document.getElementById('bp-delta-entry');
-    const exitEl = document.getElementById('bp-delta-exit');
-    const deltaRes = document.getElementById('bp-delta-result');
-
-    // auditTotalScore can legitimately be 0 (a perfect, no-burnout-signals
-    // result) — gate on auditResultData instead so the PDF still shows an
-    // Entry value for that respondent, rather than falling back to "—".
-    const entryNorm = auditResultData
-        ? Math.round((auditTotalScore / 30) * 9) + 1
-        : null;
-        
-    const exitFrictionEl = document.getElementById('exit_friction');
-    const exitVal = exitFrictionEl ? parseInt(exitFrictionEl.value) : (exitFrictionValue || 5);
-
-    if (entryEl) {
-        entryEl.textContent = entryNorm !== null ? entryNorm : '—';
-        entryEl.style.color = '#999';
-    }
-    if (exitEl) {
-        exitEl.textContent = exitVal;
-        exitEl.style.color = '#1c1917';
-    }
-    if (deltaRes && entryNorm !== null) {
-        const delta = exitVal - entryNorm;
-        if (delta < 0) {
-            deltaRes.textContent = `${Math.abs(delta)} Points Metabolized`;
-            deltaRes.className = 'bp-delta-label bp-delta-positive';
-        } else if (delta === 0) {
-            deltaRes.textContent = 'Baseline Maintained';
-            deltaRes.className = 'bp-delta-label bp-delta-neutral';
-        } else {
-            deltaRes.textContent = `+${delta} Points — Review Protocol`;
-            deltaRes.className = 'bp-delta-label bp-delta-negative';
-        }
-    }
-
-    // ── WHAT SHIFTED ──
-    const shiftEl = document.getElementById('bp-shift-statement');
-    if (shiftEl) shiftEl.textContent = safeValue('s4_shift_statement');
-
-    // ── SOVEREIGN OATH ──
-    const oathEl = document.getElementById('bp-oath');
-    if (oathEl) oathEl.textContent = safeValue('s4_oath');
-
-    // ── ACCESS CODE ──
-    const codeEl = document.getElementById('bp-access-code');
-    if (codeEl) codeEl.textContent = 'LEADER-90';
-}
-
-// ─────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────
-window.onload = function() {
-    // Check if audit was already completed
-    const auditCompleted = loadAuditData();
-
-    if (auditCompleted && auditResultData) {
-        // Skip the gate, go straight to hub
-        document.getElementById('auditGate').classList.add('hidden');
-        populateHubFromAudit();
-    }
-    // else: gate remains visible — user must complete audit
-
-    try { loadData(); } catch(e) {}
-
-    try {
-        const savedArchetype = localStorage.getItem('kinetic_leader_archetype_v8');
-        if (savedArchetype) {
-            selectedArchetypeName = savedArchetype;
-            document.querySelectorAll('.archetype-btn h4').forEach(h4 => {
-                if (h4.innerText.trim() === savedArchetype) {
-                    h4.closest('.archetype-btn').classList.add('active');
-                }
-            });
-            updateArchetypeCarry();
-            updateRippleHint();
-        }
-    } catch(e) {}
-
-    try { calculatePulse(); } catch(e) {}
-    try { setScenario('help', document.getElementById('scBtn_help')); } catch(e) {}
-    try { if (typeof lucide !== 'undefined') lucide.createIcons(); } catch(e) {}
-    try { updateDeltaDisplay(); } catch(e) {}
-};
-</script>
-</body>
-</html>
