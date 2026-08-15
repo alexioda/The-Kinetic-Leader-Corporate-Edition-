@@ -309,7 +309,7 @@
                 <div id="s1AuditSummary" class="hidden w-full bg-stone-900 rounded-2xl p-4 border border-stone-700 text-center">
                     <p class="text-[9px] font-bold uppercase tracking-widest text-gold-500 mb-2">Your Entry Baseline</p>
                     <p class="font-serif text-xl italic text-white mb-1" id="s1AuditTitle"></p>
-                    <p class="text-[9px] text-stone-400 uppercase tracking-widest">Score: <span id="s1AuditScore" class="text-gold-400 font-bold"></span>/30<span id="s1AuditArchetypeWrap"> · <span id="s1AuditArchetype" class="text-gold-400"></span></span></p>
+                    <p class="text-[9px] text-stone-400 uppercase tracking-widest">Score: <span id="s1AuditScore" class="text-gold-400 font-bold"></span>/30 · <span id="s1AuditArchetype" class="text-gold-400"></span></p>
                 </div>
             </div>
         </div>
@@ -925,7 +925,7 @@
         <div class="bp-access-row">
             <div class="bp-access-label">Your 90-Day App Access</div>
             <div class="bp-access-value">Adaptiv App · liveadaptiv.com</div>
-            <div class="bp-access-note">Access Code: <strong id="bp-access-code">LEADER-90</strong> · Valid for 90 days from session date · Full protocol: 7 layers, AI-integrated coaching, Parts Work</div>
+            <div class="bp-access-note">Access Code: <strong id="bp-access-code">LEADER-90</strong> · Valid for 90 days from session date · Full protocol: 7 layers, AI-integrated coaching, Parts Work, ELI profiling</div>
         </div>
 
         <div class="bp-footer">
@@ -1040,6 +1040,7 @@ const ARCHETYPE_MAP = {
     "The Rusher": { desc: "Anxiety through acceleration — speed as a safety mechanism" },
     "The Fixer": { desc: "Control through over-functioning — taking over as protection" },
     "The Freezer": { desc: "Safety through containment — composure held over full internal activation" },
+    "Regulated Baseline": { desc: "No survival pattern is running the show right now — a state, not a fourth type. The work here is protecting your Return Rate. The three defaults are mapped in full in Metabolize." },
 };
 
 // Result tiers
@@ -1173,11 +1174,7 @@ function computeAuditResults() {
     } else if (fixer > 0 && fixer >= integrated) {
         auditArchetype = "The Fixer";
     } else {
-        // No survival pattern dominated Q7 — leave auditArchetype unset
-        // rather than forcing a fourth label. There is no fourth archetype
-        // card in Lab 04 to confirm against, and none in the canon. The
-        // Hub already falls back gracefully everywhere this is read.
-        auditArchetype = "";
+        auditArchetype = "Regulated Baseline";
     }
 
     auditTotalScore = Math.min(score, 30);
@@ -1274,8 +1271,6 @@ function populateHubFromAudit() {
         document.getElementById('s1AuditTitle').innerText = auditResultData.title + ' — ' + auditResultData.tier.charAt(0).toUpperCase() + auditResultData.tier.slice(1);
         document.getElementById('s1AuditScore').innerText = auditTotalScore;
         document.getElementById('s1AuditArchetype').innerText = auditArchetype;
-        const archWrap = document.getElementById('s1AuditArchetypeWrap');
-        if (archWrap) archWrap.style.display = auditArchetype ? '' : 'none';
     }
 
     // Header pill
@@ -1298,10 +1293,12 @@ function populateHubFromAudit() {
         selectedArchetypeName = auditArchetype;
         localStorage.setItem('kinetic_leader_archetype_v8', auditArchetype);
 
-        // Show hint in Lab 04
+        // Show hint in Lab 04 — only for the three real patterns. "Regulated
+        // Baseline" has no matching card there to confirm, so the "Confirm or
+        // adjust below" copy would be pointing at nothing.
         const hint = document.getElementById('auditArchetypeHint');
         const hintText = document.getElementById('auditArchetypeHintText');
-        if (hint && hintText) {
+        if (hint && hintText && auditArchetype !== 'Regulated Baseline') {
             hintText.innerText = auditArchetype;
             hint.classList.remove('hidden');
             hint.classList.add('flex');
@@ -1692,7 +1689,8 @@ function populateBlueprint() {
     const archDescs = {
         'The Rusher': 'Under pressure, you treat time as the enemy. Your nervous system locks into a sprint — speed as control.',
         'The Fixer': 'Under pressure, you absorb the system\'s anxiety. You over-function and take over tasks — control as safety.',
-        'The Freezer': 'Under pressure, you contain — composure held on the outside while the load locks down underneath.',
+        'The Freezer': 'Under pressure, you contain. The exterior stays composed while the activation is held inside — grace under pressure that quietly costs you.',
+        'Regulated Baseline': 'No survival pattern surfaced today — a state, not a type. The work here is protecting your Return Rate. The three defaults are mapped in full in Metabolize.',
     };
     if (archBadge) archBadge.textContent = archName || '—';
     if (archDesc && archName) archDesc.textContent = archDescs[archName] || '';
