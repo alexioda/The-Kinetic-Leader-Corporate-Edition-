@@ -1163,10 +1163,14 @@ function computeAuditResults() {
         }
     });
 
-    // NOTE: previously, a fully healthy Q7 answer (index 0) incremented
-    // nothing, so every branch below fell through to the final `else` and
-    // labeled a healthy respondent "The Fixer". `integrated` now has its
-    // own branch so it only loses to a genuinely dominant survival pattern.
+    // Each `>= integrated` comparison exists so a healthy Q7 answer (index 0)
+    // can outrank a survival pattern that only won by a single response —
+    // without it, any fixer/rusher/freezer tally greater than zero would beat
+    // a fully healthy respondent by default. When no survival pattern
+    // dominates, the else branch below reports "Regulated Baseline": there's
+    // only one archetype question here (unlike the standalone Blueprint's
+    // ten), so this Hub can't surface a data-backed lean — it validates the
+    // regulated state instead of guessing at one.
     if (freezer > 0 && freezer >= rusher && freezer >= fixer && freezer >= integrated) {
         auditArchetype = "The Freezer";
     } else if (rusher > 0 && rusher >= fixer && rusher >= integrated) {
@@ -1208,9 +1212,15 @@ function showAuditResult() {
     document.getElementById('resultDesc').style.color = 'rgba(255,255,255,0.7)';
     document.getElementById('resultDesc').innerText = r.desc;
 
-    document.getElementById('resultArchetype').innerText = auditArchetype || 'To be identified';
+    // A falsy auditArchetype only ever means "no survival pattern dominated" —
+    // computeAuditResults() always assigns one of the three patterns or
+    // "Regulated Baseline". Falling back to that same label here (rather than
+    // "To be identified") keeps the copy validating the state instead of
+    // reading like the diagnostic failed.
+    const displayArchetype = auditArchetype || 'Regulated Baseline';
+    document.getElementById('resultArchetype').innerText = displayArchetype;
     document.getElementById('resultArchetypeDesc').style.color = 'rgba(255,255,255,0.4)';
-    document.getElementById('resultArchetypeDesc').innerText = ARCHETYPE_MAP[auditArchetype]?.desc || '';
+    document.getElementById('resultArchetypeDesc').innerText = ARCHETYPE_MAP[displayArchetype]?.desc || '';
 
     const scoreEl = document.getElementById('resultScore');
     scoreEl.style.color = r.color;
@@ -1270,7 +1280,9 @@ function populateHubFromAudit() {
         s1Sum.classList.remove('hidden');
         document.getElementById('s1AuditTitle').innerText = auditResultData.title + ' — ' + auditResultData.tier.charAt(0).toUpperCase() + auditResultData.tier.slice(1);
         document.getElementById('s1AuditScore').innerText = auditTotalScore;
-        document.getElementById('s1AuditArchetype').innerText = auditArchetype;
+        // Same fallback as the result card and PDF: a falsy auditArchetype
+        // only occurs from legacy pre-rename saved data, not a live result.
+        document.getElementById('s1AuditArchetype').innerText = auditArchetype || 'Regulated Baseline';
     }
 
     // Header pill
@@ -1683,7 +1695,12 @@ function populateBlueprint() {
     }
 
     // ── ARCHETYPE ──
-    const archName = selectedArchetypeName || localStorage.getItem('kinetic_leader_archetype_v8') || '';
+    // A falsy archName here only means "no survival pattern dominated" — the
+    // audit gate always sets one of the three patterns or "Regulated
+    // Baseline" before the Hub is reachable. Falling back to that same label
+    // (rather than a bare "—") keeps a regulated participant's PDF from
+    // reading as broken or incomplete.
+    const archName = selectedArchetypeName || localStorage.getItem('kinetic_leader_archetype_v8') || 'Regulated Baseline';
     const archBadge = document.getElementById('bp-archetype-badge');
     const archDesc = document.getElementById('bp-archetype-desc');
     const archDescs = {
@@ -1692,8 +1709,8 @@ function populateBlueprint() {
         'The Freezer': 'Under pressure, you contain. The exterior stays composed while the activation is held inside — grace under pressure that quietly costs you.',
         'Regulated Baseline': 'No survival pattern surfaced today — a state, not a type. The work here is protecting your Return Rate. The three defaults are mapped in full in Metabolize.',
     };
-    if (archBadge) archBadge.textContent = archName || '—';
-    if (archDesc && archName) archDesc.textContent = archDescs[archName] || '';
+    if (archBadge) archBadge.textContent = archName;
+    if (archDesc) archDesc.textContent = archDescs[archName] || '';
     
     // ── LABS DATA ──
     const safeValue = (id) => document.getElementById(id)?.value || '—';
